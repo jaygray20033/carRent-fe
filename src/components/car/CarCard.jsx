@@ -4,10 +4,7 @@ import { formatCurrency } from '../../utils/format.js';
 
 export default function CarCard({ car }) {
   return (
-    <Link
-      to={`/cars/${car.id}`}
-      className="card group overflow-hidden transition hover:shadow-md"
-    >
+    <Link to={`/cars/${car.id}`} className="card group overflow-hidden transition hover:shadow-md">
       <div className="aspect-[16/10] overflow-hidden bg-gray-100">
         <img
           src={car.thumbnailUrl || 'https://placehold.co/600x400?text=Car'}

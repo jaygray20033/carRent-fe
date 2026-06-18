@@ -25,7 +25,10 @@ let refreshQueue = [];
 const onLoggedOut = () => {
   useAuthStore.getState().clearAuth();
   // Avoid a redirect loop if already on an auth route
-  if (typeof window !== 'undefined' && !/\/login|\/reset-password|\/forgot-password/.test(window.location.pathname)) {
+  if (
+    typeof window !== 'undefined' &&
+    !/\/login|\/reset-password|\/forgot-password/.test(window.location.pathname)
+  ) {
     window.location.href = '/login';
   }
 };

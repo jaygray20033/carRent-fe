@@ -27,7 +27,10 @@ export default function HomePage() {
               <Search className="h-4 w-4" />
               Tìm xe ngay
             </Link>
-            <Link to="/register" className="btn border border-white/40 text-white hover:bg-white/10">
+            <Link
+              to="/register"
+              className="btn border border-white/40 text-white hover:bg-white/10"
+            >
               Đăng ký miễn phí
             </Link>
           </div>

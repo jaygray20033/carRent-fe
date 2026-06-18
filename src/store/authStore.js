@@ -25,8 +25,7 @@ export const useAuthStore = create(
         }),
 
       // Backwards-compatible alias
-      setSession: (user, accessToken, refreshToken) =>
-        set({ user, accessToken, refreshToken }),
+      setSession: (user, accessToken, refreshToken) => set({ user, accessToken, refreshToken }),
 
       // Update only the tokens (used after silent refresh/rotation)
       setTokens: (accessToken, refreshToken) =>

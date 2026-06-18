@@ -105,11 +105,7 @@ export default function CheckoutPage() {
             <textarea rows={3} className="input" {...register('note')} />
           </div>
 
-          <button
-            type="submit"
-            disabled={createMutation.isPending}
-            className="btn-primary w-full"
-          >
+          <button type="submit" disabled={createMutation.isPending} className="btn-primary w-full">
             {createMutation.isPending ? 'Đang xử lý...' : 'Xác nhận đặt xe'}
           </button>
         </form>

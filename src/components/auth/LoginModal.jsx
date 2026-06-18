@@ -28,8 +28,7 @@ const phoneRe = /^(0|\+84)\d{9,10}$/;
 const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const isIdentifier = (v) => phoneRe.test(v) || emailRe.test(v);
 
-const errMsg = (e, fallback) =>
-  e?.message || e?.response?.data?.message || fallback;
+const errMsg = (e, fallback) => e?.message || e?.response?.data?.message || fallback;
 
 export default function LoginModal({ open, onClose, initialTab = 'login' }) {
   const setAuth = useAuthStore((s) => s.setAuth);
@@ -440,7 +439,14 @@ export default function LoginModal({ open, onClose, initialTab = 'login' }) {
           {/* ----- Step 2 (register): OTP ----- */}
           {step === 'reg-otp' && (
             <form onSubmit={submitRegisterOtp} className="space-y-5">
-              <OtpInput value={otp} onChange={(v) => { setOtp(v); clearErr('otp'); }} error={!!errors.otp} />
+              <OtpInput
+                value={otp}
+                onChange={(v) => {
+                  setOtp(v);
+                  clearErr('otp');
+                }}
+                error={!!errors.otp}
+              />
               {errors.otp && <p className="-mt-2 text-xs font-medium text-red-500">{errors.otp}</p>}
               <AuthButton type="submit" loading={loading} disabled={otp.length !== 6}>
                 Xác nhận
@@ -484,7 +490,14 @@ export default function LoginModal({ open, onClose, initialTab = 'login' }) {
           {/* ----- Forgot: OTP ----- */}
           {step === 'forgot-otp' && (
             <form onSubmit={submitForgotOtp} className="space-y-5">
-              <OtpInput value={otp} onChange={(v) => { setOtp(v); clearErr('otp'); }} error={!!errors.otp} />
+              <OtpInput
+                value={otp}
+                onChange={(v) => {
+                  setOtp(v);
+                  clearErr('otp');
+                }}
+                error={!!errors.otp}
+              />
               {errors.otp && <p className="-mt-2 text-xs font-medium text-red-500">{errors.otp}</p>}
               <AuthButton type="submit" disabled={otp.length !== 6}>
                 Tiếp tục

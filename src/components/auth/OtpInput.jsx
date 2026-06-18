@@ -3,7 +3,13 @@
 // arrow-key navigation, and full-code paste support.
 import { useRef, useEffect } from 'react';
 
-export default function OtpInput({ length = 6, value = '', onChange, error = false, autoFocus = true }) {
+export default function OtpInput({
+  length = 6,
+  value = '',
+  onChange,
+  error = false,
+  autoFocus = true,
+}) {
   const inputsRef = useRef([]);
 
   // Normalise the controlled value to a fixed-length char array

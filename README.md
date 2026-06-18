@@ -3,6 +3,7 @@
 Frontend cho hệ thống thuê xe ô tô — phiên bản init.
 
 ## 🧱 Tech Stack
+
 - **Framework**: React 18 + Vite 5
 - **Styling**: TailwindCSS 3
 - **Routing**: React Router 6
@@ -65,22 +66,32 @@ Backend default: `http://localhost:4000/api/v1`
 
 ## 🧭 Routes (đã code)
 
-| Path | Page | Auth |
-|---|---|---|
-| `/` | Home | ❌ |
-| `/cars` | Car list | ❌ |
-| `/cars/:id` | Car detail | ❌ |
-| `/login` | Login | ❌ |
-| `/register` | Register | ❌ |
-| `/checkout/:carId` | Booking checkout | ✅ |
-| `/me` | Profile | ✅ |
-| `/me/bookings` | My bookings | ✅ |
+| Path               | Page             | Auth |
+| ------------------ | ---------------- | ---- |
+| `/`                | Home             | ❌   |
+| `/cars`            | Car list         | ❌   |
+| `/cars/:id`        | Car detail       | ❌   |
+| `/login`           | Login            | ❌   |
+| `/register`        | Register         | ❌   |
+| `/checkout/:carId` | Booking checkout | ✅   |
+| `/me`              | Profile          | ✅   |
+| `/me/bookings`     | My bookings      | ✅   |
 
 ## 🔐 Demo accounts
+
 - Admin: `0900000001` / `Admin@1234`
 - User : `0901234567` / `User@1234`
 
+## 🧪 Day 5 — Lint, Format, Husky & CI
+
+- **ESLint v9** flat config (`eslint.config.js`) + **Prettier** (`.prettierrc.json`) + `.editorconfig`.
+- Scripts: `npm run lint`, `npm run lint:fix`, `npm run format`, `npm run format:check`, `npm run build`.
+- **Husky + lint-staged**: `.husky/pre-commit` chạy `npx lint-staged` (ESLint `--fix` + Prettier `--write` trên file thay đổi). Hook cài qua script `prepare` khi `npm install`.
+- **GitHub Actions CI** (`.github/workflows/ci.yml`, job `lint-test-fe`): Node 20 → `npm ci` → `npm run lint` → `npm run format:check` → `npm run build`. Trigger: PR + push `master`/`main`.
+- **Branch protection**: trên GitHub → Settings → Branches → require PR + require status check `Lint & Build (Frontend)` cho nhánh chính.
+
 ## 🛣️ Roadmap (chưa code)
+
 - Admin dashboard
 - Wallet UI
 - Reviews & ratings
