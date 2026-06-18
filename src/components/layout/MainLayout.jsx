@@ -1,6 +1,7 @@
 import { Outlet } from 'react-router-dom';
 import Header from './Header.jsx';
 import Footer from './Footer.jsx';
+import AuthModalHost from '../auth/AuthModalHost.jsx';
 
 export default function MainLayout() {
   return (
@@ -10,6 +11,8 @@ export default function MainLayout() {
         <Outlet />
       </main>
       <Footer />
+      {/* Global auth modal overlay */}
+      <AuthModalHost />
     </div>
   );
 }

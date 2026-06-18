@@ -8,6 +8,7 @@ const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:4000/api/v1';
 export const api = axios.create({
   baseURL,
   timeout: 20000,
+  withCredentials: true, // allow http-only refresh cookie if backend sets one
 });
 
 // Request interceptor — attach access token
@@ -21,6 +22,14 @@ api.interceptors.request.use((config) => {
 let isRefreshing = false;
 let refreshQueue = [];
 
+const onLoggedOut = () => {
+  useAuthStore.getState().clearAuth();
+  // Avoid a redirect loop if already on an auth route
+  if (typeof window !== 'undefined' && !/\/login|\/reset-password|\/forgot-password/.test(window.location.pathname)) {
+    window.location.href = '/login';
+  }
+};
+
 api.interceptors.response.use(
   (res) => res.data, // unwrap { success, data, ... }
   async (error) => {
@@ -28,14 +37,21 @@ api.interceptors.response.use(
     const status = error.response?.status;
     const payload = error.response?.data;
 
-    if (status === 401 && !original._retry) {
+    // Never try to refresh on the auth endpoints themselves
+    const isAuthEndpoint =
+      original?.url?.includes('/auth/login') ||
+      original?.url?.includes('/auth/refresh-token') ||
+      original?.url?.includes('/auth/register');
+
+    if (status === 401 && !original._retry && !isAuthEndpoint) {
       const refreshToken = useAuthStore.getState().refreshToken;
       if (!refreshToken) {
-        useAuthStore.getState().clear();
+        onLoggedOut();
         return Promise.reject(payload || error);
       }
 
       if (isRefreshing) {
+        // Queue request until the in-flight refresh resolves
         return new Promise((resolve, reject) => {
           refreshQueue.push({ resolve, reject, original });
         });
@@ -45,10 +61,16 @@ api.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        const resp = await axios.post(`${baseURL}/auth/refresh-token`, { refreshToken });
+        // Use a bare axios call so the interceptors don't recurse
+        const resp = await axios.post(
+          `${baseURL}/auth/refresh-token`,
+          { refreshToken },
+          { withCredentials: true }
+        );
         const { accessToken, refreshToken: newRefresh } = resp.data.data;
         useAuthStore.getState().setTokens(accessToken, newRefresh);
 
+        // Flush queued requests with the new token
         refreshQueue.forEach(({ resolve, original: cfg }) => {
           cfg.headers.Authorization = `Bearer ${accessToken}`;
           resolve(api(cfg));
@@ -60,8 +82,8 @@ api.interceptors.response.use(
       } catch (e) {
         refreshQueue.forEach(({ reject }) => reject(e));
         refreshQueue = [];
-        useAuthStore.getState().clear();
-        toast.error('Phiên đăng nhập đã hết hạn');
+        toast.error('Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại');
+        onLoggedOut();
         return Promise.reject(e);
       } finally {
         isRefreshing = false;

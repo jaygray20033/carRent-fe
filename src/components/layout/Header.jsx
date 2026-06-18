@@ -1,9 +1,11 @@
 import { Link, NavLink } from 'react-router-dom';
 import { Car, User, LogIn, LogOut, ListChecks } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth.js';
+import { useUiStore } from '../../store/uiStore.js';
 
 export default function Header() {
   const { user, isAuthenticated, logout } = useAuth();
+  const openAuthModal = useUiStore((s) => s.openAuthModal);
 
   const navClass = ({ isActive }) =>
     `text-sm font-medium px-3 py-2 rounded-md transition ${
@@ -17,7 +19,9 @@ export default function Header() {
           <div className="rounded-lg bg-primary-600 p-2 text-white">
             <Car className="h-5 w-5" />
           </div>
-          <span className="text-lg font-bold text-gray-900">CarRent</span>
+          <span className="text-lg font-bold text-gray-900">
+            Oto<span className="text-primary-600">Rent</span>
+          </span>
         </Link>
 
         <nav className="hidden items-center gap-2 md:flex">
@@ -48,14 +52,15 @@ export default function Header() {
             </>
           ) : (
             <>
-              <Link to="/login" className="btn-outline">
+              {/* Mở modal overlay theo Figma — KHÔNG redirect */}
+              <button onClick={() => openAuthModal('login')} className="btn-outline">
                 <LogIn className="h-4 w-4" />
                 <span className="hidden sm:inline">Đăng nhập</span>
-              </Link>
-              <Link to="/register" className="btn-primary">
+              </button>
+              <button onClick={() => openAuthModal('register')} className="btn-primary">
                 <ListChecks className="h-4 w-4" />
                 <span className="hidden sm:inline">Đăng ký</span>
-              </Link>
+              </button>
             </>
           )}
         </div>
