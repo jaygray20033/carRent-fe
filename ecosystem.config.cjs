@@ -1,14 +1,16 @@
 module.exports = {
   apps: [
     {
-      name: 'carrent-fe',
-      cwd: '/home/user/webapp/carRent-fe',
-      script: 'npm',
-      args: 'run dev -- --host 0.0.0.0',
-      env: { NODE_ENV: 'development' },
+      name: 'otorent-design-system',
+      script: 'npx',
+      args: 'vite preview --host 0.0.0.0 --port 3000',
+      cwd: '/home/user/webapp',
+      env: {
+        NODE_ENV: 'production',
+      },
       watch: false,
       instances: 1,
       exec_mode: 'fork',
     },
   ],
-};
+}
