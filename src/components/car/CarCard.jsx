@@ -9,8 +9,7 @@ import { formatCurrency } from '../../utils/format.js';
 export default function CarCard({ car, loading = false }) {
   if (loading) return <CarCardSkeleton />;
 
-  const fuelLabel =
-    car.fuelType === 'DIESEL' ? 'Dầu' : car.fuelType === 'ELECTRIC' ? 'Điện' : 'Xăng';
+  const fuelLabel = car.fuelType === 'DIESEL' ? 'Dầu' : car.fuelType === 'ELECTRIC' ? 'Điện' : 'Xăng';
   const transLabel = car.transmission === 'AUTO' ? 'Số tự động' : 'Số sàn';
 
   return (
@@ -30,9 +29,7 @@ export default function CarCard({ car, loading = false }) {
         {Number(car.rating) > 0 && (
           <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-lg flex items-center gap-1 shadow-sm">
             <Star className="w-3.5 h-3.5 fill-brand-accent text-brand-accent" />
-            <span className="text-xs font-semibold text-ink-900">
-              {Number(car.rating).toFixed(1)}
-            </span>
+            <span className="text-xs font-semibold text-ink-900">{Number(car.rating).toFixed(1)}</span>
             <span className="text-[10px] text-ink-400">({car.reviewCount || 0})</span>
           </div>
         )}
@@ -41,7 +38,9 @@ export default function CarCard({ car, loading = false }) {
       {/* Info */}
       <div className="p-4">
         {/* Model name + year */}
-        <h3 className="font-bold text-ink-900 text-sm leading-tight mb-2 truncate">{car.name}</h3>
+        <h3 className="font-bold text-ink-900 text-sm leading-tight mb-2 truncate">
+          {car.name}
+        </h3>
 
         {/* Specs: năm SX + nhiên liệu / transmission */}
         <div className="flex items-center gap-3 text-xs text-ink-500 mb-3">

@@ -13,13 +13,9 @@ export default function MagazineGrid() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    postService
-      .list({ size: 3 })
-      .then((res) => {
-        setPosts(res.data?.items || []);
-      })
-      .catch(() => {})
-      .finally(() => setLoading(false));
+    postService.list({ size: 3 }).then((res) => {
+      setPosts(res.data?.items || []);
+    }).catch(() => {}).finally(() => setLoading(false));
   }, []);
 
   if (loading) {
@@ -31,7 +27,7 @@ export default function MagazineGrid() {
             <h2 className="text-2xl md:text-3xl font-bold text-ink-900">Tạp chí xe hơi</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {[1, 2, 3].map((i) => (
+            {[1,2,3].map(i => (
               <div key={i} className="card overflow-hidden animate-pulse">
                 <div className="aspect-[16/10] bg-ink-100" />
                 <div className="p-5 space-y-3">
@@ -98,7 +94,9 @@ export default function MagazineGrid() {
                 <h3 className="font-bold text-sm text-ink-900 mb-2 line-clamp-2 group-hover:text-brand-primary transition-colors">
                   {post.title}
                 </h3>
-                <p className="text-xs text-ink-500 leading-relaxed line-clamp-2">{post.excerpt}</p>
+                <p className="text-xs text-ink-500 leading-relaxed line-clamp-2">
+                  {post.excerpt}
+                </p>
               </div>
             </Link>
           ))}

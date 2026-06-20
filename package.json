@@ -1,28 +1,13 @@
 {
-  "name": "car-rent-fe",
-  "version": "1.0.0",
+  "name": "webapp",
   "private": true,
+  "version": "0.0.0",
   "type": "module",
-  "description": "CarRent frontend - React + Vite + TailwindCSS",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview",
-    "lint": "eslint . --report-unused-disable-directives",
-    "lint:fix": "eslint . --fix",
-    "format": "prettier --write src/",
-    "format:check": "prettier --check src/",
-    "test": "echo \"No FE unit tests yet\" && exit 0",
-    "prepare": "husky"
-  },
-  "lint-staged": {
-    "*.{js,jsx}": [
-      "eslint --fix",
-      "prettier --write"
-    ],
-    "*.{json,md,css,yml,yaml}": [
-      "prettier --write"
-    ]
+    "lint": "eslint .",
+    "preview": "vite preview"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.10",
@@ -47,21 +32,20 @@
     "zustand": "^5.0.14"
   },
   "devDependencies": {
-    "@eslint/js": "^9.8.0",
-    "@types/react": "^18.3.3",
-    "@types/react-dom": "^18.3.0",
-    "@vitejs/plugin-react": "^4.3.1",
-    "autoprefixer": "^10.4.19",
-    "eslint": "^9.8.0",
-    "eslint-config-prettier": "^9.1.2",
-    "eslint-plugin-react": "^7.35.0",
-    "eslint-plugin-react-hooks": "^5.0.0",
-    "globals": "^15.9.0",
-    "husky": "^9.1.4",
-    "lint-staged": "^15.2.9",
-    "postcss": "^8.4.40",
-    "prettier": "^3.3.3",
-    "tailwindcss": "^3.4.7",
-    "vite": "^5.3.5"
+    "@eslint/js": "^10.0.1",
+    "@tailwindcss/forms": "^0.5.11",
+    "@tailwindcss/typography": "^0.5.20",
+    "@tailwindcss/vite": "^4.3.1",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.1",
+    "autoprefixer": "^10.5.0",
+    "eslint": "^10.3.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.3",
+    "globals": "^17.6.0",
+    "prettier": "^3.8.4",
+    "tailwindcss": "^4.3.1",
+    "vite": "^8.0.12"
   }
 }

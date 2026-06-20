@@ -1,8 +1,22 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
-import { Search, Menu, X, ChevronDown, User, CalendarDays, Wallet, LogOut } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import {
+  Search,
+  Menu,
+  X,
+  ChevronDown,
+  User,
+  CalendarDays,
+  Wallet,
+  LogOut,
+  ArrowRight,
+} from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth.js';
 import useUiStore from '../../store/uiStore.js';
+import useDebounce from '../../hooks/useDebounce.js';
+import { carService } from '../../services/carService.js';
+import { formatCurrency } from '../../utils/format.js';
 
 const NAV_ITEMS = [
   { to: '/', label: 'Trang chủ' },
@@ -18,9 +32,46 @@ export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [searchValue, setSearchValue] = useState('');
   const [scrolled, setScrolled] = useState(false);
   const navigate = useNavigate();
   const dropdownRef = useRef(null);
+
+  const debouncedSearch = useDebounce(searchValue.trim(), 250);
+
+  // Auto-complete suggestions (UC-search): models + brands + vehicles
+  const { data: suggestData, isFetching: suggestLoading } = useQuery({
+    queryKey: ['header-search', debouncedSearch],
+    queryFn: () => carService.search(debouncedSearch, 6).then((r) => r.data?.data ?? r.data),
+    enabled: searchOpen && debouncedSearch.length >= 1,
+    staleTime: 60_000,
+  });
+
+  const brands = suggestData?.brands ?? [];
+  const models = suggestData?.models ?? [];
+  const vehicles = suggestData?.vehicles ?? [];
+  const hasSuggestions = brands.length + models.length + vehicles.length > 0;
+
+  const submitSearch = (q) => {
+    const term = (q ?? searchValue).trim();
+    if (!term) return;
+    navigate(`/cars?q=${encodeURIComponent(term)}`);
+    setSearchOpen(false);
+    setSearchValue('');
+  };
+
+  const goTo = (path) => {
+    navigate(path);
+    setSearchOpen(false);
+    setSearchValue('');
+  };
+
+  // Reset value when overlay closes. This mirrors `searchOpen` into local
+  // state on close, so the set-state-in-effect rule is disabled here.
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (!searchOpen) setSearchValue('');
+  }, [searchOpen]);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 10);
@@ -262,25 +313,33 @@ export default function Header() {
         </div>
       )}
 
-      {/* ═══ Search Overlay ═══ */}
+      {/* ═══ Search Overlay with Auto-complete ═══ */}
       {searchOpen && (
-        <div className="fixed inset-0 z-[100] flex items-start justify-center pt-20 bg-black/50 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl mx-4 overflow-hidden animate-fade-in">
+        <div
+          className="fixed inset-0 z-[100] flex items-start justify-center pt-20 bg-black/50 backdrop-blur-sm"
+          onClick={() => setSearchOpen(false)}
+        >
+          <div
+            className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl mx-4 overflow-hidden animate-fade-in"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="flex items-center gap-3 px-5 py-4 border-b border-ink-100">
               <Search className="w-5 h-5 text-ink-300 flex-shrink-0" />
               <input
                 autoFocus
                 type="text"
+                value={searchValue}
+                onChange={(e) => setSearchValue(e.target.value)}
                 placeholder="Tìm kiếm xe, thương hiệu, model..."
                 className="flex-1 text-base text-ink-900 placeholder:text-ink-300 border-0 outline-none bg-transparent"
                 onKeyDown={(e) => {
-                  if (e.key === 'Enter' && e.target.value.trim()) {
-                    navigate(`/cars?q=${encodeURIComponent(e.target.value.trim())}`);
-                    setSearchOpen(false);
-                  }
+                  if (e.key === 'Enter') submitSearch();
                   if (e.key === 'Escape') setSearchOpen(false);
                 }}
               />
+              {suggestLoading && (
+                <span className="w-4 h-4 border-2 border-ink-200 border-t-brand-primary rounded-full animate-spin" />
+              )}
               <button
                 onClick={() => setSearchOpen(false)}
                 className="p-1.5 text-ink-400 hover:text-ink-700 rounded-lg hover:bg-ink-50 transition"
@@ -288,13 +347,116 @@ export default function Header() {
                 <X className="w-5 h-5" />
               </button>
             </div>
-            <div className="px-5 py-3 text-xs text-ink-300">
-              Nhấn{' '}
-              <kbd className="px-1.5 py-0.5 bg-ink-50 rounded text-ink-500 font-medium">Enter</kbd>{' '}
-              để tìm kiếm &bull;{' '}
-              <kbd className="px-1.5 py-0.5 bg-ink-50 rounded text-ink-500 font-medium">Esc</kbd> để
-              đóng
-            </div>
+
+            {/* Suggestions */}
+            {debouncedSearch.length >= 1 ? (
+              <div className="max-h-[60vh] overflow-y-auto">
+                {!hasSuggestions && !suggestLoading && (
+                  <div className="px-5 py-8 text-center text-sm text-ink-400">
+                    Không tìm thấy kết quả cho “{debouncedSearch}”.
+                  </div>
+                )}
+
+                {brands.length > 0 && (
+                  <div className="py-2">
+                    <p className="px-5 py-1.5 text-[11px] font-semibold uppercase tracking-wide text-ink-300">
+                      Thương hiệu
+                    </p>
+                    {brands.map((b) => (
+                      <button
+                        key={`b-${b.id}`}
+                        onClick={() => goTo(`/cars?brand=${encodeURIComponent(b.slug)}`)}
+                        className="w-full flex items-center gap-3 px-5 py-2.5 text-left hover:bg-ink-50 transition"
+                      >
+                        {b.logoUrl ? (
+                          <img src={b.logoUrl} alt="" className="w-7 h-7 object-contain" />
+                        ) : (
+                          <span className="w-7 h-7 rounded-full bg-ink-100 flex items-center justify-center text-xs font-bold text-ink-500">
+                            {b.name?.[0]}
+                          </span>
+                        )}
+                        <span className="text-sm text-ink-700">{b.name}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+
+                {models.length > 0 && (
+                  <div className="py-2 border-t border-ink-100">
+                    <p className="px-5 py-1.5 text-[11px] font-semibold uppercase tracking-wide text-ink-300">
+                      Dòng xe
+                    </p>
+                    {models.map((m) => (
+                      <button
+                        key={`m-${m.id}`}
+                        onClick={() => goTo(`/cars?q=${encodeURIComponent(m.name)}`)}
+                        className="w-full flex items-center gap-3 px-5 py-2.5 text-left hover:bg-ink-50 transition"
+                      >
+                        <Search className="w-4 h-4 text-ink-300" />
+                        <span className="text-sm text-ink-700">{m.name}</span>
+                        {m.brand?.name && (
+                          <span className="text-xs text-ink-300">· {m.brand.name}</span>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                )}
+
+                {vehicles.length > 0 && (
+                  <div className="py-2 border-t border-ink-100">
+                    <p className="px-5 py-1.5 text-[11px] font-semibold uppercase tracking-wide text-ink-300">
+                      Xe
+                    </p>
+                    {vehicles.map((v) => (
+                      <button
+                        key={`v-${v.id}`}
+                        onClick={() => goTo(`/cars/${v.id}`)}
+                        className="w-full flex items-center gap-3 px-5 py-2.5 text-left hover:bg-ink-50 transition"
+                      >
+                        {v.thumbnailUrl ? (
+                          <img
+                            src={v.thumbnailUrl}
+                            alt=""
+                            className="w-12 h-9 object-cover rounded-md"
+                          />
+                        ) : (
+                          <span className="w-12 h-9 rounded-md bg-ink-100" />
+                        )}
+                        <span className="flex-1 min-w-0">
+                          <span className="block text-sm text-ink-800 truncate">{v.name}</span>
+                          {v.pricePerDay != null && (
+                            <span className="block text-xs text-brand-primary font-semibold">
+                              {formatCurrency(v.pricePerDay)}/ngày
+                            </span>
+                          )}
+                        </span>
+                        <ArrowRight className="w-4 h-4 text-ink-300" />
+                      </button>
+                    ))}
+                  </div>
+                )}
+
+                {hasSuggestions && (
+                  <button
+                    onClick={() => submitSearch()}
+                    className="w-full flex items-center justify-center gap-2 px-5 py-3 border-t border-ink-100 text-sm font-medium text-brand-primary hover:bg-blue-50/60 transition"
+                  >
+                    Xem tất cả kết quả cho “{debouncedSearch}”
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+                )}
+              </div>
+            ) : (
+              <div className="px-5 py-3 text-xs text-ink-300">
+                Nhấn{' '}
+                <kbd className="px-1.5 py-0.5 bg-ink-50 rounded text-ink-500 font-medium">
+                  Enter
+                </kbd>{' '}
+                để tìm kiếm &bull;{' '}
+                <kbd className="px-1.5 py-0.5 bg-ink-50 rounded text-ink-500 font-medium">Esc</kbd>{' '}
+                để đóng
+              </div>
+            )}
           </div>
         </div>
       )}

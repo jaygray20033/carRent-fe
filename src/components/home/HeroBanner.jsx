@@ -25,17 +25,13 @@ export default function HeroBanner() {
             <span className="text-brand-accent">Tiết Kiệm</span>
           </h1>
           <p className="text-white/70 text-sm md:text-base leading-relaxed mb-6 max-w-md">
-            Đặt xe trải nghiệm lái xe đầy phong cách và sang trọng. Chúng tôi cung cấp dịch vụ thuê
-            xe cao cấp trên toàn Việt Nam.
+            Đặt xe trải nghiệm lái xe đầy phong cách và sang trọng. Chúng tôi cung cấp dịch vụ thuê xe cao cấp trên toàn Việt Nam.
           </p>
           <div className="flex flex-wrap gap-3">
             <a href="#booking-search" className="btn btn-accent btn-lg shadow-lg">
               Đặt xe ngay
             </a>
-            <a
-              href="#why-choose"
-              className="btn btn-lg bg-white/10 text-white border border-white/20 hover:bg-white/20 backdrop-blur-sm"
-            >
+            <a href="#why-choose" className="btn btn-lg bg-white/10 text-white border border-white/20 hover:bg-white/20 backdrop-blur-sm">
               Tìm hiểu thêm
             </a>
           </div>
@@ -45,12 +41,8 @@ export default function HeroBanner() {
       {/* Black CTA banner at bottom */}
       <div className="absolute bottom-0 left-0 right-0 bg-ink-900/90 backdrop-blur-sm py-3">
         <div className="container-app flex items-center justify-between text-white text-xs md:text-sm">
-          <span className="text-white/60">
-            Hơn <strong className="text-brand-accent">500+ xe</strong> sẵn sàng cho bạn
-          </span>
-          <span className="hidden md:inline text-white/60">
-            Giao xe tận nơi &bull; Bảo hiểm 24/7 &bull; Hỗ trợ cứu hộ
-          </span>
+          <span className="text-white/60">Hơn <strong className="text-brand-accent">500+ xe</strong> sẵn sàng cho bạn</span>
+          <span className="hidden md:inline text-white/60">Giao xe tận nơi &bull; Bảo hiểm 24/7 &bull; Hỗ trợ cứu hộ</span>
         </div>
       </div>
     </section>

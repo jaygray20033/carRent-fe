@@ -45,9 +45,7 @@ export default function FeaturedCars() {
       <div className="container-app">
         {/* Section header */}
         <div className="text-center mb-8">
-          <p className="text-brand-primary font-semibold text-sm mb-1">
-            Khám phá những lựa chọn tốt nhất
-          </p>
+          <p className="text-brand-primary font-semibold text-sm mb-1">Khám phá những lựa chọn tốt nhất</p>
           <h2 className="text-2xl md:text-3xl font-bold text-ink-900">
             Đặt xe tại <span className="text-brand-primary">OtoRent</span>
           </h2>
@@ -76,12 +74,16 @@ export default function FeaturedCars() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {loading
             ? Array.from({ length: 6 }).map((_, i) => <CarCard key={i} loading car={{}} />)
-            : currentCars.map((car) => <CarCard key={car.id} car={car} />)}
+            : currentCars.map((car) => <CarCard key={car.id} car={car} />)
+          }
         </div>
 
         {/* View all link */}
         <div className="text-center mt-8">
-          <Link to="/cars" className="btn btn-outline btn-md">
+          <Link
+            to="/cars"
+            className="btn btn-outline btn-md"
+          >
             Xem tất cả xe &rarr;
           </Link>
         </div>

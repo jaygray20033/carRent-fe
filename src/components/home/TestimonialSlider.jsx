@@ -9,32 +9,28 @@ const TESTIMONIALS = [
   {
     name: 'Nguyễn Minh Tuấn',
     role: 'Doanh nhân',
-    avatar:
-      'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face',
+    avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face',
     rating: 5,
     text: 'Dịch vụ tuyệt vời! Xe mới, sạch sẽ và được bảo dưỡng rất tốt. Tôi sẽ quay lại OtoRent cho những chuyến công tác tiếp theo.',
   },
   {
     name: 'Trần Thị Mai',
     role: 'Nhân viên văn phòng',
-    avatar:
-      'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face',
+    avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face',
     rating: 5,
     text: 'Lần đầu thuê xe tự lái mà mọi thứ rất dễ dàng. Nhân viên hỗ trợ nhiệt tình, giá cả hợp lý. Highly recommended!',
   },
   {
     name: 'Phạm Đức Long',
     role: 'Travel Blogger',
-    avatar:
-      'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=face',
+    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=face',
     rating: 4,
     text: 'Tôi đã thuê BMW X5 cho chuyến đi Đà Lạt. Xe đẹp, lái êm, giao xe đúng giờ. Chỉ trừ điểm vì app chưa hỗ trợ thanh toán Apple Pay.',
   },
   {
     name: 'Lê Thúy Hằng',
     role: 'Giám đốc Marketing',
-    avatar:
-      'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&crop=face',
+    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&crop=face',
     rating: 5,
     text: 'OtoRent là lựa chọn số 1 của công ty tôi cho xe công vụ. Đội ngũ chuyên nghiệp, xe luôn sẵn sàng.',
   },
@@ -79,7 +75,7 @@ export default function TestimonialSlider() {
               </div>
               {/* Text */}
               <p className="text-center text-ink-700 text-sm md:text-base leading-relaxed italic mb-6">
-                &ldquo;{t.text}&rdquo;
+                "{t.text}"
               </p>
               {/* Author */}
               <div className="flex items-center justify-center gap-3">

@@ -21,12 +21,9 @@ export default function CategoryTabs() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    categoryService
-      .list()
-      .then((res) => {
-        setCategories(res.data?.categories || []);
-      })
-      .catch(() => {});
+    categoryService.list().then((res) => {
+      setCategories(res.data?.categories || []);
+    }).catch(() => {});
   }, []);
 
   if (!categories.length) return null;
@@ -48,9 +45,7 @@ export default function CategoryTabs() {
               <span className="text-base">{CATEGORY_ICONS[cat.slug] || '🚗'}</span>
               <span>{cat.name}</span>
               {cat._count?.vehicles > 0 && (
-                <span className="text-xs text-ink-400 group-hover:text-white/70">
-                  ({cat._count.vehicles})
-                </span>
+                <span className="text-xs text-ink-400 group-hover:text-white/70">({cat._count.vehicles})</span>
               )}
             </button>
           ))}

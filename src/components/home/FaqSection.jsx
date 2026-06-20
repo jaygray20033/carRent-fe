@@ -44,8 +44,7 @@ export default function FaqSection() {
               Câu hỏi thường gặp <span className="text-brand-accent-dark">(FAQ)</span>
             </h2>
             <p className="text-sm text-ink-500 mb-6 leading-relaxed">
-              Nếu bạn mới sử dụng OtoRent và có nhiều thắc mắc, hãy xem những câu hỏi dưới đây. Nếu
-              vẫn chưa tìm được câu trả lời, đừng ngần ngại liên hệ chúng tôi.
+              Nếu bạn mới sử dụng OtoRent và có nhiều thắc mắc, hãy xem những câu hỏi dưới đây. Nếu vẫn chưa tìm được câu trả lời, đừng ngần ngại liên hệ chúng tôi.
             </p>
             {/* Portrait illustration */}
             <div className="hidden lg:block">
@@ -73,12 +72,8 @@ export default function FaqSection() {
                   className="w-full flex items-center justify-between px-5 py-4 text-left"
                 >
                   <div className="flex items-center gap-3">
-                    <HelpCircle
-                      className={`w-5 h-5 flex-shrink-0 ${openIdx === i ? 'text-brand-primary' : 'text-ink-400'}`}
-                    />
-                    <span
-                      className={`text-sm font-medium ${openIdx === i ? 'text-ink-900' : 'text-ink-700'}`}
-                    >
+                    <HelpCircle className={`w-5 h-5 flex-shrink-0 ${openIdx === i ? 'text-brand-primary' : 'text-ink-400'}`} />
+                    <span className={`text-sm font-medium ${openIdx === i ? 'text-ink-900' : 'text-ink-700'}`}>
                       {faq.q}
                     </span>
                   </div>
@@ -90,7 +85,9 @@ export default function FaqSection() {
                 </button>
                 {openIdx === i && (
                   <div className="px-5 pb-4 pl-13">
-                    <p className="text-sm text-ink-500 leading-relaxed pl-8">{faq.a}</p>
+                    <p className="text-sm text-ink-500 leading-relaxed pl-8">
+                      {faq.a}
+                    </p>
                   </div>
                 )}
               </div>

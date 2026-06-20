@@ -1,4 +1,4 @@
-import { useEffect, useRef, lazy, Suspense } from 'react';
+import { useEffect, lazy, Suspense } from 'react';
 
 // Section 1: Hero (above fold — load immediately)
 import HeroBanner from '../components/home/HeroBanner.jsx';
@@ -17,6 +17,16 @@ const HowItWorks = lazy(() => import('../components/home/HowItWorks.jsx'));
 const FaqSection = lazy(() => import('../components/home/FaqSection.jsx'));
 const TestimonialSlider = lazy(() => import('../components/home/TestimonialSlider.jsx'));
 const MagazineGrid = lazy(() => import('../components/home/MagazineGrid.jsx'));
+
+// Static fallback component — declared outside HomePage so it isn't
+// re-created on every render (fixes react-hooks/static-components).
+function SectionFallback() {
+  return (
+    <div className="py-16 flex items-center justify-center">
+      <div className="w-8 h-8 border-3 border-brand-primary/30 border-t-brand-primary rounded-full animate-spin" />
+    </div>
+  );
+}
 
 /**
  * HomePage — 10 sections chi tiết theo Figma Home.png
@@ -44,12 +54,6 @@ export default function HomePage() {
       );
     }
   }, []);
-
-  const SectionFallback = () => (
-    <div className="py-16 flex items-center justify-center">
-      <div className="w-8 h-8 border-3 border-brand-primary/30 border-t-brand-primary rounded-full animate-spin" />
-    </div>
-  );
 
   return (
     <div className="min-h-screen">

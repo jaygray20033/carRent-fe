@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MapPin, Calendar, ChevronDown, Search, X, AlertCircle } from 'lucide-react';
+import { MapPin, Calendar, ChevronDown, Search, AlertCircle } from 'lucide-react';
 import { stationService } from '../../services/stationService.js';
 
 export default function BookingSearchBar({ variant = 'hero' }) {

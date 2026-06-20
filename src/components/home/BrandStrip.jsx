@@ -9,12 +9,9 @@ export default function BrandStrip() {
   const [brands, setBrands] = useState([]);
 
   useEffect(() => {
-    brandService
-      .list()
-      .then((res) => {
-        setBrands(res.data?.brands || []);
-      })
-      .catch(() => {});
+    brandService.list().then((res) => {
+      setBrands(res.data?.brands || []);
+    }).catch(() => {});
   }, []);
 
   if (!brands.length) return null;

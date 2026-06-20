@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import dayjs from 'dayjs';
 import { carService } from '../../services/carService.js';
@@ -20,7 +20,7 @@ export default function CheckoutPage() {
   const {
     register,
     handleSubmit,
-    watch,
+    control,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -31,8 +31,8 @@ export default function CheckoutPage() {
     },
   });
 
-  const pickupAt = watch('pickupAt');
-  const returnAt = watch('returnAt');
+  const pickupAt = useWatch({ control, name: 'pickupAt' });
+  const returnAt = useWatch({ control, name: 'returnAt' });
 
   const createMutation = useMutation({
     mutationFn: (payload) => bookingService.create(payload),

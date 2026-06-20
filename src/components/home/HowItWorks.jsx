@@ -63,9 +63,7 @@ export default function HowItWorks() {
                 key={num}
                 className="text-center p-6 rounded-2xl bg-white border border-ink-100 hover:shadow-card-hover transition-shadow duration-300"
               >
-                <div
-                  className={`w-14 h-14 rounded-2xl ${color} flex items-center justify-center mx-auto mb-4`}
-                >
+                <div className={`w-14 h-14 rounded-2xl ${color} flex items-center justify-center mx-auto mb-4`}>
                   <Icon className="w-7 h-7" />
                 </div>
                 <div className="text-4xl font-bold text-ink-100 mb-2">{num}</div>
@@ -73,10 +71,7 @@ export default function HowItWorks() {
                 <p className="text-xs text-ink-500 leading-relaxed">{desc}</p>
                 {/* Connector arrow (desktop only) */}
                 {i < STEPS.length - 1 && (
-                  <div
-                    className="hidden lg:block absolute top-1/2 -translate-y-1/2 text-ink-200 text-2xl"
-                    style={{ left: `${(i + 1) * 25 - 2}%` }}
-                  >
+                  <div className="hidden lg:block absolute top-1/2 -translate-y-1/2 text-ink-200 text-2xl" style={{ left: `${(i + 1) * 25 - 2}%` }}>
                     →
                   </div>
                 )}
