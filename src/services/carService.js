@@ -7,4 +7,8 @@ export const carService = {
   // UC-search — auto-complete suggestions (models + brands + vehicles)
   search: (q, limit = 8) => api.get('/cars/search', { params: { q, limit } }),
   detail: (id) => api.get(`/cars/${id}`),
+  // PDP — availability (booked date ranges)
+  availability: (id, params) => api.get(`/cars/${id}/availability`, { params }),
+  // PDP — reviews list
+  reviews: (id, params) => api.get(`/cars/${id}/reviews`, { params }),
 };
