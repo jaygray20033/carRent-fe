@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
@@ -84,19 +84,16 @@ export default function CarFilterSidebar({ value, onChange, onApply, onReset }) 
   });
   const brands = brandsResp?.data?.brands ?? [];
 
-  // Local price range (debounced commit on slider release)
-  const [price, setPrice] = useState([
+  // Giá trị "đã chốt" lấy trực tiếp từ props (derived, không cần effect đồng bộ)
+  const committedPrice = [
     Number(value.price_min) || PRICE_MIN,
     Number(value.price_max) || PRICE_MAX,
-  ]);
+  ];
 
-  // Keep the local slider value in sync whenever the parent-owned filter
-  // value changes (e.g. "Xoá bộ lọc"). This intentionally mirrors external
-  // state into local state, so the set-state-in-effect rule is disabled here.
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setPrice([Number(value.price_min) || PRICE_MIN, Number(value.price_max) || PRICE_MAX]);
-  }, [value.price_min, value.price_max]);
+  // Giá trị tạm trong lúc đang kéo slider (chưa commit ra ngoài qua onChange).
+  // null nghĩa là không có thao tác kéo nào đang diễn ra -> dùng committedPrice.
+  const [draftPrice, setDraftPrice] = useState(null);
+  const price = draftPrice ?? committedPrice;
 
   const set = (patch) => onChange?.(patch);
 
@@ -119,8 +116,11 @@ export default function CarFilterSidebar({ value, onChange, onApply, onReset }) 
             step={PRICE_STEP}
             value={price}
             allowCross={false}
-            onChange={(v) => setPrice(v)}
-            onChangeComplete={(v) => set({ price_min: v[0], price_max: v[1] })}
+            onChange={(v) => setDraftPrice(v)}
+            onChangeComplete={(v) => {
+              setDraftPrice(null);
+              set({ price_min: v[0], price_max: v[1] });
+            }}
             styles={{
               track: { backgroundColor: '#004ede', height: 4 },
               rail: { backgroundColor: '#e5e8ef', height: 4 },

@@ -66,12 +66,12 @@ export default function Header() {
     setSearchValue('');
   };
 
-  // Reset value when overlay closes. This mirrors `searchOpen` into local
-  // state on close, so the set-state-in-effect rule is disabled here.
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    if (!searchOpen) setSearchValue('');
-  }, [searchOpen]);
+  // Đóng search overlay: gộp việc đóng + reset giá trị vào 1 hàm,
+  // thay cho useEffect setState (tránh cascading render).
+  const closeSearch = () => {
+    setSearchOpen(false);
+    setSearchValue('');
+  };
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 10);
@@ -317,7 +317,7 @@ export default function Header() {
       {searchOpen && (
         <div
           className="fixed inset-0 z-[100] flex items-start justify-center pt-20 bg-black/50 backdrop-blur-sm"
-          onClick={() => setSearchOpen(false)}
+          onClick={closeSearch}
         >
           <div
             className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl mx-4 overflow-hidden animate-fade-in"
@@ -334,14 +334,14 @@ export default function Header() {
                 className="flex-1 text-base text-ink-900 placeholder:text-ink-300 border-0 outline-none bg-transparent"
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') submitSearch();
-                  if (e.key === 'Escape') setSearchOpen(false);
+                  if (e.key === 'Escape') closeSearch();
                 }}
               />
               {suggestLoading && (
                 <span className="w-4 h-4 border-2 border-ink-200 border-t-brand-primary rounded-full animate-spin" />
               )}
               <button
-                onClick={() => setSearchOpen(false)}
+                onClick={closeSearch}
                 className="p-1.5 text-ink-400 hover:text-ink-700 rounded-lg hover:bg-ink-50 transition"
               >
                 <X className="w-5 h-5" />

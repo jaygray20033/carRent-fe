@@ -18,15 +18,13 @@ const FaqSection = lazy(() => import('../components/home/FaqSection.jsx'));
 const TestimonialSlider = lazy(() => import('../components/home/TestimonialSlider.jsx'));
 const MagazineGrid = lazy(() => import('../components/home/MagazineGrid.jsx'));
 
-// Static fallback component — declared outside HomePage so it isn't
-// re-created on every render (fixes react-hooks/static-components).
-function SectionFallback() {
-  return (
-    <div className="py-16 flex items-center justify-center">
-      <div className="w-8 h-8 border-3 border-brand-primary/30 border-t-brand-primary rounded-full animate-spin" />
-    </div>
-  );
-}
+// Khai báo NGOÀI component HomePage để không bị tạo lại (và reset state)
+// mỗi lần HomePage render — tránh lỗi "Cannot create components during render".
+const SectionFallback = () => (
+  <div className="py-16 flex items-center justify-center">
+    <div className="w-8 h-8 border-3 border-brand-primary/30 border-t-brand-primary rounded-full animate-spin" />
+  </div>
+);
 
 /**
  * HomePage — 10 sections chi tiết theo Figma Home.png
