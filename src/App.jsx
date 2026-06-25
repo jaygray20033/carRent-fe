@@ -15,6 +15,8 @@ import CheckoutPage from './pages/booking/CheckoutPage.jsx';
 import BookingSuccessPage from './pages/booking/BookingSuccessPage.jsx';
 import ProfilePage from './pages/user/ProfilePage.jsx';
 import MyBookingsPage from './pages/user/MyBookingsPage.jsx';
+import BookingDetailPage from './pages/user/BookingDetailPage.jsx';
+import UserLayout from './components/layout/UserLayout.jsx';
 
 export default function App() {
   return (
@@ -47,25 +49,36 @@ export default function App() {
             </ProtectedRoute>
           }
         />
+        {/* User account area — left sidebar layout (Figma: UserAccount-*) */}
         <Route
           path="/me"
           element={
             <ProtectedRoute>
-              <ProfilePage />
+              <UserLayout />
             </ProtectedRoute>
           }
-        />
-        <Route
-          path="/me/bookings"
-          element={
-            <ProtectedRoute>
-              <MyBookingsPage />
-            </ProtectedRoute>
-          }
-        />
+        >
+          <Route index element={<ProfilePage />} />
+          <Route path="bookings" element={<MyBookingsPage />} />
+          <Route path="bookings/:id" element={<BookingDetailPage />} />
+          <Route path="wallet" element={<AccountPlaceholder title="Ví tiền" />} />
+          <Route path="addresses" element={<AccountPlaceholder title="Địa chỉ của tôi" />} />
+          <Route path="payments" element={<AccountPlaceholder title="Lịch sử thanh toán" />} />
+          <Route path="reviews" element={<AccountPlaceholder title="Đánh giá" />} />
+        </Route>
 
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>
+  );
+}
+
+// Lightweight placeholder for sidebar pages not yet implemented (Day 14 scope).
+function AccountPlaceholder({ title }) {
+  return (
+    <div className="rounded-2xl bg-white p-8 text-center shadow-sm ring-1 ring-gray-100">
+      <h1 className="text-xl font-bold text-gray-900">{title}</h1>
+      <p className="mt-2 text-sm text-gray-500">Tính năng này sẽ sớm được hoàn thiện.</p>
+    </div>
   );
 }

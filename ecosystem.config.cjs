@@ -1,16 +1,14 @@
 module.exports = {
   apps: [
     {
-      name: 'otorent-checkout',
-      script: 'npx',
-      args: 'vite preview --host 0.0.0.0 --port 3000',
-      env: {
-        NODE_ENV: 'production',
-        PORT: 3000
-      },
+      name: 'otorent-fe',
+      script: 'npm',
+      args: 'run preview',
+      cwd: '/home/user/webapp/carRent-fe',
+      env: { NODE_ENV: 'production' },
       watch: false,
       instances: 1,
-      exec_mode: 'fork'
-    }
-  ]
-}
+      exec_mode: 'fork',
+    },
+  ],
+};
