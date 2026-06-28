@@ -1,0 +1,38 @@
+name: CI
+
+# Trigger: mọi Pull Request + push lên nhánh chính (master)
+on:
+  pull_request:
+  push:
+    branches: [master, main]
+
+concurrency:
+  group: ci-fe-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint-test-fe:
+    name: Lint & Build (Frontend)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Format check
+        run: npm run format:check
+
+      - name: Build
+        run: npm run build

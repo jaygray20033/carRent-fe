@@ -6,6 +6,8 @@ import HomePage from './pages/HomePage.jsx';
 import NotFoundPage from './pages/NotFoundPage.jsx';
 import LoginPage from './pages/auth/LoginPage.jsx';
 import RegisterPage from './pages/auth/RegisterPage.jsx';
+import ForgotPasswordPage from './pages/auth/ForgotPasswordPage.jsx';
+import ResetPasswordPage from './pages/auth/ResetPasswordPage.jsx';
 import CarListPage from './pages/car/CarListPage.jsx';
 import CarDetailPage from './pages/car/CarDetailPage.jsx';
 import CheckoutPage from './pages/booking/CheckoutPage.jsx';
@@ -23,6 +25,8 @@ export default function App() {
         <Route path="/cars/:id" element={<CarDetailPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
 
         {/* Protected */}
         <Route

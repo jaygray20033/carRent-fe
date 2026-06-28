@@ -6,33 +6,58 @@ import { authService } from '../services/authService.js';
 
 export function useAuth() {
   const navigate = useNavigate();
-  const { user, accessToken, setSession, clear } = useAuthStore();
+  const { user, accessToken, setAuth, clearAuth } = useAuthStore();
 
+  // UC-02 — login with { identifier, password }
   const login = async (payload) => {
     const res = await authService.login(payload);
-    const { user, accessToken, refreshToken } = res.data;
-    setSession(user, accessToken, refreshToken);
-    toast.success(`Chào ${user.fullName}!`);
-    return user;
+    const { user: u, accessToken: at, refreshToken: rt } = res.data;
+    setAuth(u, at, rt);
+    toast.success('Đăng nhập thành công');
+    return u;
   };
 
+  // UC-01 — register. Returns { user, requireOtp } — DOES NOT auto-login
+  // (the account is PENDING until OTP is verified).
   const register = async (payload) => {
     const res = await authService.register(payload);
-    const { user, accessToken, refreshToken } = res.data;
-    setSession(user, accessToken, refreshToken);
-    toast.success('Đăng ký thành công!');
-    return user;
+    return res.data; // { user, requireOtp, otpPurpose }
+  };
+
+  // UC-03 — verify OTP. On REGISTER success the user becomes ACTIVE.
+  const verifyOtp = async (payload) => {
+    const res = await authService.verifyOtp(payload);
+    return res.data; // { verified, user? }
+  };
+
+  const resendOtp = async (payload) => {
+    const res = await authService.resendOtp(payload);
+    toast.success('Đã gửi lại mã OTP');
+    return res.data;
+  };
+
+  // UC-04
+  const forgotPassword = async (identifier) => {
+    const res = await authService.forgotPassword({ identifier });
+    return res.data;
+  };
+
+  const resetPassword = async (payload) => {
+    const res = await authService.resetPassword(payload);
+    toast.success('Đặt lại mật khẩu thành công');
+    return res.data;
   };
 
   const logout = async () => {
+    const rt = useAuthStore.getState().refreshToken;
     try {
-      await authService.logout();
+      await authService.logout(rt);
     } catch {
-      // ignore
+      // ignore network errors on logout
     }
-    clear();
+    clearAuth();
     toast.success('Đã đăng xuất');
-    navigate('/login');
+    navigate('/');
   };
 
   return {
@@ -40,6 +65,12 @@ export function useAuth() {
     isAuthenticated: !!accessToken,
     login,
     register,
+    verifyOtp,
+    resendOtp,
+    forgotPassword,
+    resetPassword,
     logout,
   };
 }
+
+export default useAuth;

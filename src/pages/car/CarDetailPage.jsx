@@ -53,19 +53,13 @@ export default function CarDetailPage() {
                 value={car.transmission === 'AUTO' ? 'Tự động' : 'Số sàn'}
               />
               <Spec icon={Fuel} label="Nhiên liệu" value={car.fuelType} />
-              <Spec
-                icon={MapPin}
-                label="Trạm"
-                value={car.station?.city || 'Đang cập nhật'}
-              />
+              <Spec icon={MapPin} label="Trạm" value={car.station?.city || 'Đang cập nhật'} />
             </div>
 
             {car.description && (
               <div className="mt-6">
                 <h3 className="font-semibold text-gray-900">Mô tả</h3>
-                <p className="mt-2 whitespace-pre-line text-sm text-gray-600">
-                  {car.description}
-                </p>
+                <p className="mt-2 whitespace-pre-line text-sm text-gray-600">{car.description}</p>
               </div>
             )}
           </div>
