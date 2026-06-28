@@ -13,6 +13,8 @@ import CarDetailPage from './pages/car/CarDetailPage.jsx';
 import SearchPage from './pages/SearchPage.jsx';
 import CheckoutPage from './pages/booking/CheckoutPage.jsx';
 import BookingSuccessPage from './pages/booking/BookingSuccessPage.jsx';
+import PaymentPage from './pages/booking/PaymentPage.jsx';
+import PaymentResultPage from './pages/booking/PaymentResultPage.jsx';
 import ProfilePage from './pages/user/ProfilePage.jsx';
 import MyBookingsPage from './pages/user/MyBookingsPage.jsx';
 import BookingDetailPage from './pages/user/BookingDetailPage.jsx';
@@ -46,6 +48,23 @@ export default function App() {
           element={
             <ProtectedRoute>
               <BookingSuccessPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/payment/:bookingId"
+          element={
+            <ProtectedRoute>
+              <PaymentPage />
+            </ProtectedRoute>
+          }
+        />
+        {/* VNPay redirects the browser here after payment (status in query). */}
+        <Route
+          path="/payment/result"
+          element={
+            <ProtectedRoute>
+              <PaymentResultPage />
             </ProtectedRoute>
           }
         />

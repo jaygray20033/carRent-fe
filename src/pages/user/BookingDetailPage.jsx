@@ -6,7 +6,6 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { ArrowLeft, Check, X, CreditCard, MapPin, CalendarClock } from 'lucide-react';
 import { bookingService } from '../../services/bookingService.js';
-import { paymentService } from '../../services/paymentService.js';
 import { formatCurrency, formatDateTime } from '../../utils/format.js';
 import {
   TIMELINE_STEPS,
@@ -43,23 +42,6 @@ export default function BookingDetailPage() {
       invalidate();
     },
     onError: (e) => toast.error(e?.message || 'Hủy thất bại'),
-  });
-
-  const payMutation = useMutation({
-    mutationFn: async (bookingId) => {
-      // Create a checkout session then (mock) confirm it.
-      const res = await paymentService.checkout({ bookingId });
-      const payment = res?.data?.payment ?? res?.data ?? res;
-      if (payment?.id) {
-        await paymentService.mockConfirm(payment.id);
-      }
-      return payment;
-    },
-    onSuccess: () => {
-      toast.success('Thanh toán thành công!');
-      invalidate();
-    },
-    onError: (e) => toast.error(e?.message || 'Thanh toán thất bại'),
   });
 
   if (isLoading) return <Loading />;
@@ -237,12 +219,11 @@ export default function BookingDetailPage() {
           )}
           {needsPayment(b.status) && (
             <button
-              onClick={() => payMutation.mutate(b.id)}
-              disabled={payMutation.isPending}
+              onClick={() => navigate(`/payment/${b.id}`)}
               className="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-900 px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-blue-800 disabled:opacity-60"
             >
               <CreditCard className="h-4 w-4" />
-              {payMutation.isPending ? 'Đang xử lý...' : 'Thanh toán'}
+              Thanh toán
             </button>
           )}
         </div>
