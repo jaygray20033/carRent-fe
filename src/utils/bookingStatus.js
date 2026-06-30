@@ -47,3 +47,18 @@ export const canCancel = (status) =>
 
 // Does this booking still need payment?
 export const needsPayment = (status) => status === 'PENDING_PAYMENT';
+
+// UC-20 refund schedule — mirrors the backend so the modal can preview the
+// expected refund before the user confirms. Returns null after pickup (the
+// booking can no longer be cancelled).
+//   ≥ 48h  → 100%
+//   24-48h → 70%
+//   < 24h  → 30%
+export const estimateRefundPercent = (pickupAt, now = new Date()) => {
+  if (!pickupAt) return null;
+  const hours = (new Date(pickupAt).getTime() - now.getTime()) / 36e5;
+  if (hours < 0) return null;
+  if (hours >= 48) return 100;
+  if (hours >= 24) return 70;
+  return 30;
+};

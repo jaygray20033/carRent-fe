@@ -13,6 +13,7 @@ import {
   statusLabel,
   canCancel,
   needsPayment,
+  estimateRefundPercent,
 } from '../../utils/bookingStatus.js';
 import Loading from '../../components/common/Loading.jsx';
 import Modal from '../../components/ui/Modal.jsx';
@@ -75,6 +76,14 @@ export default function BookingDetailPage() {
   const isCancelled = b.status === 'CANCELLED' || b.status === 'REFUNDED';
   const currentIdx = TIMELINE_STEPS.findIndex((s) => s.status === b.status);
 
+  // UC-20 refund preview for the cancel modal (based on time to pickup).
+  const pickupAt = b.pickupAt ?? b.start_date;
+  const refundPercent = estimateRefundPercent(pickupAt);
+  const estRefundAmount =
+    refundPercent != null ? Math.round((total * refundPercent) / 100) : 0;
+  // Only PENDING_PAYMENT / CONFIRMED carry a paid amount worth refunding.
+  const hasPaidAmount = ['CONFIRMED'].includes(b.status);
+
   return (
     <div className="space-y-5">
       {/* Header */}
@@ -136,6 +145,14 @@ export default function BookingDetailPage() {
               {(b.cancelReason || b.cancel_reason) && (
                 <p className="text-xs text-red-600">
                   Lý do: {b.cancelReason || b.cancel_reason}
+                </p>
+              )}
+              {b.refundAmount > 0 && (
+                <p className="text-xs text-red-600">
+                  Hoàn {b.refundPercent}% ({formatCurrency(b.refundAmount)}) —{' '}
+                  {b.refundStatus === 'REFUNDED'
+                    ? 'đã hoàn vào ví'
+                    : 'đang xử lý hoàn tiền'}
                 </p>
               )}
             </div>
@@ -234,6 +251,28 @@ export default function BookingDetailPage() {
         <p className="text-sm text-gray-600">
           Bạn có chắc chắn muốn hủy đơn này không? Hành động này không thể hoàn tác.
         </p>
+
+        {/* UC-20 refund preview */}
+        {hasPaidAmount && refundPercent != null && (
+          <div className="mt-3 rounded-xl bg-amber-50 p-3 ring-1 ring-amber-100">
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-amber-800">Hoàn tiền dự kiến ({refundPercent}%)</span>
+              <span className="font-semibold text-amber-900">
+                {formatCurrency(estRefundAmount)}
+              </span>
+            </div>
+            <p className="mt-1 text-[11px] text-amber-700">
+              Mức hoàn theo thời điểm hủy: ≥48h trước nhận xe hoàn 100%, 24-48h hoàn 70%,
+              dưới 24h hoàn 30%. Tiền hoàn được cộng vào ví của bạn.
+            </p>
+          </div>
+        )}
+        {hasPaidAmount && refundPercent == null && (
+          <div className="mt-3 rounded-xl bg-red-50 p-3 text-xs text-red-700 ring-1 ring-red-100">
+            Đã qua thời điểm nhận xe — đơn này không thể hủy.
+          </div>
+        )}
+
         <textarea
           rows={3}
           value={cancelReason}
