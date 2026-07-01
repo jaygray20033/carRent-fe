@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Calendar, Eye, ChevronRight, User, Tag as TagIcon } from 'lucide-react';
 import dayjs from 'dayjs';
 import { postService } from '../../services/postService.js';
+import CommentSection from '../../components/blog/CommentSection.jsx';
 import EmptyState from '../../components/common/EmptyState.jsx';
 
 function RelatedCard({ post }) {
@@ -174,6 +175,9 @@ export default function BlogDetailPage() {
                 ))}
               </div>
             )}
+
+            {/* Comments (UC-24) */}
+            <CommentSection postId={post.id} />
           </article>
 
           {/* Sidebar — related */}

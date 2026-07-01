@@ -14,6 +14,11 @@ export const postService = {
   detail: (slug) => api.get(`/posts/${slug}`),
   // UC-26 — related posts by id
   related: (id) => api.get(`/posts/${id}/related`),
+
+  // UC-24 — comments
+  comments: (id, params) => api.get(`/posts/${id}/comments`, { params }),
+  myComments: (id) => api.get(`/posts/${id}/comments/mine`),
+  addComment: (id, content) => api.post(`/posts/${id}/comments`, { content }),
 };
 
 export default postService;

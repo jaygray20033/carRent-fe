@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import MainLayout from './components/layout/MainLayout.jsx';
 import ProtectedRoute from './components/auth/ProtectedRoute.jsx';
 
@@ -21,6 +21,16 @@ import ProfilePage from './pages/user/ProfilePage.jsx';
 import MyBookingsPage from './pages/user/MyBookingsPage.jsx';
 import BookingDetailPage from './pages/user/BookingDetailPage.jsx';
 import UserLayout from './components/layout/UserLayout.jsx';
+
+import AdminLayout from './components/layout/AdminLayout.jsx';
+import AdminRoute from './components/auth/AdminRoute.jsx';
+import PostListPage from './pages/admin/PostListPage.jsx';
+import PostFormPage from './pages/admin/PostFormPage.jsx';
+import CommentModerationPage from './pages/admin/CommentModerationPage.jsx';
+import CouponListPage from './pages/admin/CouponListPage.jsx';
+import CouponFormPage from './pages/admin/CouponFormPage.jsx';
+import CategoryListPage from './pages/admin/CategoryListPage.jsx';
+import TagListPage from './pages/admin/TagListPage.jsx';
 
 export default function App() {
   return (
@@ -91,6 +101,27 @@ export default function App() {
         </Route>
 
         <Route path="*" element={<NotFoundPage />} />
+      </Route>
+
+      {/* Admin area — own layout, ADMIN/OPERATOR only (no MainLayout chrome) */}
+      <Route
+        path="/admin"
+        element={
+          <AdminRoute>
+            <AdminLayout />
+          </AdminRoute>
+        }
+      >
+        <Route index element={<Navigate to="/admin/posts" replace />} />
+        <Route path="posts" element={<PostListPage />} />
+        <Route path="posts/new" element={<PostFormPage />} />
+        <Route path="posts/:id" element={<PostFormPage />} />
+        <Route path="post-categories" element={<CategoryListPage />} />
+        <Route path="tags" element={<TagListPage />} />
+        <Route path="comments" element={<CommentModerationPage />} />
+        <Route path="coupons" element={<CouponListPage />} />
+        <Route path="coupons/new" element={<CouponFormPage />} />
+        <Route path="coupons/:id" element={<CouponFormPage />} />
       </Route>
     </Routes>
   );
