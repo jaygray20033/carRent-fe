@@ -10,6 +10,8 @@ import ForgotPasswordPage from './pages/auth/ForgotPasswordPage.jsx';
 import ResetPasswordPage from './pages/auth/ResetPasswordPage.jsx';
 import CarListPage from './pages/car/CarListPage.jsx';
 import CarDetailPage from './pages/car/CarDetailPage.jsx';
+import BlogListPage from './pages/blog/BlogListPage.jsx';
+import BlogDetailPage from './pages/blog/BlogDetailPage.jsx';
 import SearchPage from './pages/SearchPage.jsx';
 import CheckoutPage from './pages/booking/CheckoutPage.jsx';
 import BookingSuccessPage from './pages/booking/BookingSuccessPage.jsx';
@@ -28,6 +30,8 @@ export default function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/cars" element={<CarListPage />} />
         <Route path="/cars/:id" element={<CarDetailPage />} />
+        <Route path="/magazine" element={<BlogListPage />} />
+        <Route path="/magazine/:slug" element={<BlogDetailPage />} />
         <Route path="/search" element={<SearchPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />

@@ -45,12 +45,22 @@
   --color-brand-accent: #ffb703;
   --color-brand-accent-dark: #e59e00;
 
+  /* Primary scale (used by auth + shared UI components) */
+  --color-primary-50: #eef6ff;
+  --color-primary-100: #d9eaff;
+  --color-primary-500: #3b82f6;
+  --color-primary-600: #2563eb;
+  --color-primary-700: #1d4ed8;
+  --color-primary-900: #1e3a8a;
+
   /* Neutrals (Ink) */
   --color-ink-900: #0a0f1f;
   --color-ink-800: #1a2238;
   --color-ink-700: #2d3656;
   --color-ink-500: #5b6478;
+  --color-ink-400: #64748b;
   --color-ink-300: #9aa3b5;
+  --color-ink-200: #cbd5e1;
   --color-ink-100: #e5e8ef;
   --color-ink-50: #f5f7fb;
 
