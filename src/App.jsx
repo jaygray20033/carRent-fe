@@ -18,6 +18,8 @@ import BookingSuccessPage from './pages/booking/BookingSuccessPage.jsx';
 import PaymentPage from './pages/booking/PaymentPage.jsx';
 import PaymentResultPage from './pages/booking/PaymentResultPage.jsx';
 import ProfilePage from './pages/user/ProfilePage.jsx';
+import ChangePasswordPage from './pages/user/ChangePasswordPage.jsx';
+import ChangePhonePage from './pages/user/ChangePhonePage.jsx';
 import MyBookingsPage from './pages/user/MyBookingsPage.jsx';
 import BookingDetailPage from './pages/user/BookingDetailPage.jsx';
 import UserLayout from './components/layout/UserLayout.jsx';
@@ -92,6 +94,8 @@ export default function App() {
           }
         >
           <Route index element={<ProfilePage />} />
+          <Route path="change-password" element={<ChangePasswordPage />} />
+          <Route path="change-phone" element={<ChangePhonePage />} />
           <Route path="bookings" element={<MyBookingsPage />} />
           <Route path="bookings/:id" element={<BookingDetailPage />} />
           <Route path="wallet" element={<AccountPlaceholder title="Ví tiền" />} />
