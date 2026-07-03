@@ -22,6 +22,9 @@ import ChangePasswordPage from './pages/user/ChangePasswordPage.jsx';
 import ChangePhonePage from './pages/user/ChangePhonePage.jsx';
 import MyBookingsPage from './pages/user/MyBookingsPage.jsx';
 import BookingDetailPage from './pages/user/BookingDetailPage.jsx';
+import AddressBookPage from './pages/user/AddressBookPage.jsx';
+import WalletPage from './pages/user/WalletPage.jsx';
+import PaymentHistoryPage from './pages/user/PaymentHistoryPage.jsx';
 import UserLayout from './components/layout/UserLayout.jsx';
 
 import AdminLayout from './components/layout/AdminLayout.jsx';
@@ -98,9 +101,9 @@ export default function App() {
           <Route path="change-phone" element={<ChangePhonePage />} />
           <Route path="bookings" element={<MyBookingsPage />} />
           <Route path="bookings/:id" element={<BookingDetailPage />} />
-          <Route path="wallet" element={<AccountPlaceholder title="Ví tiền" />} />
-          <Route path="addresses" element={<AccountPlaceholder title="Địa chỉ của tôi" />} />
-          <Route path="payments" element={<AccountPlaceholder title="Lịch sử thanh toán" />} />
+          <Route path="wallet" element={<WalletPage />} />
+          <Route path="addresses" element={<AddressBookPage />} />
+          <Route path="payments" element={<PaymentHistoryPage />} />
           <Route path="reviews" element={<AccountPlaceholder title="Đánh giá" />} />
         </Route>
 
