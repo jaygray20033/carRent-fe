@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   Search,
   Menu,
@@ -11,12 +11,15 @@ import {
   Wallet,
   LogOut,
   ArrowRight,
+  Bell,
+  CheckCheck,
 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth.js';
 import useUiStore from '../../store/uiStore.js';
 import useDebounce from '../../hooks/useDebounce.js';
 import { carService } from '../../services/carService.js';
-import { formatCurrency } from '../../utils/format.js';
+import { notificationService } from '../../services/notificationService.js';
+import { formatCurrency, formatDateTime } from '../../utils/format.js';
 
 const NAV_ITEMS = [
   { to: '/', label: 'Trang chủ' },
@@ -34,8 +37,11 @@ export default function Header() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchValue, setSearchValue] = useState('');
   const [scrolled, setScrolled] = useState(false);
+  const [notifOpen, setNotifOpen] = useState(false);
   const navigate = useNavigate();
   const dropdownRef = useRef(null);
+  const notifRef = useRef(null);
+  const queryClient = useQueryClient();
 
   const debouncedSearch = useDebounce(searchValue.trim(), 250);
 
@@ -51,6 +57,40 @@ export default function Header() {
   const models = suggestData?.models ?? [];
   const vehicles = suggestData?.vehicles ?? [];
   const hasSuggestions = brands.length + models.length + vehicles.length > 0;
+
+  // Notification bell (UC-51): 5 most-recent + unread badge. Polls while signed in.
+  const { data: notifData } = useQuery({
+    queryKey: ['notifications-bell'],
+    queryFn: () => notificationService.list({ limit: 5 }),
+    enabled: isAuthenticated,
+    refetchInterval: 60_000,
+    staleTime: 30_000,
+  });
+
+  const notifResult = notifData?.data ?? {};
+  const notifications = notifResult.items ?? [];
+  const unreadCount = notifResult.unreadCount ?? 0;
+
+  const invalidateNotifs = () => {
+    queryClient.invalidateQueries({ queryKey: ['notifications-bell'] });
+    queryClient.invalidateQueries({ queryKey: ['notifications'] });
+  };
+
+  const readOne = useMutation({
+    mutationFn: (id) => notificationService.markRead(id),
+    onSuccess: invalidateNotifs,
+  });
+
+  const readAll = useMutation({
+    mutationFn: () => notificationService.readAll(),
+    onSuccess: invalidateNotifs,
+  });
+
+  const openNotification = (n) => {
+    if (!n.isRead) readOne.mutate(n.id);
+    setNotifOpen(false);
+    if (n.link) navigate(n.link);
+  };
 
   const submitSearch = (q) => {
     const term = (q ?? searchValue).trim();
@@ -88,6 +128,16 @@ export default function Header() {
     if (userMenuOpen) document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [userMenuOpen]);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (notifRef.current && !notifRef.current.contains(e.target)) {
+        setNotifOpen(false);
+      }
+    };
+    if (notifOpen) document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [notifOpen]);
 
   const navActiveClass = ({ isActive }) =>
     `text-sm font-medium px-1 py-2 transition-colors whitespace-nowrap ${
@@ -175,6 +225,82 @@ export default function Header() {
             >
               <Search className="w-5 h-5" />
             </button>
+
+            {/* Notification bell (UC-51) */}
+            {isAuthenticated && (
+              <div className="relative hidden md:block" ref={notifRef}>
+                <button
+                  onClick={() => setNotifOpen((o) => !o)}
+                  className="relative p-2 text-ink-500 hover:text-brand-primary transition"
+                  aria-label="Thông báo"
+                >
+                  <Bell className="w-5 h-5" />
+                  {unreadCount > 0 && (
+                    <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-brand-primary px-1 text-[10px] font-bold leading-none text-white">
+                      {unreadCount > 9 ? '9+' : unreadCount}
+                    </span>
+                  )}
+                </button>
+                {notifOpen && (
+                  <div className="absolute left-0 top-full mt-2 w-80 rounded-xl border border-ink-100 bg-white py-2 shadow-lg z-50 animate-fade-in">
+                    <div className="flex items-center justify-between px-4 pb-2">
+                      <span className="text-sm font-semibold text-ink-900">Thông báo</span>
+                      {unreadCount > 0 && (
+                        <button
+                          onClick={() => readAll.mutate()}
+                          disabled={readAll.isPending}
+                          className="inline-flex items-center gap-1 text-xs font-medium text-brand-primary hover:underline disabled:opacity-50"
+                        >
+                          <CheckCheck className="h-3.5 w-3.5" />
+                          Đọc tất cả
+                        </button>
+                      )}
+                    </div>
+                    <div className="max-h-[360px] overflow-y-auto border-t border-ink-100">
+                      {notifications.length === 0 ? (
+                        <p className="px-4 py-8 text-center text-sm text-ink-400">
+                          Chưa có thông báo nào.
+                        </p>
+                      ) : (
+                        notifications.map((n) => (
+                          <button
+                            key={n.id}
+                            onClick={() => openNotification(n)}
+                            className={`flex w-full items-start gap-2.5 px-4 py-3 text-left transition hover:bg-ink-50 ${
+                              n.isRead ? '' : 'bg-brand-primary/[0.04]'
+                            }`}
+                          >
+                            {!n.isRead && (
+                              <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-brand-primary" />
+                            )}
+                            <span className={`min-w-0 flex-1 ${n.isRead ? 'pl-4' : ''}`}>
+                              <span className="block truncate text-sm font-medium text-ink-900">
+                                {n.title}
+                              </span>
+                              {n.body && (
+                                <span className="mt-0.5 block line-clamp-2 text-xs text-ink-600">
+                                  {n.body}
+                                </span>
+                              )}
+                              <span className="mt-1 block text-[11px] text-ink-400">
+                                {formatDateTime(n.createdAt)}
+                              </span>
+                            </span>
+                          </button>
+                        ))
+                      )}
+                    </div>
+                    <Link
+                      to="/me/notifications"
+                      onClick={() => setNotifOpen(false)}
+                      className="mt-1 block border-t border-ink-100 px-4 pt-2.5 text-center text-sm font-medium text-brand-primary hover:underline"
+                    >
+                      Xem tất cả
+                    </Link>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           {/* ── Center: Navigation ── */}

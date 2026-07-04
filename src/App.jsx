@@ -25,6 +25,8 @@ import BookingDetailPage from './pages/user/BookingDetailPage.jsx';
 import AddressBookPage from './pages/user/AddressBookPage.jsx';
 import WalletPage from './pages/user/WalletPage.jsx';
 import PaymentHistoryPage from './pages/user/PaymentHistoryPage.jsx';
+import ReviewsPage from './pages/user/ReviewsPage.jsx';
+import NotificationsPage from './pages/user/NotificationsPage.jsx';
 import UserLayout from './components/layout/UserLayout.jsx';
 
 import AdminLayout from './components/layout/AdminLayout.jsx';
@@ -104,7 +106,8 @@ export default function App() {
           <Route path="wallet" element={<WalletPage />} />
           <Route path="addresses" element={<AddressBookPage />} />
           <Route path="payments" element={<PaymentHistoryPage />} />
-          <Route path="reviews" element={<AccountPlaceholder title="Đánh giá" />} />
+          <Route path="reviews" element={<ReviewsPage />} />
+          <Route path="notifications" element={<NotificationsPage />} />
         </Route>
 
         <Route path="*" element={<NotFoundPage />} />
@@ -131,15 +134,5 @@ export default function App() {
         <Route path="coupons/:id" element={<CouponFormPage />} />
       </Route>
     </Routes>
-  );
-}
-
-// Lightweight placeholder for sidebar pages not yet implemented (Day 14 scope).
-function AccountPlaceholder({ title }) {
-  return (
-    <div className="rounded-2xl bg-white p-8 text-center shadow-sm ring-1 ring-gray-100">
-      <h1 className="text-xl font-bold text-gray-900">{title}</h1>
-      <p className="mt-2 text-sm text-gray-500">Tính năng này sẽ sớm được hoàn thiện.</p>
-    </div>
   );
 }
