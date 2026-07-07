@@ -13,6 +13,13 @@ import CarDetailPage from './pages/car/CarDetailPage.jsx';
 import BlogListPage from './pages/blog/BlogListPage.jsx';
 import BlogDetailPage from './pages/blog/BlogDetailPage.jsx';
 import SearchPage from './pages/SearchPage.jsx';
+import ContactPage from './pages/ContactPage.jsx';
+import AboutUsPage from './pages/AboutUsPage.jsx';
+import FaqPage from './pages/FaqPage.jsx';
+import DeliveryPage from './pages/DeliveryPage.jsx';
+import RulesPage from './pages/RulesPage.jsx';
+import LegalPage from './pages/LegalPage.jsx';
+import RoadsidePage from './pages/RoadsidePage.jsx';
 import CheckoutPage from './pages/booking/CheckoutPage.jsx';
 import BookingSuccessPage from './pages/booking/BookingSuccessPage.jsx';
 import PaymentPage from './pages/booking/PaymentPage.jsx';
@@ -48,6 +55,8 @@ import UserListPage from './pages/admin/UserListPage.jsx';
 import UserDetailPage from './pages/admin/UserDetailPage.jsx';
 import ReportsPage from './pages/admin/ReportsPage.jsx';
 import SettingsPage from './pages/admin/SettingsPage.jsx';
+import ContactMessageListPage from './pages/admin/ContactMessageListPage.jsx';
+import RescueStationListPage from './pages/admin/RescueStationListPage.jsx';
 
 export default function App() {
   return (
@@ -60,6 +69,13 @@ export default function App() {
         <Route path="/magazine" element={<BlogListPage />} />
         <Route path="/magazine/:slug" element={<BlogDetailPage />} />
         <Route path="/search" element={<SearchPage />} />
+        <Route path="/contact" element={<ContactPage />} />
+        <Route path="/about" element={<AboutUsPage />} />
+        <Route path="/faq" element={<FaqPage />} />
+        <Route path="/delivery" element={<DeliveryPage />} />
+        <Route path="/rules" element={<RulesPage />} />
+        <Route path="/legal" element={<LegalPage />} />
+        <Route path="/roadside" element={<RoadsidePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
@@ -149,6 +165,8 @@ export default function App() {
         <Route path="post-categories" element={<CategoryListPage />} />
         <Route path="tags" element={<TagListPage />} />
         <Route path="comments" element={<CommentModerationPage />} />
+        <Route path="contact-messages" element={<ContactMessageListPage />} />
+        <Route path="rescue-stations" element={<RescueStationListPage />} />
         <Route path="coupons" element={<CouponListPage />} />
         <Route path="coupons/new" element={<CouponFormPage />} />
         <Route path="coupons/:id" element={<CouponFormPage />} />

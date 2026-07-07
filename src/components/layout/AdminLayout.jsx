@@ -17,6 +17,8 @@ import {
   Settings,
   LogOut,
   ArrowLeft,
+  Mail,
+  LifeBuoy,
 } from 'lucide-react';
 import { useAuthStore } from '../../store/authStore.js';
 
@@ -30,6 +32,8 @@ const navItems = [
   { to: '/admin/post-categories', label: 'Danh mục', icon: FolderTree },
   { to: '/admin/tags', label: 'Thẻ', icon: Tags },
   { to: '/admin/comments', label: 'Duyệt bình luận', icon: MessageSquare },
+  { to: '/admin/contact-messages', label: 'Tin nhắn liên hệ', icon: Mail },
+  { to: '/admin/rescue-stations', label: 'Trạm cứu hộ', icon: LifeBuoy },
   { to: '/admin/coupons', label: 'Mã giảm giá', icon: TicketPercent },
   { to: '/admin/reports', label: 'Báo cáo', icon: BarChart3 },
   { to: '/admin/settings', label: 'Cài đặt', icon: Settings },

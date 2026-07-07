@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import { Phone, Mail, MapPin, Clock } from 'lucide-react';
+import { contactService } from '../../services/contactService.js';
 
 // Inline SVG social icons (lucide-react removed brand icons)
 const LinkedinIcon = (props) => (
@@ -44,8 +46,8 @@ const FOOTER_LINKS = {
   },
 };
 
-// Fallback contact info (API /site-settings/contact sẽ replace ở Day 36)
-const CONTACT = {
+// Fallback contact info — replaced by live GET /site-settings/contact when available.
+const CONTACT_FALLBACK = {
   phone: '0986310849',
   email: 'contact@vflash.com.vn',
   address: '55 Đặng Nhữ Mai, Phường Cát Lái,\nThành Phố Hồ Chí Minh, Việt Nam',
@@ -60,6 +62,19 @@ const SOCIALS = [
 ];
 
 export default function Footer() {
+  const { data } = useQuery({
+    queryKey: ['site-contact'],
+    queryFn: () => contactService.publicContact(),
+    staleTime: 60 * 60 * 1000,
+  });
+  const info = data?.data ?? {};
+  const CONTACT = {
+    phone: info.hotline || CONTACT_FALLBACK.phone,
+    email: info.email || CONTACT_FALLBACK.email,
+    address: info.address || CONTACT_FALLBACK.address,
+    hours: info.hours || CONTACT_FALLBACK.hours,
+  };
+
   return (
     <footer className="bg-ink-900 text-white mt-0">
       <div className="container-app py-12 lg:py-16">
