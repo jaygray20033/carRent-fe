@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import MainLayout from './components/layout/MainLayout.jsx';
 import ProtectedRoute from './components/auth/ProtectedRoute.jsx';
 
@@ -38,6 +38,16 @@ import CouponListPage from './pages/admin/CouponListPage.jsx';
 import CouponFormPage from './pages/admin/CouponFormPage.jsx';
 import CategoryListPage from './pages/admin/CategoryListPage.jsx';
 import TagListPage from './pages/admin/TagListPage.jsx';
+import DashboardPage from './pages/admin/DashboardPage.jsx';
+import VehicleListPage from './pages/admin/VehicleListPage.jsx';
+import VehicleFormPage from './pages/admin/VehicleFormPage.jsx';
+import VehicleModelListPage from './pages/admin/VehicleModelListPage.jsx';
+import BookingListPage from './pages/admin/BookingListPage.jsx';
+import BookingDetailAdminPage from './pages/admin/BookingDetailAdminPage.jsx';
+import UserListPage from './pages/admin/UserListPage.jsx';
+import UserDetailPage from './pages/admin/UserDetailPage.jsx';
+import ReportsPage from './pages/admin/ReportsPage.jsx';
+import SettingsPage from './pages/admin/SettingsPage.jsx';
 
 export default function App() {
   return (
@@ -122,7 +132,17 @@ export default function App() {
           </AdminRoute>
         }
       >
-        <Route index element={<Navigate to="/admin/posts" replace />} />
+        <Route index element={<DashboardPage />} />
+        <Route path="vehicles" element={<VehicleListPage />} />
+        <Route path="vehicles/new" element={<VehicleFormPage />} />
+        <Route path="vehicles/:id" element={<VehicleFormPage />} />
+        <Route path="vehicle-models" element={<VehicleModelListPage />} />
+        <Route path="bookings" element={<BookingListPage />} />
+        <Route path="bookings/:id" element={<BookingDetailAdminPage />} />
+        <Route path="users" element={<UserListPage />} />
+        <Route path="users/:id" element={<UserDetailPage />} />
+        <Route path="reports" element={<ReportsPage />} />
+        <Route path="settings" element={<SettingsPage />} />
         <Route path="posts" element={<PostListPage />} />
         <Route path="posts/new" element={<PostFormPage />} />
         <Route path="posts/:id" element={<PostFormPage />} />

@@ -73,8 +73,8 @@ export default function LoginPage() {
 
       <div className="mt-6 rounded-xl bg-ink-50 p-3 text-xs text-ink-400">
         <p className="font-medium text-ink-700">Demo account:</p>
-        <p>📱 Admin: 0900000001 / Admin@1234</p>
-        <p>📱 User: 0901234567 / User@1234</p>
+        <p>📱 Admin: 0900000001 / Admin@123</p>
+        <p>📱 User: 0901234567 / User@123</p>
       </div>
     </AuthCard>
   );

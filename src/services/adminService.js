@@ -40,10 +40,95 @@ export const adminCouponService = {
   remove: (id) => api.delete(`/admin/coupons/${id}`),
 };
 
+// Day 31 — UC-52 dashboard KPIs
+export const adminDashboardService = {
+  // GET /admin/dashboard?from=&to=  (from/to are ISO date strings, optional)
+  kpis: (params) => api.get('/admin/dashboard', { params }),
+};
+
+// Day 35 — UC-59 reports
+export const adminReportsService = {
+  // GET /admin/reports/revenue?from=&to=&group=day|month
+  revenue: (params) => api.get('/admin/reports/revenue', { params }),
+  // GET /admin/reports/booking?from=&to=
+  booking: (params) => api.get('/admin/reports/booking', { params }),
+  // GET /admin/reports/top-vehicles?from=&to=&limit=
+  topVehicles: (params) => api.get('/admin/reports/top-vehicles', { params }),
+  // File download — format ∈ csv | excel | pdf. Returns a Blob (interceptor unwraps res.data).
+  exportRevenue: (params) =>
+    api.get('/admin/reports/revenue', { params, responseType: 'blob' }),
+};
+
+// Day 35 — UC-60 site settings
+export const adminSettingsService = {
+  getAll: () => api.get('/admin/settings'),
+  // PUT /admin/settings — body { settings: { key: value, ... } }
+  update: (settings) => api.put('/admin/settings', { settings }),
+};
+
+// Day 32 — UC-53 advanced vehicle management
+export const adminVehicleService = {
+  list: (params) => api.get('/admin/vehicles', { params }),
+  detail: (id) => api.get(`/admin/vehicles/${id}`),
+  create: (payload) => api.post('/admin/vehicles', payload),
+  update: (id, payload) => api.patch(`/admin/vehicles/${id}`, payload),
+  remove: (id) => api.delete(`/admin/vehicles/${id}`),
+  // Quick action — status ∈ AVAILABLE | MAINTENANCE | RETIRED
+  updateStatus: (id, status) => api.patch(`/admin/vehicles/${id}/status`, { status }),
+  // Booking history of a single vehicle
+  bookings: (id, params) => api.get(`/admin/vehicles/${id}/bookings`, { params }),
+  // Multipart image upload — field name "images", up to 10 files
+  uploadImages: (id, formData) =>
+    api.post(`/admin/vehicles/${id}/images`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    }),
+};
+
+export const adminVehicleModelService = {
+  list: (params) => api.get('/admin/vehicle-models', { params }),
+  detail: (id) => api.get(`/admin/vehicle-models/${id}`),
+  create: (payload) => api.post('/admin/vehicle-models', payload),
+  update: (id, payload) => api.patch(`/admin/vehicle-models/${id}`, payload),
+  remove: (id) => api.delete(`/admin/vehicle-models/${id}`),
+};
+
+// Day 33 — UC-54 admin booking management
+export const adminBookingService = {
+  // GET /admin/bookings?status=&from=&to=&q=&page=&limit=
+  list: (params) => api.get('/admin/bookings', { params }),
+  detail: (id) => api.get(`/admin/bookings/${id}`),
+  // Manual offline settlement — method ∈ BANK_TRANSFER | CASH
+  confirmPayment: (id, payload) => api.post(`/admin/bookings/${id}/confirm-payment`, payload),
+  addNote: (id, note) => api.post(`/admin/bookings/${id}/note`, { note }),
+  start: (id) => api.post(`/admin/bookings/${id}/start`),
+  return: (id, payload) => api.post(`/admin/bookings/${id}/return`, payload),
+  refund: (id, payload) => api.post(`/admin/bookings/${id}/refund`, payload),
+};
+
+// Day 34 — UC-55 admin user management
+export const adminUserService = {
+  // GET /admin/users?role=&status=&q=&page=&limit=
+  list: (params) => api.get('/admin/users', { params }),
+  detail: (id) => api.get(`/admin/users/${id}`),
+  // PATCH status ∈ ACTIVE | LOCKED (+ reason); LOCK revokes all sessions
+  updateStatus: (id, payload) => api.patch(`/admin/users/${id}/status`, payload),
+  // PATCH role (ADMIN only) — role ∈ CUSTOMER | ADMIN | OPERATOR | AGENT
+  updateRole: (id, role) => api.patch(`/admin/users/${id}/role`, { role }),
+  // POST manual wallet adjust — type ∈ CREDIT | DEBIT
+  adjustWallet: (id, payload) => api.post(`/admin/users/${id}/wallet/adjust`, payload),
+};
+
 export default {
   posts: adminPostService,
   categories: adminCategoryService,
   tags: adminTagService,
   comments: adminCommentService,
   coupons: adminCouponService,
+  dashboard: adminDashboardService,
+  vehicles: adminVehicleService,
+  vehicleModels: adminVehicleModelService,
+  bookings: adminBookingService,
+  users: adminUserService,
+  reports: adminReportsService,
+  settings: adminSettingsService,
 };

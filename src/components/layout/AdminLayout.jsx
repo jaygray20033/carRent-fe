@@ -3,22 +3,36 @@
 // No Figma for admin — built from the Design System tokens (brand/ink, radius, shadow).
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import {
+  LayoutDashboard,
+  Car,
+  Layers,
+  ClipboardList,
+  Users,
   FileText,
   FolderTree,
   Tags,
   MessageSquare,
   TicketPercent,
+  BarChart3,
+  Settings,
   LogOut,
   ArrowLeft,
 } from 'lucide-react';
 import { useAuthStore } from '../../store/authStore.js';
 
 const navItems = [
+  { to: '/admin', label: 'Tổng quan', icon: LayoutDashboard, end: true },
+  { to: '/admin/vehicles', label: 'Quản lý xe', icon: Car },
+  { to: '/admin/vehicle-models', label: 'Dòng xe', icon: Layers },
+  { to: '/admin/bookings', label: 'Đơn thuê', icon: ClipboardList },
+  { to: '/admin/users', label: 'Người dùng', icon: Users },
   { to: '/admin/posts', label: 'Bài viết', icon: FileText },
   { to: '/admin/post-categories', label: 'Danh mục', icon: FolderTree },
   { to: '/admin/tags', label: 'Thẻ', icon: Tags },
   { to: '/admin/comments', label: 'Duyệt bình luận', icon: MessageSquare },
   { to: '/admin/coupons', label: 'Mã giảm giá', icon: TicketPercent },
+  { to: '/admin/reports', label: 'Báo cáo', icon: BarChart3 },
+  { to: '/admin/settings', label: 'Cài đặt', icon: Settings },
 ];
 
 export default function AdminLayout() {
@@ -49,10 +63,11 @@ export default function AdminLayout() {
             </div>
 
             <nav className="overflow-hidden rounded-2xl bg-white p-2 shadow-sm ring-1 ring-ink-100">
-              {navItems.map(({ to, label, icon: Icon }) => (
+              {navItems.map(({ to, label, icon: Icon, end }) => (
                 <NavLink
                   key={to}
                   to={to}
+                  end={end}
                   className={({ isActive }) =>
                     `flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-colors ${
                       isActive
@@ -103,10 +118,11 @@ export default function AdminLayout() {
 
           {/* Mobile nav */}
           <nav className="mb-4 flex gap-2 overflow-x-auto lg:hidden">
-            {navItems.map(({ to, label }) => (
+            {navItems.map(({ to, label, end }) => (
               <NavLink
                 key={to}
                 to={to}
+                end={end}
                 className={({ isActive }) =>
                   `whitespace-nowrap rounded-lg px-3 py-1.5 text-sm font-medium ${
                     isActive
