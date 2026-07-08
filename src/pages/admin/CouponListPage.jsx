@@ -71,8 +71,8 @@ export default function CouponListPage() {
 
   const payload = data?.data ?? data ?? {};
   const list = Array.isArray(payload) ? payload : payload.items || [];
-  const total = payload.total ?? data?.total ?? list.length;
-  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+  const total = data?.meta?.total ?? payload.total ?? data?.total ?? list.length;
+  const totalPages = data?.meta?.totalPages ?? Math.max(1, Math.ceil(total / PAGE_SIZE));
 
   const handleSearch = (e) => {
     e.preventDefault();

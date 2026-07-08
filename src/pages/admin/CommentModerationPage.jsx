@@ -54,8 +54,8 @@ export default function CommentModerationPage() {
 
   const payload = unwrap(data);
   const list = payload.items ?? [];
-  const total = payload.total ?? list.length;
-  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+  const total = data?.meta?.total ?? payload.total ?? list.length;
+  const totalPages = data?.meta?.totalPages ?? Math.max(1, Math.ceil(total / PAGE_SIZE));
 
   const handleTab = (value) => {
     setStatus(value);

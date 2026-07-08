@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
-import { ArrowLeft, Check, X, CreditCard, MapPin, CalendarClock } from 'lucide-react';
+import { ArrowLeft, Check, X, CreditCard, MapPin, CalendarClock, LifeBuoy } from 'lucide-react';
 import { bookingService } from '../../services/bookingService.js';
 import { formatCurrency, formatDateTime } from '../../utils/format.js';
 import {
@@ -221,6 +221,28 @@ export default function BookingDetailPage() {
           </div>
         </div>
       </div>
+
+      {/* Roadside SOS — only while the car is in use (UC-34) */}
+      {b.status === 'IN_USE' && (
+        <div className="flex items-center justify-between gap-3 rounded-2xl bg-red-50 p-4 ring-1 ring-red-100">
+          <div className="flex items-center gap-3">
+            <span className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-red-100 text-red-600">
+              <LifeBuoy className="h-5 w-5" />
+            </span>
+            <div>
+              <p className="text-sm font-semibold text-red-800">Gặp sự cố trên đường?</p>
+              <p className="text-xs text-red-600">Gửi yêu cầu cứu hộ, đội ngũ sẽ hỗ trợ ngay.</p>
+            </div>
+          </div>
+          <button
+            onClick={() => navigate(`/sos/${b.id}`)}
+            className="inline-flex flex-shrink-0 items-center justify-center gap-2 rounded-xl bg-red-600 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-red-700"
+          >
+            <LifeBuoy className="h-4 w-4" />
+            Cứu hộ SOS
+          </button>
+        </div>
+      )}
 
       {/* Actions */}
       {(needsPayment(b.status) || canCancel(b.status)) && (

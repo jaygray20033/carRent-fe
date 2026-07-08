@@ -20,6 +20,7 @@ import DeliveryPage from './pages/DeliveryPage.jsx';
 import RulesPage from './pages/RulesPage.jsx';
 import LegalPage from './pages/LegalPage.jsx';
 import RoadsidePage from './pages/RoadsidePage.jsx';
+import AgentRegisterPage from './pages/AgentRegisterPage.jsx';
 import CheckoutPage from './pages/booking/CheckoutPage.jsx';
 import BookingSuccessPage from './pages/booking/BookingSuccessPage.jsx';
 import PaymentPage from './pages/booking/PaymentPage.jsx';
@@ -57,6 +58,9 @@ import ReportsPage from './pages/admin/ReportsPage.jsx';
 import SettingsPage from './pages/admin/SettingsPage.jsx';
 import ContactMessageListPage from './pages/admin/ContactMessageListPage.jsx';
 import RescueStationListPage from './pages/admin/RescueStationListPage.jsx';
+import AgentApplicationListPage from './pages/admin/AgentApplicationListPage.jsx';
+import SosRequestListPage from './pages/admin/SosRequestListPage.jsx';
+import SOSPage from './pages/SOSPage.jsx';
 
 export default function App() {
   return (
@@ -76,6 +80,7 @@ export default function App() {
         <Route path="/rules" element={<RulesPage />} />
         <Route path="/legal" element={<LegalPage />} />
         <Route path="/roadside" element={<RoadsidePage />} />
+        <Route path="/agent" element={<AgentRegisterPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
@@ -112,6 +117,15 @@ export default function App() {
           element={
             <ProtectedRoute>
               <PaymentResultPage />
+            </ProtectedRoute>
+          }
+        />
+        {/* Day 39 (UC-34/35) — roadside SOS wizard for an in-use booking */}
+        <Route
+          path="/sos/:bookingId"
+          element={
+            <ProtectedRoute>
+              <SOSPage />
             </ProtectedRoute>
           }
         />
@@ -167,6 +181,8 @@ export default function App() {
         <Route path="comments" element={<CommentModerationPage />} />
         <Route path="contact-messages" element={<ContactMessageListPage />} />
         <Route path="rescue-stations" element={<RescueStationListPage />} />
+        <Route path="agent-applications" element={<AgentApplicationListPage />} />
+        <Route path="sos-requests" element={<SosRequestListPage />} />
         <Route path="coupons" element={<CouponListPage />} />
         <Route path="coupons/new" element={<CouponFormPage />} />
         <Route path="coupons/:id" element={<CouponFormPage />} />
