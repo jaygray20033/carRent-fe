@@ -437,9 +437,9 @@ function ReviewItem({ review }) {
           </span>
         </div>
         <Rating value={review.rating || 5} size="sm" />
-        {review.comment && (
+        {review.content && (
           <p className="mt-1.5 text-sm text-ink-600 leading-relaxed">
-            {review.comment}
+            {review.content}
           </p>
         )}
       </div>

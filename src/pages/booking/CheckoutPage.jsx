@@ -44,9 +44,17 @@ export default function CheckoutPage() {
     onError: (e) => toast.error(e?.message || 'Tạo đơn thất bại'),
   });
 
-  if (isLoading) return <Loading />;
+  // Reserve the page's typical height while loading so the footer doesn't jump
+  // once the car data resolves (kills the large CLS the checkout route showed).
+  if (isLoading)
+    return (
+      <div className="flex min-h-[70vh] items-center justify-center">
+        <Loading />
+      </div>
+    );
   const car = carData?.data?.car;
-  if (!car) return <div className="p-8 text-center">Không tìm thấy xe.</div>;
+  if (!car)
+    return <div className="flex min-h-[70vh] items-center justify-center p-8 text-center">Không tìm thấy xe.</div>;
 
   const days = pickupAt && returnAt ? diffDays(pickupAt, returnAt) : 1;
   const subtotal = Number(car.pricePerDay) * days;
@@ -62,7 +70,7 @@ export default function CheckoutPage() {
   };
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-8">
+    <div className="mx-auto min-h-[70vh] max-w-5xl px-4 py-8">
       <h1 className="text-2xl font-bold text-gray-900">Xác nhận đặt xe</h1>
 
       <div className="mt-6 grid gap-6 lg:grid-cols-3">

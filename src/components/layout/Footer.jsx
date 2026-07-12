@@ -115,7 +115,7 @@ export default function Footer() {
 
           {/* ── Col 2: Liên hệ ── */}
           <div className="lg:col-span-3">
-            <h4 className="text-base font-semibold text-white mb-4">Liên hệ</h4>
+            <h3 className="text-base font-semibold text-white mb-4">Liên hệ</h3>
             <ul className="space-y-3 text-sm text-white/60">
               <li className="flex items-start gap-2.5">
                 <Phone className="w-4 h-4 mt-0.5 flex-shrink-0 text-brand-accent" />
@@ -139,7 +139,7 @@ export default function Footer() {
           {/* ── Col 3 & 4: Links ── */}
           {Object.values(FOOTER_LINKS).map(({ title, items }) => (
             <div key={title} className="lg:col-span-2">
-              <h4 className="text-base font-semibold text-white mb-4">{title}</h4>
+              <h3 className="text-base font-semibold text-white mb-4">{title}</h3>
               <ul className="space-y-2.5">
                 {items.map(({ label, to }) => (
                   <li key={to}>
@@ -159,7 +159,7 @@ export default function Footer() {
         {/* Newsletter row — full width on smaller, col on lg */}
         <div className="mt-10 pt-8 border-t border-white/10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div className="flex-1 max-w-md">
-            <h4 className="text-base font-semibold text-white mb-1">Đăng ký</h4>
+            <h3 className="text-base font-semibold text-white mb-1">Đăng ký</h3>
             <p className="text-sm text-white/50 mb-3">
               Nhập email của bạn để nhận những thông tin mới nhất.
             </p>

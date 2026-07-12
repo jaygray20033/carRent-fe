@@ -54,6 +54,8 @@ export const adminReportsService = {
   booking: (params) => api.get('/admin/reports/booking', { params }),
   // GET /admin/reports/top-vehicles?from=&to=&limit=
   topVehicles: (params) => api.get('/admin/reports/top-vehicles', { params }),
+  // GET /admin/reports/b2b-vs-c2c?month=YYYY-MM (UC-73)
+  b2bVsC2c: (params) => api.get('/admin/reports/b2b-vs-c2c', { params }),
   // File download — format ∈ csv | excel | pdf. Returns a Blob (interceptor unwraps res.data).
   exportRevenue: (params) =>
     api.get('/admin/reports/revenue', { params, responseType: 'blob' }),
@@ -118,6 +120,34 @@ export const adminUserService = {
   adjustWallet: (id, payload) => api.post(`/admin/users/${id}/wallet/adjust`, payload),
 };
 
+// B2B Day 7 — UC-61/72 corporate clients + booking queue
+export const adminCorporateService = {
+  listClients: (params) => api.get('/admin/corporate-clients', { params }),
+  getClient: (id) => api.get(`/admin/corporate-clients/${id}`),
+  createClient: (payload) => api.post('/admin/corporate-clients', payload),
+  updateClient: (id, payload) => api.put(`/admin/corporate-clients/${id}`, payload),
+  getPriceConfig: (id) => api.get(`/admin/corporate-clients/${id}/price-config`),
+  updatePriceConfig: (id, priceConfig) =>
+    api.put(`/admin/corporate-clients/${id}/price-config`, { priceConfig }),
+  listSettlements: (id, params) =>
+    api.get(`/admin/corporate-clients/${id}/settlements`, { params }),
+  createSettlement: (id, payload) =>
+    api.post(`/admin/corporate-clients/${id}/settlements`, payload),
+  getDashboard: (id, params) =>
+    api.get(`/admin/corporate-clients/${id}/dashboard`, { params }),
+  listBookings: (params) => api.get('/admin/corporate-bookings', { params }),
+  assignDriver: (id, payload) =>
+    api.put(`/admin/corporate-bookings/${id}/assign-driver`, payload),
+  startBooking: (id) => api.put(`/admin/corporate-bookings/${id}/start`),
+  confirmOtorent: (id) => api.put(`/admin/corporate-bookings/${id}/confirm-otorent`),
+  getSettlement: (id) => api.get(`/admin/settlements/${id}`),
+  sendSettlement: (id) => api.put(`/admin/settlements/${id}/send`),
+  markSettlementPaid: (id, payload) =>
+    api.put(`/admin/settlements/${id}/mark-paid`, payload || {}),
+  exportSettlementPdf: (id) =>
+    api.get(`/admin/settlements/${id}/export`, { responseType: 'blob' }),
+};
+
 export default {
   posts: adminPostService,
   categories: adminCategoryService,
@@ -131,4 +161,5 @@ export default {
   users: adminUserService,
   reports: adminReportsService,
   settings: adminSettingsService,
+  corporate: adminCorporateService,
 };

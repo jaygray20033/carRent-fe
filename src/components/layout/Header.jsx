@@ -336,7 +336,7 @@ export default function Header() {
           </Link>
 
           {/* ── Mobile menu button ── */}
-          <button onClick={() => setMobileOpen(true)} className="md:hidden p-2 text-ink-700 -mr-1">
+          <button onClick={() => setMobileOpen(true)} aria-label="Mở menu" className="md:hidden p-2 text-ink-700 -mr-1">
             <Menu className="w-6 h-6" />
           </button>
         </div>
@@ -372,6 +372,7 @@ export default function Header() {
               </Link>
               <button
                 onClick={() => setMobileOpen(false)}
+                aria-label="Đóng menu"
                 className="p-2 text-ink-500 hover:text-ink-700"
               >
                 <X className="w-5 h-5" />
@@ -468,6 +469,7 @@ export default function Header() {
               )}
               <button
                 onClick={closeSearch}
+                aria-label="Đóng tìm kiếm"
                 className="p-1.5 text-ink-400 hover:text-ink-700 rounded-lg hover:bg-ink-50 transition"
               >
                 <X className="w-5 h-5" />

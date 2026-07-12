@@ -82,6 +82,7 @@ export default function TestimonialSlider() {
                 <img
                   src={t.avatar}
                   alt={t.name}
+                  loading="lazy"
                   className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm"
                 />
                 <div>
@@ -96,6 +97,7 @@ export default function TestimonialSlider() {
           <div className="flex items-center justify-center gap-4 mt-6">
             <button
               onClick={prev}
+              aria-label="Đánh giá trước"
               className="w-10 h-10 rounded-full bg-white border border-ink-100 flex items-center justify-center text-ink-500 hover:bg-ink-50 hover:text-brand-primary transition"
             >
               <ChevronLeft className="w-5 h-5" />
@@ -105,14 +107,21 @@ export default function TestimonialSlider() {
                 <button
                   key={i}
                   onClick={() => setCurrent(i)}
-                  className={`w-2.5 h-2.5 rounded-full transition-colors ${
-                    i === current ? 'bg-brand-primary' : 'bg-ink-200'
-                  }`}
-                />
+                  aria-label={`Xem đánh giá ${i + 1}`}
+                  aria-current={i === current}
+                  className="flex h-6 w-6 items-center justify-center"
+                >
+                  <span
+                    className={`block w-2.5 h-2.5 rounded-full transition-colors ${
+                      i === current ? 'bg-brand-primary' : 'bg-ink-200'
+                    }`}
+                  />
+                </button>
               ))}
             </div>
             <button
               onClick={next}
+              aria-label="Đánh giá tiếp theo"
               className="w-10 h-10 rounded-full bg-white border border-ink-100 flex items-center justify-center text-ink-500 hover:bg-ink-50 hover:text-brand-primary transition"
             >
               <ChevronRight className="w-5 h-5" />

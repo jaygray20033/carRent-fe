@@ -10,6 +10,7 @@ export default function HeroBanner() {
         <img
           src="https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=1600&h=800&fit=crop"
           alt="Ford Explorer - OtoRent hero"
+          fetchPriority="high"
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-ink-900/80 via-ink-900/50 to-transparent" />

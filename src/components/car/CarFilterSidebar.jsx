@@ -116,6 +116,7 @@ export default function CarFilterSidebar({ value, onChange, onApply, onReset }) 
             step={PRICE_STEP}
             value={price}
             allowCross={false}
+            ariaLabelForHandle={['Giá tối thiểu', 'Giá tối đa']}
             onChange={(v) => setDraftPrice(v)}
             onChangeComplete={(v) => {
               setDraftPrice(null);

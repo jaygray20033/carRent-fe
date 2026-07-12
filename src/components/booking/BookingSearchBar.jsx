@@ -140,11 +140,12 @@ export default function BookingSearchBar({ variant = 'hero' }) {
 
         {/* Pickup Date */}
         <div className={isHero ? 'md:col-span-2' : ''}>
-          <label className="block text-xs font-medium text-ink-500 mb-1.5">
+          <label htmlFor="pickup-date" className="block text-xs font-medium text-ink-500 mb-1.5">
             <Calendar className="w-3.5 h-3.5 inline mr-1" />
             Ngày nhận xe
           </label>
           <input
+            id="pickup-date"
             type="datetime-local"
             value={pickupDate}
             onChange={(e) => {
@@ -165,11 +166,12 @@ export default function BookingSearchBar({ variant = 'hero' }) {
 
         {/* Return Date */}
         <div className={isHero ? 'md:col-span-2' : ''}>
-          <label className="block text-xs font-medium text-ink-500 mb-1.5">
+          <label htmlFor="return-date" className="block text-xs font-medium text-ink-500 mb-1.5">
             <Calendar className="w-3.5 h-3.5 inline mr-1" />
             Ngày trả xe
           </label>
           <input
+            id="return-date"
             type="datetime-local"
             value={returnDate}
             onChange={(e) => {

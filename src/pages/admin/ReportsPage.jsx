@@ -38,6 +38,7 @@ const REPORT_TABS = [
   { id: 'revenue', label: 'Doanh thu', icon: Wallet },
   { id: 'booking', label: 'Đơn thuê', icon: ClipboardList },
   { id: 'top-vehicles', label: 'Top xe', icon: Trophy },
+  { id: 'b2b-c2c', label: 'B2B vs C2C', icon: Wallet },
 ];
 
 const METHOD_LABEL = {
@@ -72,12 +73,17 @@ export default function ReportsPage() {
     ...(range.to ? { to: range.to } : {}),
   };
 
+  const monthParam =
+    range.from && /^\d{4}-\d{2}/.test(range.from) ? range.from.slice(0, 7) : undefined;
+
   const { data, isLoading, isFetching } = useQuery({
-    queryKey: ['adminReport', tab, range.from, range.to, group],
+    queryKey: ['adminReport', tab, range.from, range.to, group, monthParam],
     queryFn: () => {
       if (tab === 'revenue')
         return adminReportsService.revenue({ ...rangeParams, group });
       if (tab === 'booking') return adminReportsService.booking(rangeParams);
+      if (tab === 'b2b-c2c')
+        return adminReportsService.b2bVsC2c(monthParam ? { month: monthParam } : {});
       return adminReportsService.topVehicles({ ...rangeParams, limit: 10 });
     },
     keepPreviousData: true,
@@ -184,8 +190,57 @@ export default function ReportsPage() {
           {tab === 'revenue' && <RevenueReport report={report} group={group} setGroup={setGroup} onExport={handleExport} exporting={exporting} />}
           {tab === 'booking' && <BookingReport report={report} />}
           {tab === 'top-vehicles' && <TopVehiclesReport report={report} />}
+          {tab === 'b2b-c2c' && <B2bVsC2cReport report={report} />}
         </div>
       )}
+    </div>
+  );
+}
+
+function B2bVsC2cReport({ report }) {
+  const b2b = report?.b2b || {};
+  const c2c = report?.c2c || {};
+  const byCorporate = b2b.byCorporate || [];
+  return (
+    <div className="space-y-6">
+      <p className="text-sm text-ink-400">
+        Tháng {report?.month || '—'} · B2B = CONFIRMED/SETTLED corporate · C2C = SUCCESS payments BOOKING
+      </p>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <div className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-ink-100">
+          <p className="text-xs font-medium uppercase text-ink-300">Doanh thu B2B</p>
+          <p className="mt-1 text-2xl font-bold text-ink-700">{formatCurrency(b2b.total || 0)}</p>
+          <p className="text-xs text-ink-400">{b2b.trips || 0} chuyến · {report?.b2bShare ?? 0}%</p>
+        </div>
+        <div className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-ink-100">
+          <p className="text-xs font-medium uppercase text-ink-300">Doanh thu C2C</p>
+          <p className="mt-1 text-2xl font-bold text-ink-700">{formatCurrency(c2c.total || 0)}</p>
+          <p className="text-xs text-ink-400">{c2c.payments || 0} GD · {report?.c2cShare ?? 0}%</p>
+        </div>
+        <div className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-ink-100">
+          <p className="text-xs font-medium uppercase text-ink-300">Tổng</p>
+          <p className="mt-1 text-2xl font-bold text-brand-primary">
+            {formatCurrency(report?.grandTotal || 0)}
+          </p>
+        </div>
+      </div>
+      <div className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-ink-100">
+        <h2 className="mb-3 text-sm font-semibold text-ink-700">B2B theo công ty</h2>
+        {byCorporate.length === 0 ? (
+          <EmptyState title="Chưa có doanh thu B2B tháng này" />
+        ) : (
+          <ul className="divide-y divide-ink-50 text-sm">
+            {byCorporate.map((r) => (
+              <li key={r.corporateId} className="flex justify-between py-2">
+                <span>{r.name}</span>
+                <span>
+                  {r.trips} chuyến · <strong>{formatCurrency(r.revenue)}</strong>
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
     </div>
   );
 }

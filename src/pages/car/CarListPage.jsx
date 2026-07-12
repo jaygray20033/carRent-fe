@@ -132,8 +132,9 @@ export default function CarListPage() {
             Tìm thấy <span className="font-semibold text-ink-900">{total}</span> xe
           </p>
           <div className="flex items-center gap-2">
-            <label className="text-sm text-ink-500">Sắp xếp theo:</label>
+            <label htmlFor="car-sort" className="text-sm text-ink-500">Sắp xếp theo:</label>
             <select
+              id="car-sort"
               value={sort}
               onChange={(e) => handleSort(e.target.value)}
               className="rounded-lg border border-ink-200 bg-white px-3 py-2 text-sm font-medium text-ink-900 focus:border-brand-primary focus:outline-none focus:ring-1 focus:ring-brand-primary"

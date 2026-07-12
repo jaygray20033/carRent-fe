@@ -21,6 +21,7 @@ import {
   LifeBuoy,
   Handshake,
   Siren,
+  Building2,
 } from 'lucide-react';
 import { useAuthStore } from '../../store/authStore.js';
 
@@ -29,6 +30,8 @@ const navItems = [
   { to: '/admin/vehicles', label: 'Quản lý xe', icon: Car },
   { to: '/admin/vehicle-models', label: 'Dòng xe', icon: Layers },
   { to: '/admin/bookings', label: 'Đơn thuê', icon: ClipboardList },
+  { to: '/admin/corporate/clients', label: 'Doanh nghiệp', icon: Building2 },
+  { to: '/admin/corporate/bookings', label: 'Queue B2B', icon: Handshake },
   { to: '/admin/users', label: 'Người dùng', icon: Users },
   { to: '/admin/posts', label: 'Bài viết', icon: FileText },
   { to: '/admin/post-categories', label: 'Danh mục', icon: FolderTree },
