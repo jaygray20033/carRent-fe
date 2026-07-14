@@ -70,6 +70,20 @@ const CorporateClientListPage = lazy(() => import('./pages/admin/corporate/Clien
 const CorporateClientDetailPage = lazy(() => import('./pages/admin/corporate/ClientDetailPage.jsx'));
 const CorporateBookingQueuePage = lazy(() => import('./pages/admin/corporate/BookingQueuePage.jsx'));
 
+// ENT-Day 4 — Enterprise Portal
+const CorporateEnterpriseLayout = lazy(
+  () => import('./components/layout/CorporateEnterpriseLayout.jsx')
+);
+const EnterpriseRoute = lazy(() => import('./components/auth/EnterpriseRoute.jsx'));
+const EnterpriseDashboardPage = lazy(() => import('./pages/enterprise/DashboardPage.jsx'));
+const EnterpriseNewBookingPage = lazy(() => import('./pages/enterprise/NewBookingPage.jsx'));
+const EnterpriseSchedulePage = lazy(() => import('./pages/enterprise/SchedulePage.jsx'));
+const EnterpriseVasCatalogPage = lazy(() => import('./pages/enterprise/VasCatalogPage.jsx'));
+const EnterpriseQualityPage = lazy(() => import('./pages/enterprise/QualityPage.jsx'));
+const EnterpriseContractPage = lazy(() => import('./pages/enterprise/ContractPage.jsx'));
+const EnterpriseSettlementsPage = lazy(() => import('./pages/enterprise/SettlementsPage.jsx'));
+const EnterpriseEmployeesPage = lazy(() => import('./pages/enterprise/EmployeesPage.jsx'));
+
 export default function App() {
   return (
     <ErrorBoundary>
@@ -161,6 +175,26 @@ export default function App() {
             </Route>
 
             <Route path="*" element={<NotFoundPage />} />
+          </Route>
+
+          {/* ENT-Day 4 — Enterprise Portal (isolated from C2C MainLayout) */}
+          <Route
+            path="/enterprise"
+            element={
+              <EnterpriseRoute>
+                <CorporateEnterpriseLayout />
+              </EnterpriseRoute>
+            }
+          >
+            <Route index element={<EnterpriseDashboardPage />} />
+            <Route path="dashboard" element={<EnterpriseDashboardPage />} />
+            <Route path="new-booking" element={<EnterpriseNewBookingPage />} />
+            <Route path="schedule" element={<EnterpriseSchedulePage />} />
+            <Route path="vas" element={<EnterpriseVasCatalogPage />} />
+            <Route path="quality" element={<EnterpriseQualityPage />} />
+            <Route path="contract" element={<EnterpriseContractPage />} />
+            <Route path="settlements" element={<EnterpriseSettlementsPage />} />
+            <Route path="employees" element={<EnterpriseEmployeesPage />} />
           </Route>
 
           {/* Admin area — own layout, ADMIN/OPERATOR only (no MainLayout chrome) */}

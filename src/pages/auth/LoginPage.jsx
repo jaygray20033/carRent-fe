@@ -6,6 +6,7 @@ import { useAuth } from '../../hooks/useAuth.js';
 import AuthCard from '../../components/auth/AuthCard.jsx';
 import AuthField from '../../components/auth/AuthField.jsx';
 import AuthButton from '../../components/auth/AuthButton.jsx';
+import { enterpriseService } from '../../services/enterpriseService.js';
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -20,7 +21,19 @@ export default function LoginPage() {
   const onSubmit = async (values) => {
     try {
       await login({ identifier: values.identifier.trim(), password: values.password });
-      const to = location.state?.from || '/';
+      // ENT-Day 4 — corporate employees land on Enterprise Portal, not C2C home.
+      let to = location.state?.from || '/';
+      if (!location.state?.from || location.state?.from === '/') {
+        try {
+          const res = await enterpriseService.myCompany();
+          const data = res?.data ?? res ?? {};
+          if (data.company?.id || data.corporate?.id || data.membership?.corporateId) {
+            to = '/enterprise/dashboard';
+          }
+        } catch {
+          // not a corporate user — stay on C2C
+        }
+      }
       navigate(to, { replace: true });
     } catch (e) {
       if (e?.code === 'ACCOUNT_PENDING') {
@@ -75,6 +88,8 @@ export default function LoginPage() {
         <p className="font-medium text-ink-700">Demo account:</p>
         <p>📱 Admin: 0900000001 / Admin@123</p>
         <p>📱 User: 0901234567 / User@123</p>
+        <p>🏢 Corp Admin: 0909000222 / CorpAdmin@123</p>
+        <p>🏢 Corp Emp: 0909000333 / CorpEmp@123</p>
       </div>
     </AuthCard>
   );
