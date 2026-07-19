@@ -28,6 +28,14 @@ export default function EnterpriseQualityPage() {
     ['IN_PROGRESS', 'PENDING_CONFIRM', 'CONFIRMED'].includes(b.status)
   );
 
+  // ENT-Day 5 — company SLA catalog for dropdown
+  const { data: slaRes } = useQuery({
+    queryKey: ['enterprise', 'mySla'],
+    queryFn: () => enterpriseService.mySla(),
+  });
+  const slaPayload = slaRes?.data ?? slaRes ?? {};
+  const slaItems = slaPayload.items || [];
+
   // Pull violations for selected booking
   const { data: violRes, isLoading: loadingViol } = useQuery({
     queryKey: ['enterprise', 'violations', form.bookingId],
@@ -47,19 +55,21 @@ export default function EnterpriseQualityPage() {
       toast.success('Đã gửi báo cáo vi phạm — chờ OtoRent xác nhận');
       setForm((f) => ({ ...f, description: '' }));
       qc.invalidateQueries({ queryKey: ['enterprise', 'violations', form.bookingId] });
+      qc.invalidateQueries({ queryKey: ['enterprise', 'mySla'] });
     },
     onError: (err) => toast.error(err?.message || 'Không gửi được báo cáo'),
   });
 
-  const criticalCount = violations.filter(
-    (v) => v.severity === 'CRITICAL' && v.isConfirmed
-  ).length;
+  const criticalCount =
+    slaPayload.criticalCount ??
+    violations.filter((v) => v.severity === 'CRITICAL' && v.isConfirmed).length;
   const warning =
-    criticalCount >= 2
+    slaPayload.warningMessage ||
+    (criticalCount >= 2
       ? 'Đủ điều kiện chấm dứt HĐ (CRITICAL ≥ 2)'
       : criticalCount === 1
         ? 'Cảnh báo: 1 vi phạm nghiêm trọng'
-        : null;
+        : null);
 
   if (loadingBookings) return <Loading />;
 
@@ -91,13 +101,20 @@ export default function EnterpriseQualityPage() {
             </select>
           </label>
           <label className="block text-sm">
-            SLA id (từ HĐ — VD: 1 = Đúng giờ)
-            <input
+            Tiêu chuẩn SLA
+            <select
               className="mt-1 w-full rounded-lg border border-ink-200 px-3 py-2"
               value={form.slaId}
               onChange={(e) => setForm({ ...form, slaId: e.target.value })}
-              placeholder="slaId"
-            />
+            >
+              <option value="">— Chọn SLA —</option>
+              {slaItems.map((s) => (
+                <option key={s.id} value={s.id}>
+                  {s.name}
+                  {s.targetValue ? ` (${s.targetValue})` : ''}
+                </option>
+              ))}
+            </select>
           </label>
           <label className="block text-sm">
             Mức độ

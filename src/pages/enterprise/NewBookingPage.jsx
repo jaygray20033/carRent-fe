@@ -108,9 +108,9 @@ export default function EnterpriseNewBookingPage() {
         estimatedKm: Number(form.estimatedKm),
         pickupAt: new Date(form.pickupAt).toISOString(),
         returnAt: new Date(form.returnAt).toISOString(),
-        pickupAddress: form.pickupAddress,
-        dropoffAddress: form.dropoffAddress,
-        purpose: form.purpose || null,
+        pickupAddress: form.pickupAddress.trim(),
+        dropoffAddress: form.dropoffAddress.trim(),
+        purpose: form.purpose?.trim() || null,
       });
       const booking = (bookingRes?.data ?? bookingRes)?.booking || bookingRes?.data?.booking;
       const bookingId = booking?.id;
@@ -134,9 +134,41 @@ export default function EnterpriseNewBookingPage() {
       navigate('/enterprise/schedule');
     },
     onError: (err) => {
-      toast.error(err?.message || 'Không tạo được chuyến');
+      const fieldMsg = Array.isArray(err?.errors)
+        ? err.errors.map((e) => e.message).filter(Boolean).join('; ')
+        : '';
+      toast.error(fieldMsg || err?.message || 'Không tạo được chuyến');
     },
   });
+
+  function validateStep1() {
+    const pickup = form.pickupAddress.trim();
+    const dropoff = form.dropoffAddress.trim();
+    if (pickup.length < 3 || dropoff.length < 3) {
+      toast.error('Điểm đón/trả cần ít nhất 3 ký tự');
+      return false;
+    }
+    const km = Number(form.estimatedKm);
+    if (!Number.isFinite(km) || km <= 0) {
+      toast.error('Km ước tính phải lớn hơn 0');
+      return false;
+    }
+    const pickupAt = new Date(form.pickupAt);
+    const returnAt = new Date(form.returnAt);
+    if (Number.isNaN(pickupAt.getTime()) || Number.isNaN(returnAt.getTime())) {
+      toast.error('Thời gian đón/trả không hợp lệ');
+      return false;
+    }
+    if (pickupAt.getTime() < Date.now() + 2 * 60 * 60 * 1000) {
+      toast.error('Cần đặt trước ít nhất 2 tiếng');
+      return false;
+    }
+    if (returnAt.getTime() <= pickupAt.getTime()) {
+      toast.error('Giờ trả phải sau giờ đón');
+      return false;
+    }
+    return true;
+  }
 
   if (loadingPrice || loadingVas) return <Loading />;
 
@@ -256,10 +288,7 @@ export default function EnterpriseNewBookingPage() {
                 type="button"
                 className="rounded-xl bg-brand-primary px-4 py-2 text-sm font-semibold text-white"
                 onClick={() => {
-                  if (!form.pickupAddress || !form.dropoffAddress) {
-                    toast.error('Nhập điểm đón/trả');
-                    return;
-                  }
+                  if (!validateStep1()) return;
                   setStep(2);
                 }}
               >

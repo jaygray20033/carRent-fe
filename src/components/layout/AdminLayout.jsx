@@ -22,6 +22,7 @@ import {
   Handshake,
   Siren,
   Building2,
+  ShieldAlert,
 } from 'lucide-react';
 import { useAuthStore } from '../../store/authStore.js';
 
@@ -32,6 +33,7 @@ const navItems = [
   { to: '/admin/bookings', label: 'Đơn thuê', icon: ClipboardList },
   { to: '/admin/corporate/clients', label: 'Doanh nghiệp', icon: Building2 },
   { to: '/admin/corporate/bookings', label: 'Queue B2B', icon: Handshake },
+  { to: '/admin/corporate/sla-violations', label: 'Báo cáo SLA DN', icon: ShieldAlert },
   { to: '/admin/users', label: 'Người dùng', icon: Users },
   { to: '/admin/posts', label: 'Bài viết', icon: FileText },
   { to: '/admin/post-categories', label: 'Danh mục', icon: FolderTree },

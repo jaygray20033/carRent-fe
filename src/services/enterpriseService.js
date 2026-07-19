@@ -22,6 +22,7 @@ export const enterpriseService = {
   removeBookingVas: (id, vasId) => api.delete(`/corporate/bookings/${id}/vas/${vasId}`),
 
   // SLA
+  mySla: () => api.get('/corporate/me/sla'),
   listBookingViolations: (id) => api.get(`/corporate/bookings/${id}/sla-violations`),
   reportViolation: (id, payload) => api.post(`/corporate/bookings/${id}/sla-violations`, payload),
 

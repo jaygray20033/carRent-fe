@@ -146,6 +146,10 @@ export const adminCorporateService = {
     api.put(`/admin/settlements/${id}/mark-paid`, payload || {}),
   exportSettlementPdf: (id) =>
     api.get(`/admin/settlements/${id}/export`, { responseType: 'blob' }),
+  // ENT — SLA reports from enterprises
+  listSlaViolations: (params) => api.get('/admin/sla-violations', { params }),
+  confirmSlaViolation: (id, payload) =>
+    api.put(`/admin/sla-violations/${id}/confirm`, payload || {}),
 };
 
 export default {

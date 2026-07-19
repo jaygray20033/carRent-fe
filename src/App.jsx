@@ -69,12 +69,16 @@ const SosRequestListPage = lazy(() => import('./pages/admin/SosRequestListPage.j
 const CorporateClientListPage = lazy(() => import('./pages/admin/corporate/ClientListPage.jsx'));
 const CorporateClientDetailPage = lazy(() => import('./pages/admin/corporate/ClientDetailPage.jsx'));
 const CorporateBookingQueuePage = lazy(() => import('./pages/admin/corporate/BookingQueuePage.jsx'));
+const CorporateSlaViolationsPage = lazy(
+  () => import('./pages/admin/corporate/SlaViolationsPage.jsx')
+);
 
 // ENT-Day 4 — Enterprise Portal
 const CorporateEnterpriseLayout = lazy(
   () => import('./components/layout/CorporateEnterpriseLayout.jsx')
 );
 const EnterpriseRoute = lazy(() => import('./components/auth/EnterpriseRoute.jsx'));
+const EnterpriseC2CRedirect = lazy(() => import('./components/auth/EnterpriseC2CRedirect.jsx'));
 const EnterpriseDashboardPage = lazy(() => import('./pages/enterprise/DashboardPage.jsx'));
 const EnterpriseNewBookingPage = lazy(() => import('./pages/enterprise/NewBookingPage.jsx'));
 const EnterpriseSchedulePage = lazy(() => import('./pages/enterprise/SchedulePage.jsx'));
@@ -90,13 +94,34 @@ export default function App() {
       <Suspense fallback={<Loading label="Đang tải trang..." />}>
         <Routes>
           <Route element={<MainLayout />}>
-            {/* Public */}
+            {/* Public — ENT-Day 5: enterprise users redirected off C2C car/booking routes */}
             <Route path="/" element={<HomePage />} />
-            <Route path="/cars" element={<CarListPage />} />
-            <Route path="/cars/:id" element={<CarDetailPage />} />
+            <Route
+              path="/cars"
+              element={
+                <EnterpriseC2CRedirect>
+                  <CarListPage />
+                </EnterpriseC2CRedirect>
+              }
+            />
+            <Route
+              path="/cars/:id"
+              element={
+                <EnterpriseC2CRedirect>
+                  <CarDetailPage />
+                </EnterpriseC2CRedirect>
+              }
+            />
             <Route path="/magazine" element={<BlogListPage />} />
             <Route path="/magazine/:slug" element={<BlogDetailPage />} />
-            <Route path="/search" element={<SearchPage />} />
+            <Route
+              path="/search"
+              element={
+                <EnterpriseC2CRedirect>
+                  <SearchPage />
+                </EnterpriseC2CRedirect>
+              }
+            />
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/about" element={<AboutUsPage />} />
             <Route path="/faq" element={<FaqPage />} />
@@ -115,7 +140,9 @@ export default function App() {
               path="/checkout/:carId"
               element={
                 <ProtectedRoute>
-                  <CheckoutPage />
+                  <EnterpriseC2CRedirect>
+                    <CheckoutPage />
+                  </EnterpriseC2CRedirect>
                 </ProtectedRoute>
               }
             />
@@ -216,6 +243,7 @@ export default function App() {
             <Route path="corporate/clients" element={<CorporateClientListPage />} />
             <Route path="corporate/clients/:id" element={<CorporateClientDetailPage />} />
             <Route path="corporate/bookings" element={<CorporateBookingQueuePage />} />
+            <Route path="corporate/sla-violations" element={<CorporateSlaViolationsPage />} />
             <Route path="users" element={<UserListPage />} />
             <Route path="users/:id" element={<UserDetailPage />} />
             <Route path="reports" element={<ReportsPage />} />
