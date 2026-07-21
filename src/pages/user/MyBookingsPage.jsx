@@ -1,102 +1,150 @@
-import { Link } from 'react-router-dom';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import toast from 'react-hot-toast';
+// src/pages/user/MyBookingsPage.jsx
+// Booking schedule page (Figma: UserAccount-Schedule.png)
+// Tabs: Tất cả / Chờ thanh toán / Đã xác nhận / Đang dùng / Hoàn tất / Đã hủy
+// List + pagination + click → detail.
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import { Clock } from 'lucide-react';
 import { bookingService } from '../../services/bookingService.js';
 import { formatCurrency, formatDateTime } from '../../utils/format.js';
+import { BOOKING_TABS, statusColor, statusLabel } from '../../utils/bookingStatus.js';
 import Loading from '../../components/common/Loading.jsx';
 import EmptyState from '../../components/common/EmptyState.jsx';
+import Pagination from '../../components/ui/Pagination.jsx';
 
-const statusColor = {
-  DRAFT: 'bg-gray-100 text-gray-700',
-  PENDING_PAYMENT: 'bg-amber-100 text-amber-700',
-  CONFIRMED: 'bg-blue-100 text-blue-700',
-  IN_USE: 'bg-indigo-100 text-indigo-700',
-  COMPLETED: 'bg-emerald-100 text-emerald-700',
-  CANCELLED: 'bg-red-100 text-red-700',
-  REFUNDED: 'bg-gray-100 text-gray-700',
-};
+const PAGE_SIZE = 6;
 
 export default function MyBookingsPage() {
-  const qc = useQueryClient();
-  const { data, isLoading } = useQuery({
-    queryKey: ['myBookings'],
-    queryFn: () => bookingService.listMy({ page: 1, limit: 20 }),
+  const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState(null); // null = "Tất cả"
+  const [page, setPage] = useState(1);
+
+  const { data, isLoading, isFetching } = useQuery({
+    queryKey: ['myBookings', activeTab, page],
+    queryFn: () =>
+      bookingService.listMy({
+        page,
+        limit: PAGE_SIZE,
+        ...(activeTab ? { status: activeTab } : {}),
+      }),
+    keepPreviousData: true,
   });
 
-  const cancelMutation = useMutation({
-    mutationFn: (id) => bookingService.cancel(id, 'User cancelled'),
-    onSuccess: () => {
-      toast.success('Đã huỷ đơn');
-      qc.invalidateQueries({ queryKey: ['myBookings'] });
-    },
-    onError: (e) => toast.error(e?.message || 'Huỷ thất bại'),
-  });
+  // The API client unwraps to the response body. Support a couple of shapes.
+  const payload = data?.data ?? data ?? {};
+  const list = Array.isArray(payload) ? payload : payload.items || payload.data || [];
+  const total = payload.total ?? data?.total ?? list.length;
+  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
 
-  if (isLoading) return <Loading />;
-  const list = data?.data || [];
+  const handleTab = (value) => {
+    setActiveTab(value);
+    setPage(1);
+  };
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-8">
-      <h1 className="text-2xl font-bold text-gray-900">Đơn thuê của tôi</h1>
+    <div className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-gray-100 sm:p-6">
+      <h1 className="text-xl font-bold text-gray-900">Lịch đặt xe của tôi</h1>
 
-      {list.length === 0 ? (
+      {/* Tabs */}
+      <div className="mt-4 flex flex-wrap gap-2 border-b border-gray-100 pb-3">
+        {BOOKING_TABS.map((tab) => {
+          const isActive = activeTab === tab.value;
+          return (
+            <button
+              key={tab.label}
+              onClick={() => handleTab(tab.value)}
+              className={`rounded-lg px-3.5 py-1.5 text-sm font-medium transition-colors ${
+                isActive
+                  ? 'bg-blue-900 text-white'
+                  : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
+              }`}
+            >
+              {tab.label}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* List */}
+      {isLoading ? (
+        <Loading />
+      ) : list.length === 0 ? (
         <EmptyState
-          title="Bạn chưa có đơn nào"
-          action={
-            <Link to="/cars" className="btn-primary mt-2">
-              Tìm xe để thuê
-            </Link>
-          }
+          title="Không có đơn nào"
+          description="Bạn chưa có đơn đặt xe ở trạng thái này."
         />
       ) : (
-        <div className="mt-6 space-y-3">
-          {list.map((b) => (
-            <div key={b.id} className="card flex flex-col gap-3 p-4 sm:flex-row sm:items-center">
-              <img
-                src={b.car?.thumbnailUrl || 'https://placehold.co/160x100?text=Car'}
-                alt={b.car?.name}
-                className="h-24 w-32 rounded-md object-cover"
-              />
-              <div className="min-w-0 flex-1">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="min-w-0">
-                    <p className="truncate font-semibold text-gray-900">{b.car?.name}</p>
-                    <p className="text-xs text-gray-500">
-                      Mã: <span className="font-mono">{b.bookingCode}</span>
-                    </p>
-                  </div>
-                  <span
-                    className={`rounded-md px-2 py-0.5 text-xs font-medium ${statusColor[b.status]}`}
-                  >
-                    {b.status}
-                  </span>
+        <ul className={`mt-4 space-y-3 ${isFetching ? 'opacity-60' : ''}`}>
+          {list.map((b) => {
+            const car = b.car || b.vehicle || {};
+            const carName =
+              car.name ||
+              [car.brand?.name, car.model?.name].filter(Boolean).join(' ') ||
+              'Xe thuê';
+            const thumb =
+              car.thumbnailUrl ||
+              car.images?.[0]?.url ||
+              'https://placehold.co/160x100?text=Car';
+            return (
+              <li
+                key={b.id}
+                onClick={() => navigate(`/me/bookings/${b.id}`)}
+                className="flex cursor-pointer flex-col items-stretch gap-3 rounded-xl border border-gray-100 p-3 transition-colors hover:border-blue-200 hover:bg-blue-50/40 sm:flex-row sm:items-center"
+              >
+                <div className="min-w-0 flex-1">
+                  <p className="truncate font-semibold text-gray-900">{carName}</p>
+                  <p className="mt-1 text-xs text-gray-500">
+                    {formatDateTime(b.pickupAt)}
+                  </p>
                 </div>
-                <div className="mt-2 grid grid-cols-2 gap-2 text-xs text-gray-600 sm:grid-cols-4">
-                  <span>Nhận: {formatDateTime(b.pickupAt)}</span>
-                  <span>Trả: {formatDateTime(b.returnAt)}</span>
-                  <span>{b.totalDays} ngày</span>
-                  <span className="font-semibold text-primary-600">
-                    {formatCurrency(b.totalAmount)}
-                  </span>
-                </div>
-              </div>
 
-              <div className="flex gap-2">
-                <Link to={`/cars/${b.carId}`} className="btn-outline">
-                  Xem xe
-                </Link>
-                {['DRAFT', 'PENDING_PAYMENT', 'CONFIRMED'].includes(b.status) && (
-                  <button
-                    onClick={() => cancelMutation.mutate(b.id)}
-                    disabled={cancelMutation.isPending}
-                    className="btn-outline text-red-600 hover:bg-red-50"
+                <img
+                  src={thumb}
+                  alt={carName}
+                  className="h-16 w-28 rounded-lg object-cover"
+                />
+
+                <div className="flex items-center gap-3 sm:flex-col sm:items-end">
+                  <span
+                    className={`inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-xs font-medium ${statusColor(
+                      b.status
+                    )}`}
                   >
-                    Huỷ
-                  </button>
-                )}
-              </div>
-            </div>
-          ))}
+                    {b.status === 'IN_USE' || b.status === 'PENDING_PAYMENT' ? (
+                      <Clock className="h-3 w-3" />
+                    ) : null}
+                    {statusLabel(b.status)}
+                  </span>
+                  <span className="text-sm font-semibold text-blue-700">
+                    {formatCurrency(b.totalAmount ?? b.total_price)}
+                  </span>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigate(`/me/bookings/${b.id}`);
+                  }}
+                  className="rounded-lg border border-blue-600 px-4 py-1.5 text-sm font-medium text-blue-700 transition-colors hover:bg-blue-50"
+                >
+                  Chi tiết
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+      )}
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="mt-6">
+          <Pagination
+            currentPage={page}
+            totalPages={totalPages}
+            onPageChange={setPage}
+          />
         </div>
       )}
     </div>

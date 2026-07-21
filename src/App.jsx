@@ -1,65 +1,318 @@
+import { lazy, Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import MainLayout from './components/layout/MainLayout.jsx';
+import UserLayout from './components/layout/UserLayout.jsx';
+import AdminLayout from './components/layout/AdminLayout.jsx';
 import ProtectedRoute from './components/auth/ProtectedRoute.jsx';
+import AdminRoute from './components/auth/AdminRoute.jsx';
+import ErrorBoundary from './pages/ErrorBoundary.jsx';
+import Loading from './components/common/Loading.jsx';
 
-import HomePage from './pages/HomePage.jsx';
-import NotFoundPage from './pages/NotFoundPage.jsx';
-import LoginPage from './pages/auth/LoginPage.jsx';
-import RegisterPage from './pages/auth/RegisterPage.jsx';
-import CarListPage from './pages/car/CarListPage.jsx';
-import CarDetailPage from './pages/car/CarDetailPage.jsx';
-import CheckoutPage from './pages/booking/CheckoutPage.jsx';
-import BookingSuccessPage from './pages/booking/BookingSuccessPage.jsx';
-import ProfilePage from './pages/user/ProfilePage.jsx';
-import MyBookingsPage from './pages/user/MyBookingsPage.jsx';
+// Day 44 — code-split every page behind React.lazy so the initial bundle only
+// carries the shell (layouts + router). Each route chunk is fetched on demand.
+const HomePage = lazy(() => import('./pages/HomePage.jsx'));
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage.jsx'));
+const LoginPage = lazy(() => import('./pages/auth/LoginPage.jsx'));
+const RegisterPage = lazy(() => import('./pages/auth/RegisterPage.jsx'));
+const ForgotPasswordPage = lazy(() => import('./pages/auth/ForgotPasswordPage.jsx'));
+const ResetPasswordPage = lazy(() => import('./pages/auth/ResetPasswordPage.jsx'));
+const CarListPage = lazy(() => import('./pages/car/CarListPage.jsx'));
+const CarDetailPage = lazy(() => import('./pages/car/CarDetailPage.jsx'));
+const BlogListPage = lazy(() => import('./pages/blog/BlogListPage.jsx'));
+const BlogDetailPage = lazy(() => import('./pages/blog/BlogDetailPage.jsx'));
+const SearchPage = lazy(() => import('./pages/SearchPage.jsx'));
+const ContactPage = lazy(() => import('./pages/ContactPage.jsx'));
+const AboutUsPage = lazy(() => import('./pages/AboutUsPage.jsx'));
+const FaqPage = lazy(() => import('./pages/FaqPage.jsx'));
+const DeliveryPage = lazy(() => import('./pages/DeliveryPage.jsx'));
+const RulesPage = lazy(() => import('./pages/RulesPage.jsx'));
+const LegalPage = lazy(() => import('./pages/LegalPage.jsx'));
+const RoadsidePage = lazy(() => import('./pages/RoadsidePage.jsx'));
+const AgentRegisterPage = lazy(() => import('./pages/AgentRegisterPage.jsx'));
+const SupplierRegisterPage = lazy(() => import('./pages/SupplierRegisterPage.jsx'));
+const EnterpriseRegisterPage = lazy(() => import('./pages/EnterpriseRegisterPage.jsx'));
+const CheckoutPage = lazy(() => import('./pages/booking/CheckoutPage.jsx'));
+const BookingSuccessPage = lazy(() => import('./pages/booking/BookingSuccessPage.jsx'));
+const PaymentPage = lazy(() => import('./pages/booking/PaymentPage.jsx'));
+const PaymentResultPage = lazy(() => import('./pages/booking/PaymentResultPage.jsx'));
+const SOSPage = lazy(() => import('./pages/SOSPage.jsx'));
+const ProfilePage = lazy(() => import('./pages/user/ProfilePage.jsx'));
+const ChangePasswordPage = lazy(() => import('./pages/user/ChangePasswordPage.jsx'));
+const ChangePhonePage = lazy(() => import('./pages/user/ChangePhonePage.jsx'));
+const MyBookingsPage = lazy(() => import('./pages/user/MyBookingsPage.jsx'));
+const BookingDetailPage = lazy(() => import('./pages/user/BookingDetailPage.jsx'));
+const AddressBookPage = lazy(() => import('./pages/user/AddressBookPage.jsx'));
+const WalletPage = lazy(() => import('./pages/user/WalletPage.jsx'));
+const PaymentHistoryPage = lazy(() => import('./pages/user/PaymentHistoryPage.jsx'));
+const ReviewsPage = lazy(() => import('./pages/user/ReviewsPage.jsx'));
+const NotificationsPage = lazy(() => import('./pages/user/NotificationsPage.jsx'));
+
+const DashboardPage = lazy(() => import('./pages/admin/DashboardPage.jsx'));
+const PostListPage = lazy(() => import('./pages/admin/PostListPage.jsx'));
+const PostFormPage = lazy(() => import('./pages/admin/PostFormPage.jsx'));
+const CommentModerationPage = lazy(() => import('./pages/admin/CommentModerationPage.jsx'));
+const CouponListPage = lazy(() => import('./pages/admin/CouponListPage.jsx'));
+const CouponFormPage = lazy(() => import('./pages/admin/CouponFormPage.jsx'));
+const CategoryListPage = lazy(() => import('./pages/admin/CategoryListPage.jsx'));
+const TagListPage = lazy(() => import('./pages/admin/TagListPage.jsx'));
+const VehicleListPage = lazy(() => import('./pages/admin/VehicleListPage.jsx'));
+const VehicleFormPage = lazy(() => import('./pages/admin/VehicleFormPage.jsx'));
+const VehicleModelListPage = lazy(() => import('./pages/admin/VehicleModelListPage.jsx'));
+const BookingListPage = lazy(() => import('./pages/admin/BookingListPage.jsx'));
+const BookingDetailAdminPage = lazy(() => import('./pages/admin/BookingDetailAdminPage.jsx'));
+const UserListPage = lazy(() => import('./pages/admin/UserListPage.jsx'));
+const UserDetailPage = lazy(() => import('./pages/admin/UserDetailPage.jsx'));
+const ReportsPage = lazy(() => import('./pages/admin/ReportsPage.jsx'));
+const SettingsPage = lazy(() => import('./pages/admin/SettingsPage.jsx'));
+const ContactMessageListPage = lazy(() => import('./pages/admin/ContactMessageListPage.jsx'));
+const RescueStationListPage = lazy(() => import('./pages/admin/RescueStationListPage.jsx'));
+const AgentApplicationListPage = lazy(() => import('./pages/admin/AgentApplicationListPage.jsx'));
+const SupplierApplicationListPage = lazy(() => import('./pages/admin/SupplierApplicationListPage.jsx'));
+const SosRequestListPage = lazy(() => import('./pages/admin/SosRequestListPage.jsx'));
+const CorporateClientListPage = lazy(() => import('./pages/admin/corporate/ClientListPage.jsx'));
+const CorporateClientDetailPage = lazy(() => import('./pages/admin/corporate/ClientDetailPage.jsx'));
+const CorporateBookingQueuePage = lazy(() => import('./pages/admin/corporate/BookingQueuePage.jsx'));
+const CorporateSlaViolationsPage = lazy(
+  () => import('./pages/admin/corporate/SlaViolationsPage.jsx')
+);
+const SupplierListPage = lazy(() => import('./pages/admin/suppliers/SupplierListPage.jsx'));
+const SupplierDetailPage = lazy(() => import('./pages/admin/suppliers/SupplierDetailPage.jsx'));
+
+// Marketplace Phase E — Supplier Portal
+const SupplierLayout = lazy(() => import('./components/layout/SupplierLayout.jsx'));
+const SupplierRoute = lazy(() => import('./components/auth/SupplierRoute.jsx'));
+const SupplierDashboardPage = lazy(() => import('./pages/supplier/DashboardPage.jsx'));
+const SupplierBookingsPage = lazy(() => import('./pages/supplier/BookingsPage.jsx'));
+const SupplierBookingDetailPage = lazy(() => import('./pages/supplier/BookingDetailPage.jsx'));
+const SupplierSettlementsPage = lazy(() => import('./pages/supplier/SettlementsPage.jsx'));
+const SupplierSettlementDetailPage = lazy(
+  () => import('./pages/supplier/SettlementDetailPage.jsx')
+);
+const SupplierMembersPage = lazy(() => import('./pages/supplier/MembersPage.jsx'));
+const SupplierInviteAcceptPage = lazy(() => import('./pages/supplier/InviteAcceptPage.jsx'));
+
+// ENT-Day 4 — Enterprise Portal
+const CorporateEnterpriseLayout = lazy(
+  () => import('./components/layout/CorporateEnterpriseLayout.jsx')
+);
+const EnterpriseRoute = lazy(() => import('./components/auth/EnterpriseRoute.jsx'));
+const EnterpriseC2CRedirect = lazy(() => import('./components/auth/EnterpriseC2CRedirect.jsx'));
+const EnterpriseDashboardPage = lazy(() => import('./pages/enterprise/DashboardPage.jsx'));
+const EnterpriseNewBookingPage = lazy(() => import('./pages/enterprise/NewBookingPage.jsx'));
+const EnterpriseSchedulePage = lazy(() => import('./pages/enterprise/SchedulePage.jsx'));
+const EnterpriseVasCatalogPage = lazy(() => import('./pages/enterprise/VasCatalogPage.jsx'));
+const EnterpriseQualityPage = lazy(() => import('./pages/enterprise/QualityPage.jsx'));
+const EnterpriseContractPage = lazy(() => import('./pages/enterprise/ContractPage.jsx'));
+const EnterpriseSettlementsPage = lazy(() => import('./pages/enterprise/SettlementsPage.jsx'));
+const EnterpriseEmployeesPage = lazy(() => import('./pages/enterprise/EmployeesPage.jsx'));
 
 export default function App() {
   return (
-    <Routes>
-      <Route element={<MainLayout />}>
-        {/* Public */}
-        <Route path="/" element={<HomePage />} />
-        <Route path="/cars" element={<CarListPage />} />
-        <Route path="/cars/:id" element={<CarDetailPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
+    <ErrorBoundary>
+      <Suspense fallback={<Loading label="Đang tải trang..." />}>
+        <Routes>
+          <Route element={<MainLayout />}>
+            {/* Public — ENT-Day 5: enterprise users redirected off C2C car/booking routes */}
+            <Route path="/" element={<HomePage />} />
+            <Route
+              path="/cars"
+              element={
+                <EnterpriseC2CRedirect>
+                  <CarListPage />
+                </EnterpriseC2CRedirect>
+              }
+            />
+            <Route
+              path="/cars/:id"
+              element={
+                <EnterpriseC2CRedirect>
+                  <CarDetailPage />
+                </EnterpriseC2CRedirect>
+              }
+            />
+            <Route path="/magazine" element={<BlogListPage />} />
+            <Route path="/magazine/:slug" element={<BlogDetailPage />} />
+            <Route
+              path="/search"
+              element={
+                <EnterpriseC2CRedirect>
+                  <SearchPage />
+                </EnterpriseC2CRedirect>
+              }
+            />
+            <Route path="/contact" element={<ContactPage />} />
+            <Route path="/about" element={<AboutUsPage />} />
+            <Route path="/faq" element={<FaqPage />} />
+            <Route path="/delivery" element={<DeliveryPage />} />
+            <Route path="/rules" element={<RulesPage />} />
+            <Route path="/legal" element={<LegalPage />} />
+            <Route path="/roadside" element={<RoadsidePage />} />
+            <Route path="/agent" element={<AgentRegisterPage />} />
+            <Route path="/supplier-register" element={<SupplierRegisterPage />} />
+            <Route path="/enterprise-register" element={<EnterpriseRegisterPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+            <Route path="/reset-password" element={<ResetPasswordPage />} />
 
-        {/* Protected */}
-        <Route
-          path="/checkout/:carId"
-          element={
-            <ProtectedRoute>
-              <CheckoutPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/booking-success/:bookingId"
-          element={
-            <ProtectedRoute>
-              <BookingSuccessPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/me"
-          element={
-            <ProtectedRoute>
-              <ProfilePage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/me/bookings"
-          element={
-            <ProtectedRoute>
-              <MyBookingsPage />
-            </ProtectedRoute>
-          }
-        />
+            {/* Protected */}
+            <Route
+              path="/checkout/:carId"
+              element={
+                <ProtectedRoute>
+                  <EnterpriseC2CRedirect>
+                    <CheckoutPage />
+                  </EnterpriseC2CRedirect>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/booking-success/:bookingId"
+              element={
+                <ProtectedRoute>
+                  <BookingSuccessPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/payment/:bookingId"
+              element={
+                <ProtectedRoute>
+                  <PaymentPage />
+                </ProtectedRoute>
+              }
+            />
+            {/* VNPay redirects the browser here after payment (status in query). */}
+            <Route
+              path="/payment/result"
+              element={
+                <ProtectedRoute>
+                  <PaymentResultPage />
+                </ProtectedRoute>
+              }
+            />
+            {/* Day 39 (UC-34/35) — roadside SOS wizard for an in-use booking */}
+            <Route
+              path="/sos/:bookingId"
+              element={
+                <ProtectedRoute>
+                  <SOSPage />
+                </ProtectedRoute>
+              }
+            />
+            {/* User account area — left sidebar layout (Figma: UserAccount-*) */}
+            <Route
+              path="/me"
+              element={
+                <ProtectedRoute>
+                  <UserLayout />
+                </ProtectedRoute>
+              }
+            >
+              <Route index element={<ProfilePage />} />
+              <Route path="change-password" element={<ChangePasswordPage />} />
+              <Route path="change-phone" element={<ChangePhonePage />} />
+              <Route path="bookings" element={<MyBookingsPage />} />
+              <Route path="bookings/:id" element={<BookingDetailPage />} />
+              <Route path="wallet" element={<WalletPage />} />
+              <Route path="addresses" element={<AddressBookPage />} />
+              <Route path="payments" element={<PaymentHistoryPage />} />
+              <Route path="reviews" element={<ReviewsPage />} />
+              <Route path="notifications" element={<NotificationsPage />} />
+            </Route>
 
-        <Route path="*" element={<NotFoundPage />} />
-      </Route>
-    </Routes>
+            <Route path="*" element={<NotFoundPage />} />
+          </Route>
+
+          {/* ENT-Day 4 — Enterprise Portal (isolated from C2C MainLayout) */}
+          <Route
+            path="/enterprise"
+            element={
+              <EnterpriseRoute>
+                <CorporateEnterpriseLayout />
+              </EnterpriseRoute>
+            }
+          >
+            <Route index element={<EnterpriseDashboardPage />} />
+            <Route path="dashboard" element={<EnterpriseDashboardPage />} />
+            <Route path="new-booking" element={<EnterpriseNewBookingPage />} />
+            <Route path="schedule" element={<EnterpriseSchedulePage />} />
+            <Route path="vas" element={<EnterpriseVasCatalogPage />} />
+            <Route path="quality" element={<EnterpriseQualityPage />} />
+            <Route path="contract" element={<EnterpriseContractPage />} />
+            <Route path="settlements" element={<EnterpriseSettlementsPage />} />
+            <Route path="employees" element={<EnterpriseEmployeesPage />} />
+          </Route>
+
+          <Route
+            path="/supplier/invite/accept"
+            element={
+              <ProtectedRoute>
+                <SupplierInviteAcceptPage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/supplier"
+            element={
+              <SupplierRoute>
+                <SupplierLayout />
+              </SupplierRoute>
+            }
+          >
+            <Route index element={<SupplierDashboardPage />} />
+            <Route path="dashboard" element={<SupplierDashboardPage />} />
+            <Route path="bookings" element={<SupplierBookingsPage />} />
+            <Route path="bookings/:id" element={<SupplierBookingDetailPage />} />
+            <Route path="settlements" element={<SupplierSettlementsPage />} />
+            <Route path="settlements/:settlementId" element={<SupplierSettlementDetailPage />} />
+            <Route path="members" element={<SupplierMembersPage />} />
+          </Route>
+
+          {/* Admin area — own layout, ADMIN/OPERATOR only (no MainLayout chrome) */}
+          <Route
+            path="/admin"
+            element={
+              <AdminRoute>
+                <AdminLayout />
+              </AdminRoute>
+            }
+          >
+            <Route index element={<DashboardPage />} />
+            <Route path="vehicles" element={<VehicleListPage />} />
+            <Route path="vehicles/new" element={<VehicleFormPage />} />
+            <Route path="vehicles/:id" element={<VehicleFormPage />} />
+            <Route path="vehicle-models" element={<VehicleModelListPage />} />
+            <Route path="bookings" element={<BookingListPage />} />
+            <Route path="bookings/:id" element={<BookingDetailAdminPage />} />
+            <Route path="corporate/clients" element={<CorporateClientListPage />} />
+            <Route path="corporate/clients/:id" element={<CorporateClientDetailPage />} />
+            <Route path="corporate/bookings" element={<CorporateBookingQueuePage />} />
+            <Route path="corporate/sla-violations" element={<CorporateSlaViolationsPage />} />
+            <Route path="suppliers" element={<SupplierListPage />} />
+            <Route path="suppliers/:id" element={<SupplierDetailPage />} />
+            <Route path="users" element={<UserListPage />} />
+            <Route path="users/:id" element={<UserDetailPage />} />
+            <Route path="reports" element={<ReportsPage />} />
+            <Route path="settings" element={<SettingsPage />} />
+            <Route path="posts" element={<PostListPage />} />
+            <Route path="posts/new" element={<PostFormPage />} />
+            <Route path="posts/:id" element={<PostFormPage />} />
+            <Route path="post-categories" element={<CategoryListPage />} />
+            <Route path="tags" element={<TagListPage />} />
+            <Route path="comments" element={<CommentModerationPage />} />
+            <Route path="contact-messages" element={<ContactMessageListPage />} />
+            <Route path="rescue-stations" element={<RescueStationListPage />} />
+            <Route path="agent-applications" element={<AgentApplicationListPage />} />
+            <Route path="supplier-applications" element={<SupplierApplicationListPage />} />
+            <Route path="sos-requests" element={<SosRequestListPage />} />
+            <Route path="coupons" element={<CouponListPage />} />
+            <Route path="coupons/new" element={<CouponFormPage />} />
+            <Route path="coupons/:id" element={<CouponFormPage />} />
+          </Route>
+        </Routes>
+      </Suspense>
+    </ErrorBoundary>
   );
 }

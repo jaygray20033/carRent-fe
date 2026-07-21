@@ -52,7 +52,9 @@ function Row({ label, value, highlight }) {
   return (
     <div className="flex items-center justify-between">
       <span className="text-gray-600">{label}</span>
-      <span className={highlight ? 'text-lg font-bold text-primary-600' : 'font-medium text-gray-900'}>
+      <span
+        className={highlight ? 'text-lg font-bold text-primary-600' : 'font-medium text-gray-900'}
+      >
         {value}
       </span>
     </div>

@@ -1,16 +1,47 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import tailwindcss from '@tailwindcss/vite';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-// https://vitejs.dev/config/
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 export default defineConfig({
-  plugins: [react()],
-  server: {
-    port: 5173,
-    host: true,
+  plugins: [react(), tailwindcss()],
+  // Force React's automatic JSX runtime for esbuild (dep optimizer scanner),
+  // so it does NOT inherit jsxImportSource: "hono/jsx" from any parent tsconfig.
+  esbuild: {
+    jsx: 'automatic',
+    jsxImportSource: 'react',
+  },
+  optimizeDeps: {
+    esbuildOptions: {
+      jsx: 'automatic',
+      jsxImportSource: 'react',
+    },
   },
   resolve: {
     alias: {
-      '@': '/src',
+      '@': path.resolve(__dirname, './src'),
     },
+  },
+  server: {
+    host: '0.0.0.0',
+    port: 3000,
+    allowedHosts: true,
+    proxy: {
+      '/api': {
+        target: 'http://localhost:4000',
+        changeOrigin: true,
+      },
+    },
+  },
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: ['./src/test/setup.js'],
+    css: false,
+    include: ['src/**/*.{test,spec}.{js,jsx}'],
   },
 });
