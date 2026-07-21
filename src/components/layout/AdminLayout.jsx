@@ -23,6 +23,7 @@ import {
   Siren,
   Building2,
   ShieldAlert,
+  Truck,
 } from 'lucide-react';
 import { useAuthStore } from '../../store/authStore.js';
 
@@ -34,6 +35,7 @@ const navItems = [
   { to: '/admin/corporate/clients', label: 'Doanh nghiệp', icon: Building2 },
   { to: '/admin/corporate/bookings', label: 'Queue B2B', icon: Handshake },
   { to: '/admin/corporate/sla-violations', label: 'Báo cáo SLA DN', icon: ShieldAlert },
+  { to: '/admin/suppliers', label: 'Nhà cung cấp', icon: Truck },
   { to: '/admin/users', label: 'Người dùng', icon: Users },
   { to: '/admin/posts', label: 'Bài viết', icon: FileText },
   { to: '/admin/post-categories', label: 'Danh mục', icon: FolderTree },
@@ -43,6 +45,7 @@ const navItems = [
   { to: '/admin/rescue-stations', label: 'Trạm cứu hộ', icon: LifeBuoy },
   { to: '/admin/sos-requests', label: 'Yêu cầu cứu hộ', icon: Siren },
   { to: '/admin/agent-applications', label: 'Đơn đối tác', icon: Handshake },
+  { to: '/admin/supplier-applications', label: 'Đơn nhà xe', icon: Truck },
   { to: '/admin/coupons', label: 'Mã giảm giá', icon: TicketPercent },
   { to: '/admin/reports', label: 'Báo cáo', icon: BarChart3 },
   { to: '/admin/settings', label: 'Cài đặt', icon: Settings },

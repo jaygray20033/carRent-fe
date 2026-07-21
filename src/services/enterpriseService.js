@@ -2,6 +2,9 @@
 import api from './api.js';
 
 export const enterpriseService = {
+  // Public self-registration — instant activation (no approval).
+  selfRegister: (payload) => api.post('/corporate/self-register', payload),
+
   // Company + membership
   myCompany: () => api.get('/corporate/me/company'),
   myPriceConfig: () => api.get('/corporate/me/price-config'),

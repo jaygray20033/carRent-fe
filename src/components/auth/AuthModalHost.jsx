@@ -7,6 +7,10 @@ export default function AuthModalHost() {
   const { authModalOpen, authModalTab, closeAuthModal } = useUiStore();
 
   return (
-    <LoginModal open={authModalOpen} initialTab={authModalTab} onClose={() => closeAuthModal()} />
+    <LoginModal
+      open={authModalOpen}
+      initialTab={authModalTab}
+      onClose={(result) => closeAuthModal(result)}
+    />
   );
 }

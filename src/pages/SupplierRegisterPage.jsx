@@ -1,12 +1,12 @@
-// src/pages/AgentRegisterPage.jsx — Day 38 (UC-32/33).
-// Landing + partner (car owner) registration form. If the user already has an
-// application, show its status instead of the form.
-import { useForm } from 'react-hook-form';
+// src/pages/SupplierRegisterPage.jsx — Marketplace supplier (nhà xe) onboarding.
+// Landing + supplier partner application form. If the user already has an
+// application, show its status instead of the form. Mirrors AgentRegisterPage.
+import { useForm, useWatch } from 'react-hook-form';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
-import { ChevronRight, Car, TrendingUp, ShieldCheck, Send, Clock, CheckCircle2, XCircle } from 'lucide-react';
+import { ChevronRight, Warehouse, TrendingUp, ShieldCheck, Send, Clock, CheckCircle2, XCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { agentService } from '../services/agentService.js';
+import { partnerService } from '../services/partnerService.js';
 import { useAuth } from '../hooks/useAuth.js';
 import useUiStore from '../store/uiStore.js';
 import { formatDateTime } from '../utils/format.js';
@@ -17,18 +17,18 @@ import Loading from '../components/common/Loading.jsx';
 const BENEFITS = [
   {
     icon: TrendingUp,
-    title: 'Tối ưu thu nhập',
-    desc: 'Cho thuê xe nhàn rỗi và tạo nguồn thu ổn định hàng tháng.',
+    title: 'Mở rộng đội xe',
+    desc: 'Đưa toàn bộ đội xe của nhà xe lên nền tảng và tiếp cận khách thuê trên cả nước.',
   },
   {
     icon: ShieldCheck,
-    title: 'An tâm bảo hiểm',
-    desc: 'Mỗi chuyến đi đều có bảo hiểm và hỗ trợ cứu hộ 24/7.',
+    title: 'Quản lý tập trung',
+    desc: 'Theo dõi đơn thuê, đối soát doanh thu và quản lý thành viên trong một cổng riêng.',
   },
   {
-    icon: Car,
-    title: 'Quản lý dễ dàng',
-    desc: 'Theo dõi lịch thuê, doanh thu và tình trạng xe trên một nền tảng.',
+    icon: Warehouse,
+    title: 'Vận hành chuyên nghiệp',
+    desc: 'Công cụ dành cho nhà xe quy mô lớn: phân quyền nhân sự, đối soát định kỳ.',
   },
 ];
 
@@ -43,7 +43,7 @@ const STATUS_META = {
     icon: CheckCircle2,
     label: 'Đã được duyệt',
     tone: 'bg-success/10 text-success',
-    note: 'Chúc mừng! Tài khoản của bạn đã trở thành đối tác cho thuê xe.',
+    note: 'Chúc mừng! Nhà xe của bạn đã được kích hoạt. Bạn có thể truy cập cổng nhà xe.',
   },
   REJECTED: {
     icon: XCircle,
@@ -53,7 +53,7 @@ const STATUS_META = {
   },
 };
 
-export default function AgentRegisterPage() {
+export default function SupplierRegisterPage() {
   const queryClient = useQueryClient();
   const { isAuthenticated } = useAuth();
   const openAuthModal = useUiStore((s) => s.openAuthModal);
@@ -61,8 +61,8 @@ export default function AgentRegisterPage() {
   // Only probe the applicant's status once signed in — a guest hitting this
   // (401) endpoint would trip the global interceptor and get bounced to /login.
   const { data, isLoading } = useQuery({
-    queryKey: ['myAgentApplication'],
-    queryFn: () => agentService.mine(),
+    queryKey: ['mySupplierApplication'],
+    queryFn: () => partnerService.mySupplier(),
     enabled: isAuthenticated,
   });
 
@@ -72,18 +72,18 @@ export default function AgentRegisterPage() {
     register,
     handleSubmit,
     reset,
-    watch,
+    control,
     formState: { errors },
-  } = useForm({ defaultValues: { applicantType: 'INDIVIDUAL', expectedVehicleCount: 1 } });
+  } = useForm({ defaultValues: { applicantType: 'BUSINESS' } });
 
-  const applicantType = watch('applicantType');
+  const applicantType = useWatch({ control, name: 'applicantType' });
 
   const mutation = useMutation({
-    mutationFn: ({ payload, file }) => agentService.submit(payload, file),
+    mutationFn: ({ payload, file }) => partnerService.submitSupplier(payload, file),
     onSuccess: (res) => {
-      toast.success(res?.message || 'Đã gửi đơn đăng ký đối tác.');
+      toast.success(res?.message || 'Đã gửi đơn đăng ký nhà xe.');
       reset();
-      queryClient.invalidateQueries({ queryKey: ['myAgentApplication'] });
+      queryClient.invalidateQueries({ queryKey: ['mySupplierApplication'] });
     },
     onError: (e) => toast.error(e?.message || 'Gửi đơn thất bại, vui lòng thử lại.'),
   });
@@ -91,13 +91,15 @@ export default function AgentRegisterPage() {
   const submitApplication = (values) => {
     const payload = {
       applicantType: values.applicantType,
-      businessName: values.businessName.trim(),
+      companyName: values.companyName.trim(),
       address: values.address.trim(),
-      expectedVehicleCount: values.expectedVehicleCount,
     };
     if (values.taxCode?.trim()) payload.taxCode = values.taxCode.trim();
+    if (values.contactName?.trim()) payload.contactName = values.contactName.trim();
+    if (values.contactPhone?.trim()) payload.contactPhone = values.contactPhone.trim();
+    if (values.contactEmail?.trim()) payload.contactEmail = values.contactEmail.trim();
     if (values.note?.trim()) payload.note = values.note.trim();
-    const file = values.kycFile?.[0];
+    const file = values.licenseFile?.[0];
     mutation.mutate({ payload, file });
   };
 
@@ -126,15 +128,15 @@ export default function AgentRegisterPage() {
               Trang chủ
             </Link>
             <ChevronRight className="h-4 w-4" />
-            <span className="font-medium text-white">Trở thành đối tác</span>
+            <span className="font-medium text-white">Đăng ký nhà xe</span>
           </nav>
-          <p className="mb-1 text-sm font-semibold text-brand-accent">Đối tác OtoRent</p>
+          <p className="mb-1 text-sm font-semibold text-brand-accent">Đối tác nhà xe OtoRent</p>
           <h1 className="text-3xl font-bold tracking-tight text-white md:text-4xl">
-            Cho thuê xe của bạn cùng OtoRent
+            Đưa nhà xe của bạn lên OtoRent
           </h1>
           <p className="mt-2 max-w-xl text-sm text-white/70">
-            Đăng ký trở thành đối tác để đưa xe của bạn lên nền tảng, tiếp cận hàng nghìn khách
-            thuê và tối ưu nguồn thu.
+            Đăng ký trở thành nhà xe đối tác để quản lý đội xe, nhận đơn thuê và đối soát doanh thu
+            trên cổng nhà xe chuyên biệt.
           </p>
         </div>
       </section>
@@ -173,9 +175,9 @@ export default function AgentRegisterPage() {
 
                 {showForm && (
                   <div className="rounded-2xl bg-white p-6 shadow-card ring-1 ring-ink-100 md:p-8">
-                    <h2 className="mb-1 text-lg font-bold text-ink-900">Đơn đăng ký đối tác</h2>
+                    <h2 className="mb-1 text-lg font-bold text-ink-900">Đơn đăng ký nhà xe</h2>
                     <p className="mb-6 text-sm text-ink-500">
-                      Điền thông tin dưới đây. Đội ngũ OtoRent sẽ liên hệ để hoàn tất.
+                      Điền thông tin dưới đây. Đội ngũ OtoRent sẽ xét duyệt và kích hoạt nhà xe.
                     </p>
 
                     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
@@ -205,12 +207,12 @@ export default function AgentRegisterPage() {
                       </div>
 
                       <Input
-                        label={applicantType === 'BUSINESS' ? 'Tên doanh nghiệp *' : 'Họ và tên *'}
+                        label={applicantType === 'BUSINESS' ? 'Tên nhà xe / doanh nghiệp *' : 'Họ và tên *'}
                         placeholder={
-                          applicantType === 'BUSINESS' ? 'Công ty TNHH ABC' : 'Nguyễn Văn A'
+                          applicantType === 'BUSINESS' ? 'Nhà xe Phương Trang' : 'Nguyễn Văn A'
                         }
-                        error={errors.businessName?.message}
-                        {...register('businessName', {
+                        error={errors.companyName?.message}
+                        {...register('companyName', {
                           required: 'Vui lòng nhập tên',
                           minLength: { value: 2, message: 'Tên quá ngắn' },
                         })}
@@ -240,34 +242,50 @@ export default function AgentRegisterPage() {
                         })}
                       />
 
+                      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                        <Input
+                          label="Người liên hệ"
+                          placeholder="Nguyễn Văn A"
+                          error={errors.contactName?.message}
+                          {...register('contactName')}
+                        />
+                        <Input
+                          label="Số điện thoại liên hệ"
+                          placeholder="0901234567"
+                          error={errors.contactPhone?.message}
+                          {...register('contactPhone')}
+                        />
+                      </div>
+
                       <Input
-                        label="Số lượng xe dự kiến *"
-                        type="number"
-                        min={1}
-                        error={errors.expectedVehicleCount?.message}
-                        {...register('expectedVehicleCount', {
-                          required: 'Vui lòng nhập số lượng xe',
-                          min: { value: 1, message: 'Tối thiểu 1 xe' },
-                          valueAsNumber: true,
+                        label="Email liên hệ"
+                        type="email"
+                        placeholder="lienhe@nhaxe.vn"
+                        error={errors.contactEmail?.message}
+                        {...register('contactEmail', {
+                          pattern: {
+                            value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                            message: 'Email không hợp lệ',
+                          },
                         })}
                       />
 
                       <div>
                         <label
-                          htmlFor="kycFile"
+                          htmlFor="licenseFile"
                           className="mb-1.5 block text-sm font-medium text-ink-700"
                         >
-                          Giấy tờ xác minh (KYC)
+                          Giấy phép kinh doanh
                         </label>
                         <input
-                          id="kycFile"
+                          id="licenseFile"
                           type="file"
                           accept="image/png,image/jpeg,image/jpg,image/webp"
                           className="block w-full text-sm text-ink-500 file:mr-4 file:rounded-lg file:border-0 file:bg-brand-primary/10 file:px-4 file:py-2 file:text-sm file:font-medium file:text-brand-primary hover:file:bg-brand-primary/20"
-                          {...register('kycFile')}
+                          {...register('licenseFile')}
                         />
                         <p className="mt-1 text-xs text-ink-400">
-                          Ảnh CCCD/CMND hoặc giấy phép kinh doanh (PNG/JPG, tối đa 5MB).
+                          Ảnh giấy phép kinh doanh hoặc giấy tờ nhà xe (PNG/JPG, tối đa 5MB).
                         </p>
                       </div>
 
@@ -281,7 +299,7 @@ export default function AgentRegisterPage() {
                         <textarea
                           id="note"
                           rows={4}
-                          placeholder="Thông tin thêm về xe hoặc nhu cầu hợp tác…"
+                          placeholder="Thông tin thêm về đội xe hoặc nhu cầu hợp tác…"
                           className="input"
                           {...register('note')}
                         />
@@ -326,6 +344,15 @@ function StatusCard({ application }) {
             </span>
           </div>
           <p className="mt-1 text-sm text-ink-500">{meta.note}</p>
+          {application.status === 'APPROVED' && (
+            <Link
+              to="/supplier"
+              className="mt-2 inline-flex items-center gap-1 text-sm font-medium text-brand-primary hover:underline"
+            >
+              Vào cổng nhà xe
+              <ChevronRight className="h-4 w-4" />
+            </Link>
+          )}
           {application.reviewNote && application.status === 'REJECTED' && (
             <p className="mt-2 rounded-lg bg-danger/5 p-2.5 text-sm text-danger">
               Lý do: {application.reviewNote}

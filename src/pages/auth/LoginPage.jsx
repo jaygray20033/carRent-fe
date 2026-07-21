@@ -8,6 +8,23 @@ import AuthField from '../../components/auth/AuthField.jsx';
 import AuthButton from '../../components/auth/AuthButton.jsx';
 import { enterpriseService } from '../../services/enterpriseService.js';
 
+async function resolveLanding(user, from) {
+  const roleCode = user?.role?.code;
+  if (roleCode === 'ADMIN' || roleCode === 'OPERATOR') return '/admin';
+  if (roleCode === 'SUPPLIER_ADMIN' || roleCode === 'SUPPLIER_DRIVER') return '/supplier';
+
+  try {
+    const res = await enterpriseService.myCompany();
+    const data = res?.data ?? res ?? {};
+    if (data.company?.id || data.corporate?.id || data.membership?.corporateId) {
+      return '/enterprise/dashboard';
+    }
+  } catch {
+    // A CUSTOMER without a corporate membership uses the C2C site.
+  }
+  return from && from !== '/' ? from : '/';
+}
+
 export default function LoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -20,20 +37,8 @@ export default function LoginPage() {
 
   const onSubmit = async (values) => {
     try {
-      await login({ identifier: values.identifier.trim(), password: values.password });
-      // ENT-Day 4 — corporate employees land on Enterprise Portal, not C2C home.
-      let to = location.state?.from || '/';
-      if (!location.state?.from || location.state?.from === '/') {
-        try {
-          const res = await enterpriseService.myCompany();
-          const data = res?.data ?? res ?? {};
-          if (data.company?.id || data.corporate?.id || data.membership?.corporateId) {
-            to = '/enterprise/dashboard';
-          }
-        } catch {
-          // not a corporate user — stay on C2C
-        }
-      }
+      const user = await login({ identifier: values.identifier.trim(), password: values.password });
+      const to = await resolveLanding(user, location.state?.from);
       navigate(to, { replace: true });
     } catch (e) {
       if (e?.code === 'ACCOUNT_PENDING') {
@@ -90,6 +95,8 @@ export default function LoginPage() {
         <p>📱 User: 0901234567 / User@123</p>
         <p>🏢 Corp Admin: 0909000222 / CorpAdmin@123</p>
         <p>🏢 Corp Emp: 0909000333 / CorpEmp@123</p>
+        <p>🚚 Supplier Admin: 0909000444 / SupplierAdmin@123</p>
+        <p>🚚 Supplier Driver: 0909000555 / SupplierDriver@123</p>
       </div>
     </AuthCard>
   );

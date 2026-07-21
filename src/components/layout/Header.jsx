@@ -29,6 +29,25 @@ const NAV_ITEMS = [
   { to: '/contact', label: 'Liên hệ' },
 ];
 
+// Public partner onboarding entry points (surfaced in the header "Đối tác" menu).
+const PARTNER_ITEMS = [
+  {
+    to: '/enterprise-register',
+    label: 'Đăng ký doanh nghiệp',
+    desc: 'Thuê xe theo hợp đồng — kích hoạt ngay',
+  },
+  {
+    to: '/supplier-register',
+    label: 'Đăng ký nhà xe',
+    desc: 'Đưa đội xe lên nền tảng — chờ duyệt',
+  },
+  {
+    to: '/agent',
+    label: 'Cho thuê xe của bạn',
+    desc: 'Chủ xe cá nhân cho thuê xe nhàn rỗi',
+  },
+];
+
 export default function Header() {
   const { user, isAuthenticated, logout } = useAuth();
   const openAuthModal = useUiStore((s) => s.openAuthModal);
@@ -38,9 +57,11 @@ export default function Header() {
   const [searchValue, setSearchValue] = useState('');
   const [scrolled, setScrolled] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
+  const [partnerOpen, setPartnerOpen] = useState(false);
   const navigate = useNavigate();
   const dropdownRef = useRef(null);
   const notifRef = useRef(null);
+  const partnerRef = useRef(null);
   const queryClient = useQueryClient();
 
   const debouncedSearch = useDebounce(searchValue.trim(), 250);
@@ -138,6 +159,16 @@ export default function Header() {
     if (notifOpen) document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [notifOpen]);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (partnerRef.current && !partnerRef.current.contains(e.target)) {
+        setPartnerOpen(false);
+      }
+    };
+    if (partnerOpen) document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [partnerOpen]);
 
   const navActiveClass = ({ isActive }) =>
     `text-sm font-medium px-1 py-2 transition-colors whitespace-nowrap ${
@@ -310,6 +341,34 @@ export default function Header() {
                 {item.label}
               </NavLink>
             ))}
+
+            {/* Đối tác — public onboarding entry points */}
+            <div className="relative" ref={partnerRef}>
+              <button
+                onClick={() => setPartnerOpen((o) => !o)}
+                className="flex items-center gap-1 text-sm font-medium px-1 py-2 text-ink-700 transition-colors hover:text-brand-primary whitespace-nowrap"
+              >
+                Đối tác
+                <ChevronDown
+                  className={`w-3.5 h-3.5 transition-transform ${partnerOpen ? 'rotate-180' : ''}`}
+                />
+              </button>
+              {partnerOpen && (
+                <div className="absolute right-0 top-full mt-2 w-72 rounded-xl border border-ink-100 bg-white py-2 shadow-lg z-50 animate-fade-in">
+                  {PARTNER_ITEMS.map((item) => (
+                    <Link
+                      key={item.to}
+                      to={item.to}
+                      onClick={() => setPartnerOpen(false)}
+                      className="block px-4 py-2.5 transition hover:bg-ink-50"
+                    >
+                      <span className="block text-sm font-medium text-ink-900">{item.label}</span>
+                      <span className="mt-0.5 block text-xs text-ink-500">{item.desc}</span>
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
           </nav>
 
           {/* ── Right side: Logo ── */}
@@ -384,6 +443,27 @@ export default function Header() {
                   key={item.to}
                   to={item.to}
                   end={item.to === '/'}
+                  onClick={() => setMobileOpen(false)}
+                  className={({ isActive }) =>
+                    `block px-6 py-3.5 text-sm font-medium transition ${
+                      isActive
+                        ? 'text-brand-primary bg-blue-50/80 border-r-3 border-brand-primary'
+                        : 'text-ink-700 hover:bg-ink-50'
+                    }`
+                  }
+                >
+                  {item.label}
+                </NavLink>
+              ))}
+
+              {/* Đối tác — public onboarding entry points */}
+              <p className="px-6 pb-1.5 pt-4 text-[11px] font-semibold uppercase tracking-wide text-ink-300">
+                Đối tác
+              </p>
+              {PARTNER_ITEMS.map((item) => (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
                   onClick={() => setMobileOpen(false)}
                   className={({ isActive }) =>
                     `block px-6 py-3.5 text-sm font-medium transition ${

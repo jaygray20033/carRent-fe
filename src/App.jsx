@@ -29,6 +29,8 @@ const RulesPage = lazy(() => import('./pages/RulesPage.jsx'));
 const LegalPage = lazy(() => import('./pages/LegalPage.jsx'));
 const RoadsidePage = lazy(() => import('./pages/RoadsidePage.jsx'));
 const AgentRegisterPage = lazy(() => import('./pages/AgentRegisterPage.jsx'));
+const SupplierRegisterPage = lazy(() => import('./pages/SupplierRegisterPage.jsx'));
+const EnterpriseRegisterPage = lazy(() => import('./pages/EnterpriseRegisterPage.jsx'));
 const CheckoutPage = lazy(() => import('./pages/booking/CheckoutPage.jsx'));
 const BookingSuccessPage = lazy(() => import('./pages/booking/BookingSuccessPage.jsx'));
 const PaymentPage = lazy(() => import('./pages/booking/PaymentPage.jsx'));
@@ -65,6 +67,7 @@ const SettingsPage = lazy(() => import('./pages/admin/SettingsPage.jsx'));
 const ContactMessageListPage = lazy(() => import('./pages/admin/ContactMessageListPage.jsx'));
 const RescueStationListPage = lazy(() => import('./pages/admin/RescueStationListPage.jsx'));
 const AgentApplicationListPage = lazy(() => import('./pages/admin/AgentApplicationListPage.jsx'));
+const SupplierApplicationListPage = lazy(() => import('./pages/admin/SupplierApplicationListPage.jsx'));
 const SosRequestListPage = lazy(() => import('./pages/admin/SosRequestListPage.jsx'));
 const CorporateClientListPage = lazy(() => import('./pages/admin/corporate/ClientListPage.jsx'));
 const CorporateClientDetailPage = lazy(() => import('./pages/admin/corporate/ClientDetailPage.jsx'));
@@ -72,6 +75,21 @@ const CorporateBookingQueuePage = lazy(() => import('./pages/admin/corporate/Boo
 const CorporateSlaViolationsPage = lazy(
   () => import('./pages/admin/corporate/SlaViolationsPage.jsx')
 );
+const SupplierListPage = lazy(() => import('./pages/admin/suppliers/SupplierListPage.jsx'));
+const SupplierDetailPage = lazy(() => import('./pages/admin/suppliers/SupplierDetailPage.jsx'));
+
+// Marketplace Phase E — Supplier Portal
+const SupplierLayout = lazy(() => import('./components/layout/SupplierLayout.jsx'));
+const SupplierRoute = lazy(() => import('./components/auth/SupplierRoute.jsx'));
+const SupplierDashboardPage = lazy(() => import('./pages/supplier/DashboardPage.jsx'));
+const SupplierBookingsPage = lazy(() => import('./pages/supplier/BookingsPage.jsx'));
+const SupplierBookingDetailPage = lazy(() => import('./pages/supplier/BookingDetailPage.jsx'));
+const SupplierSettlementsPage = lazy(() => import('./pages/supplier/SettlementsPage.jsx'));
+const SupplierSettlementDetailPage = lazy(
+  () => import('./pages/supplier/SettlementDetailPage.jsx')
+);
+const SupplierMembersPage = lazy(() => import('./pages/supplier/MembersPage.jsx'));
+const SupplierInviteAcceptPage = lazy(() => import('./pages/supplier/InviteAcceptPage.jsx'));
 
 // ENT-Day 4 — Enterprise Portal
 const CorporateEnterpriseLayout = lazy(
@@ -130,6 +148,8 @@ export default function App() {
             <Route path="/legal" element={<LegalPage />} />
             <Route path="/roadside" element={<RoadsidePage />} />
             <Route path="/agent" element={<AgentRegisterPage />} />
+            <Route path="/supplier-register" element={<SupplierRegisterPage />} />
+            <Route path="/enterprise-register" element={<EnterpriseRegisterPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/forgot-password" element={<ForgotPasswordPage />} />
@@ -224,6 +244,32 @@ export default function App() {
             <Route path="employees" element={<EnterpriseEmployeesPage />} />
           </Route>
 
+          <Route
+            path="/supplier/invite/accept"
+            element={
+              <ProtectedRoute>
+                <SupplierInviteAcceptPage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/supplier"
+            element={
+              <SupplierRoute>
+                <SupplierLayout />
+              </SupplierRoute>
+            }
+          >
+            <Route index element={<SupplierDashboardPage />} />
+            <Route path="dashboard" element={<SupplierDashboardPage />} />
+            <Route path="bookings" element={<SupplierBookingsPage />} />
+            <Route path="bookings/:id" element={<SupplierBookingDetailPage />} />
+            <Route path="settlements" element={<SupplierSettlementsPage />} />
+            <Route path="settlements/:settlementId" element={<SupplierSettlementDetailPage />} />
+            <Route path="members" element={<SupplierMembersPage />} />
+          </Route>
+
           {/* Admin area — own layout, ADMIN/OPERATOR only (no MainLayout chrome) */}
           <Route
             path="/admin"
@@ -244,6 +290,8 @@ export default function App() {
             <Route path="corporate/clients/:id" element={<CorporateClientDetailPage />} />
             <Route path="corporate/bookings" element={<CorporateBookingQueuePage />} />
             <Route path="corporate/sla-violations" element={<CorporateSlaViolationsPage />} />
+            <Route path="suppliers" element={<SupplierListPage />} />
+            <Route path="suppliers/:id" element={<SupplierDetailPage />} />
             <Route path="users" element={<UserListPage />} />
             <Route path="users/:id" element={<UserDetailPage />} />
             <Route path="reports" element={<ReportsPage />} />
@@ -257,6 +305,7 @@ export default function App() {
             <Route path="contact-messages" element={<ContactMessageListPage />} />
             <Route path="rescue-stations" element={<RescueStationListPage />} />
             <Route path="agent-applications" element={<AgentApplicationListPage />} />
+            <Route path="supplier-applications" element={<SupplierApplicationListPage />} />
             <Route path="sos-requests" element={<SosRequestListPage />} />
             <Route path="coupons" element={<CouponListPage />} />
             <Route path="coupons/new" element={<CouponFormPage />} />

@@ -44,6 +44,14 @@ const FOOTER_LINKS = {
       { label: 'Hỗ trợ khách hàng', to: '/support' },
     ],
   },
+  partner: {
+    title: 'Đối tác',
+    items: [
+      { label: 'Đăng ký doanh nghiệp', to: '/enterprise-register' },
+      { label: 'Đăng ký nhà xe', to: '/supplier-register' },
+      { label: 'Cho thuê xe của bạn', to: '/agent' },
+    ],
+  },
 };
 
 // Fallback contact info — replaced by live GET /site-settings/contact when available.
