@@ -80,11 +80,3 @@ Backend default: `http://localhost:4000/api/v1`
 - Admin: `0900000001` / `Admin@1234`
 - User : `0901234567` / `User@1234`
 
-## 🛣️ Roadmap (chưa code)
-- Admin dashboard
-- Wallet UI
-- Reviews & ratings
-- Blog list & detail
-- Multi-language (i18n)
-- Skeleton loaders, image optimization
-- Unit tests (Vitest + Testing Library)
