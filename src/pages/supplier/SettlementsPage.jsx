@@ -40,7 +40,7 @@ export default function SupplierSettlementsPage() {
         <div>
           <h1 className="text-xl font-bold text-ink-700">Payout / Thanh toán</h1>
           <p className="text-sm text-ink-400">
-            Các kỳ OtoRent thanh toán cho bạn (đã trừ hoa hồng). Nộp hoá đơn GTGT + bảng kê + lệnh
+            Các kỳ CarGoGo thanh toán cho bạn (đã trừ hoa hồng). Nộp hoá đơn GTGT + bảng kê + lệnh
             điều xe để được duyệt chi.
           </p>
         </div>

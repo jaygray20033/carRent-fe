@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import MainLayout from './components/layout/MainLayout.jsx';
 import UserLayout from './components/layout/UserLayout.jsx';
 import AdminLayout from './components/layout/AdminLayout.jsx';
@@ -7,6 +7,7 @@ import ProtectedRoute from './components/auth/ProtectedRoute.jsx';
 import AdminRoute from './components/auth/AdminRoute.jsx';
 import ErrorBoundary from './pages/ErrorBoundary.jsx';
 import Loading from './components/common/Loading.jsx';
+import ScrollToTop from './components/common/ScrollToTop.jsx';
 
 // Day 44 — code-split every page behind React.lazy so the initial bundle only
 // carries the shell (layouts + router). Each route chunk is fetched on demand.
@@ -27,6 +28,9 @@ const FaqPage = lazy(() => import('./pages/FaqPage.jsx'));
 const DeliveryPage = lazy(() => import('./pages/DeliveryPage.jsx'));
 const RulesPage = lazy(() => import('./pages/RulesPage.jsx'));
 const LegalPage = lazy(() => import('./pages/LegalPage.jsx'));
+const PrivacyPage = lazy(() => import('./pages/PrivacyPage.jsx'));
+const RegulationsPage = lazy(() => import('./pages/RegulationsPage.jsx'));
+const PaymentMethodsPage = lazy(() => import('./pages/PaymentMethodsPage.jsx'));
 const RoadsidePage = lazy(() => import('./pages/RoadsidePage.jsx'));
 const AgentRegisterPage = lazy(() => import('./pages/AgentRegisterPage.jsx'));
 const SupplierRegisterPage = lazy(() => import('./pages/SupplierRegisterPage.jsx'));
@@ -72,6 +76,7 @@ const SosRequestListPage = lazy(() => import('./pages/admin/SosRequestListPage.j
 const CorporateClientListPage = lazy(() => import('./pages/admin/corporate/ClientListPage.jsx'));
 const CorporateClientDetailPage = lazy(() => import('./pages/admin/corporate/ClientDetailPage.jsx'));
 const CorporateBookingQueuePage = lazy(() => import('./pages/admin/corporate/BookingQueuePage.jsx'));
+const CorporatePaymentQueuePage = lazy(() => import('./pages/admin/corporate/PaymentQueuePage.jsx'));
 const CorporateSlaViolationsPage = lazy(
   () => import('./pages/admin/corporate/SlaViolationsPage.jsx')
 );
@@ -90,6 +95,7 @@ const SupplierSettlementDetailPage = lazy(
 );
 const SupplierMembersPage = lazy(() => import('./pages/supplier/MembersPage.jsx'));
 const SupplierInviteAcceptPage = lazy(() => import('./pages/supplier/InviteAcceptPage.jsx'));
+const SupplierJoinLinkPage = lazy(() => import('./pages/supplier/JoinLinkPage.jsx'));
 
 // ENT-Day 4 — Enterprise Portal
 const CorporateEnterpriseLayout = lazy(
@@ -104,11 +110,15 @@ const EnterpriseVasCatalogPage = lazy(() => import('./pages/enterprise/VasCatalo
 const EnterpriseQualityPage = lazy(() => import('./pages/enterprise/QualityPage.jsx'));
 const EnterpriseContractPage = lazy(() => import('./pages/enterprise/ContractPage.jsx'));
 const EnterpriseSettlementsPage = lazy(() => import('./pages/enterprise/SettlementsPage.jsx'));
+const EnterpriseSettlementDetailPage = lazy(() => import('./pages/enterprise/SettlementDetailPage.jsx'));
 const EnterpriseEmployeesPage = lazy(() => import('./pages/enterprise/EmployeesPage.jsx'));
+const EnterpriseInviteAcceptPage = lazy(() => import('./pages/enterprise/InviteAcceptPage.jsx'));
+const EnterpriseJoinLinkPage = lazy(() => import('./pages/enterprise/JoinLinkPage.jsx'));
 
 export default function App() {
   return (
     <ErrorBoundary>
+      <ScrollToTop />
       <Suspense fallback={<Loading label="Đang tải trang..." />}>
         <Routes>
           <Route element={<MainLayout />}>
@@ -146,6 +156,9 @@ export default function App() {
             <Route path="/delivery" element={<DeliveryPage />} />
             <Route path="/rules" element={<RulesPage />} />
             <Route path="/legal" element={<LegalPage />} />
+            <Route path="/privacy" element={<PrivacyPage />} />
+            <Route path="/regulations" element={<RegulationsPage />} />
+            <Route path="/payment-methods" element={<PaymentMethodsPage />} />
             <Route path="/roadside" element={<RoadsidePage />} />
             <Route path="/agent" element={<AgentRegisterPage />} />
             <Route path="/supplier-register" element={<SupplierRegisterPage />} />
@@ -241,8 +254,38 @@ export default function App() {
             <Route path="quality" element={<EnterpriseQualityPage />} />
             <Route path="contract" element={<EnterpriseContractPage />} />
             <Route path="settlements" element={<EnterpriseSettlementsPage />} />
+            <Route path="settlements/:id" element={<EnterpriseSettlementDetailPage />} />
             <Route path="employees" element={<EnterpriseEmployeesPage />} />
           </Route>
+
+          {/* Corporate employee invite accept — must be declared BEFORE the legacy
+              /corporate/* redirects below, otherwise the invite link is swallowed. */}
+          <Route
+            path="/corporate/invite/accept"
+            element={
+              <ProtectedRoute>
+                <EnterpriseInviteAcceptPage />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Shareable multi-use join link (public — previews before auth). Also
+              declared before the legacy /corporate/* redirects. */}
+          <Route path="/corporate/join/:token" element={<EnterpriseJoinLinkPage />} />
+
+          {/* Legacy notification links used a /corporate/* scheme that never existed
+              in the router. Redirect them to the real Enterprise Portal routes so
+              older notification rows (and any emailed links) stop 404-ing. */}
+          <Route path="/corporate/settlements/:id" element={<Navigate to="/enterprise/settlements" replace />} />
+          <Route path="/corporate/settlements" element={<Navigate to="/enterprise/settlements" replace />} />
+          <Route path="/corporate/bookings/:id" element={<Navigate to="/enterprise/schedule" replace />} />
+          <Route path="/corporate/bookings" element={<Navigate to="/enterprise/schedule" replace />} />
+          <Route path="/corporate" element={<Navigate to="/enterprise" replace />} />
+
+          {/* Legacy admin links used /admin/corporate-bookings/:id — there is no
+              per-booking admin detail page, so send them to the B2B queue. */}
+          <Route path="/admin/corporate-bookings/:id" element={<Navigate to="/admin/corporate/bookings" replace />} />
+          <Route path="/admin/corporate-bookings" element={<Navigate to="/admin/corporate/bookings" replace />} />
 
           <Route
             path="/supplier/invite/accept"
@@ -252,6 +295,10 @@ export default function App() {
               </ProtectedRoute>
             }
           />
+
+          {/* Shareable multi-use join link (public — previews before auth). Declared
+              before the /supplier portal layout so it isn't shadowed by SupplierRoute. */}
+          <Route path="/supplier/join/:token" element={<SupplierJoinLinkPage />} />
 
           <Route
             path="/supplier"
@@ -289,6 +336,7 @@ export default function App() {
             <Route path="corporate/clients" element={<CorporateClientListPage />} />
             <Route path="corporate/clients/:id" element={<CorporateClientDetailPage />} />
             <Route path="corporate/bookings" element={<CorporateBookingQueuePage />} />
+            <Route path="corporate/payments" element={<CorporatePaymentQueuePage />} />
             <Route path="corporate/sla-violations" element={<CorporateSlaViolationsPage />} />
             <Route path="suppliers" element={<SupplierListPage />} />
             <Route path="suppliers/:id" element={<SupplierDetailPage />} />

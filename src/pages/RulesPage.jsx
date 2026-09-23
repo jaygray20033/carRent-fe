@@ -5,7 +5,7 @@ import { ChevronRight, ScrollText } from 'lucide-react';
 
 const SECTIONS = [
   {
-    heading: 'I. Nghĩa vụ của Bên cho thuê (OtoRent)',
+    heading: 'I. Nghĩa vụ của Bên cho thuê (CarGoGo)',
     items: [
       'Giao xe đúng loại, đúng thời gian và địa điểm đã thỏa thuận trong hợp đồng.',
       'Bảo đảm xe trong tình trạng kỹ thuật tốt, đầy đủ giấy tờ hợp lệ (đăng ký, đăng kiểm, bảo hiểm).',
@@ -20,7 +20,7 @@ const SECTIONS = [
       'Sử dụng xe đúng mục đích, không cho thuê lại, không sử dụng vào hoạt động trái pháp luật.',
       'Chịu trách nhiệm với mọi vi phạm giao thông phát sinh trong thời gian thuê xe.',
       'Bảo quản xe cẩn thận, hoàn trả xe đúng hạn với mức nhiên liệu như khi nhận.',
-      'Thông báo ngay cho OtoRent khi xảy ra sự cố, tai nạn hoặc hư hỏng.',
+      'Thông báo ngay cho CarGoGo khi xảy ra sự cố, tai nạn hoặc hư hỏng.',
     ],
   },
   {
@@ -56,12 +56,12 @@ export default function RulesPage() {
       <section className="relative overflow-hidden bg-ink-900">
         <div className="absolute inset-0 bg-gradient-to-r from-ink-900 via-ink-900/95 to-ink-800" />
         <div className="container-app relative z-10 py-12 md:py-16">
-          <nav className="mb-4 flex items-center gap-1.5 text-sm text-white/60">
-            <Link to="/" className="transition hover:text-white">
+          <nav className="mb-4 flex items-center gap-1.5 text-sm text-white/90">
+            <Link to="/" className="transition hover:text-brand-accent">
               Trang chủ
             </Link>
             <ChevronRight className="h-4 w-4" />
-            <span className="font-medium text-white">Điều khoản và nghĩa vụ</span>
+            <span className="font-medium text-brand-accent">Điều khoản và nghĩa vụ</span>
           </nav>
           <p className="mb-1 inline-flex items-center gap-2 text-sm font-semibold text-brand-accent">
             <ScrollText className="h-4 w-4" /> Hợp đồng thuê xe
@@ -69,8 +69,8 @@ export default function RulesPage() {
           <h1 className="text-3xl font-bold tracking-tight md:text-4xl">
             Điều khoản và nghĩa vụ của các bên
           </h1>
-          <p className="mt-2 max-w-xl text-sm text-white/70">
-            Các điều khoản áp dụng cho hợp đồng thuê xe giữa OtoRent và khách hàng.
+          <p className="mt-2 max-w-xl text-sm text-white/85">
+            Các điều khoản áp dụng cho hợp đồng thuê xe giữa CarGoGo và khách hàng.
           </p>
         </div>
       </section>
@@ -92,7 +92,7 @@ export default function RulesPage() {
           ))}
 
           <p className="border-t border-ink-100 pt-6 text-xs text-ink-400">
-            Bằng việc đặt xe tại OtoRent, bạn xác nhận đã đọc, hiểu và đồng ý với toàn bộ điều khoản
+            Bằng việc đặt xe tại CarGoGo, bạn xác nhận đã đọc, hiểu và đồng ý với toàn bộ điều khoản
             nêu trên. Xem thêm{' '}
             <Link to="/legal" className="font-medium text-brand-primary hover:underline">
               quy định và giấy tờ pháp lý

@@ -20,7 +20,7 @@ const METHOD_LABELS = {
   VNPAY: 'VNPay',
   MOMO: 'MoMo',
   ZALOPAY: 'ZaloPay',
-  WALLET: 'Ví OtoRent',
+  WALLET: 'Ví CarGoGo',
   BANK_TRANSFER: 'Chuyển khoản ngân hàng',
   CASH: 'Tiền mặt',
 };

@@ -61,16 +61,16 @@ export default function RoadsidePage() {
       <section className="relative overflow-hidden bg-ink-900">
         <div className="absolute inset-0 bg-gradient-to-r from-ink-900 via-ink-900/95 to-ink-800" />
         <div className="container-app relative z-10 py-12 md:py-16">
-          <nav className="mb-4 flex items-center gap-1.5 text-sm text-white/60">
-            <Link to="/" className="transition hover:text-white">
+          <nav className="mb-4 flex items-center gap-1.5 text-sm text-white/90">
+            <Link to="/" className="transition hover:text-brand-accent">
               Trang chủ
             </Link>
             <ChevronRight className="h-4 w-4" />
-            <span className="font-medium text-white">Trạm cứu hộ</span>
+            <span className="font-medium text-brand-accent">Trạm cứu hộ</span>
           </nav>
           <p className="mb-1 text-sm font-semibold text-brand-accent">Hỗ trợ 24/7</p>
-          <h1 className="text-3xl font-bold tracking-tight md:text-4xl">Trạm cứu hộ OtoRent</h1>
-          <p className="mt-2 max-w-xl text-sm text-white/70">
+          <h1 className="text-3xl font-bold tracking-tight md:text-4xl">Trạm cứu hộ CarGoGo</h1>
+          <p className="mt-2 max-w-xl text-sm text-white/85">
             Gặp sự cố trên đường? Tìm trạm cứu hộ gần bạn nhất hoặc gọi hotline khẩn cấp{' '}
             <a href={`tel:${HOTLINE.replace(/\s/g, '')}`} className="font-semibold text-white">
               {HOTLINE}

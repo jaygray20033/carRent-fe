@@ -11,7 +11,7 @@ const TESTIMONIALS = [
     role: 'Doanh nhân',
     avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face',
     rating: 5,
-    text: 'Dịch vụ tuyệt vời! Xe mới, sạch sẽ và được bảo dưỡng rất tốt. Tôi sẽ quay lại OtoRent cho những chuyến công tác tiếp theo.',
+    text: 'Dịch vụ tuyệt vời! Xe mới, sạch sẽ và được bảo dưỡng rất tốt. Tôi sẽ quay lại CarGoGo cho những chuyến công tác tiếp theo.',
   },
   {
     name: 'Trần Thị Mai',
@@ -32,7 +32,7 @@ const TESTIMONIALS = [
     role: 'Giám đốc Marketing',
     avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&crop=face',
     rating: 5,
-    text: 'OtoRent là lựa chọn số 1 của công ty tôi cho xe công vụ. Đội ngũ chuyên nghiệp, xe luôn sẵn sàng.',
+    text: 'CarGoGo là lựa chọn số 1 của công ty tôi cho xe công vụ. Đội ngũ chuyên nghiệp, xe luôn sẵn sàng.',
   },
 ];
 

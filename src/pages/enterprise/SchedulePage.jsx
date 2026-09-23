@@ -8,6 +8,16 @@ import { enterpriseService } from '../../services/enterpriseService.js';
 import Loading from '../../components/common/Loading.jsx';
 import { formatCurrency, formatDateTime } from '../../utils/format.js';
 
+const EXPENSE_TYPE_LABEL = {
+  TOLL_ROAD: 'Phí cầu đường / trạm thu phí',
+  PARKING: 'Phí gửi xe / bến bãi',
+  OVERTIME: 'Phụ phí tăng ca',
+  EXTRA_KM: 'Phụ phí vượt km',
+  ONE_WAY_KM: 'Phí một chiều',
+  OVERNIGHT: 'Phụ phí lưu đêm',
+  OTHER: 'Chi phí khác',
+};
+
 const STATUS_COLOR = {
   PENDING: 'bg-amber-100 text-amber-800 border-amber-200',
   APPROVED: 'bg-emerald-100 text-emerald-800 border-emerald-200',
@@ -21,8 +31,11 @@ const STATUS_COLOR = {
 };
 
 export default function EnterpriseSchedulePage() {
-  const { isAdmin } = useOutletContext() || {};
+  const { isAdmin, corporate } = useOutletContext() || {};
   const qc = useQueryClient();
+  // Điều khoản thanh toán của công ty gợi ý nút mặc định: kỳ hạn = 0 → trả luôn,
+  // > 0 → ghi công nợ theo kỳ tháng. Admin vẫn tự do chọn hình thức còn lại.
+  const payNowDefault = !corporate?.paymentTermDays;
   const [view, setView] = useState('list'); // list | calendar
   const [selected, setSelected] = useState(null);
   const [filterVehicle, setFilterVehicle] = useState('');
@@ -94,6 +107,53 @@ export default function EnterpriseSchedulePage() {
         : '';
       toast.error(fieldMsg || err?.message || 'Không từ chối được chuyến');
     },
+  });
+
+  // ── Post-trip cost confirmation (status PENDING_CONFIRM) ──────────────
+  // The company sees the driver's actual km + logged expenses, approves each
+  // expense (admin), then employee + admin sign off to reach CONFIRMED.
+  const isConfirming = selected?.status === 'PENDING_CONFIRM';
+  const { data: expenseRes } = useQuery({
+    queryKey: ['enterprise', 'expenses', selected?.id],
+    queryFn: () => enterpriseService.listExpenses(selected.id),
+    enabled: isConfirming && !!selected?.id,
+  });
+  const expensePayload = expenseRes?.data ?? expenseRes ?? {};
+  const expenses = expensePayload.expenses || [];
+  const expenseSummary = expensePayload.summary || null;
+
+  const invalidateConfirm = () => {
+    qc.invalidateQueries({ queryKey: ['enterprise', 'bookings'] });
+    qc.invalidateQueries({ queryKey: ['enterprise', 'expenses', selected?.id] });
+  };
+
+  const approveExpenseMut = useMutation({
+    mutationFn: ({ expenseId, approved }) =>
+      enterpriseService.approveExpense(selected.id, expenseId, approved),
+    onSuccess: (_res, vars) => {
+      toast.success(vars.approved ? 'Đã duyệt khoản chi phí' : 'Đã từ chối khoản chi phí');
+      invalidateConfirm();
+    },
+    onError: (e) => toast.error(e?.message || 'Không duyệt được chi phí'),
+  });
+
+  // Gộp Mức 1+2: admin xác nhận & chốt trong 1 nút, kèm lựa chọn thanh toán.
+  // paymentMode = PAY_NOW (trả luôn — BE tự lập bảng kê khi CarGoGo chốt) hoặc
+  // ON_CREDIT (ghi công nợ, gom vào kỳ quyết toán tháng).
+  const confirmAndFinalizeMut = useMutation({
+    mutationFn: (paymentMode) =>
+      enterpriseService.confirmAndFinalize(selected.id, paymentMode),
+    onSuccess: (res, paymentMode) => {
+      const booking = (res?.data ?? res)?.booking || res?.data || res;
+      toast.success(
+        paymentMode === 'PAY_NOW'
+          ? 'Đã chốt chuyến — sẽ lập bảng kê thanh toán ngay khi CarGoGo xác nhận'
+          : 'Đã chốt chuyến — ghi công nợ, gom vào kỳ quyết toán tháng'
+      );
+      invalidateConfirm();
+      if (booking?.id) syncSelected(booking);
+    },
+    onError: (e) => toast.error(e?.message || 'Không xác nhận được'),
   });
 
   if (isLoading) return <Loading />;
@@ -277,6 +337,36 @@ export default function EnterpriseSchedulePage() {
                 </div>
               )}
 
+              {/* Driver info relayed by CarGoGo (white-label — no supplier identity). */}
+              {selected.releasedDriverInfo ? (
+                <div className="rounded-lg bg-emerald-50 px-3 py-2 text-emerald-800 ring-1 ring-emerald-100">
+                  <div className="font-semibold">Thông tin tài xế</div>
+                  <div>
+                    {selected.releasedDriverInfo.fullName}
+                    {selected.releasedDriverInfo.phone
+                      ? ` · ${selected.releasedDriverInfo.phone}`
+                      : ''}
+                  </div>
+                  {(selected.releasedDriverInfo.licensePlate ||
+                    selected.releasedDriverInfo.vehicleNote) && (
+                    <div className="text-xs text-emerald-700">
+                      {[
+                        selected.releasedDriverInfo.licensePlate,
+                        selected.releasedDriverInfo.vehicleNote,
+                      ]
+                        .filter(Boolean)
+                        .join(' · ')}
+                    </div>
+                  )}
+                </div>
+              ) : (
+                ['APPROVED', 'DISPATCHED', 'DRIVER_ASSIGNED'].includes(selected.status) && (
+                  <div className="rounded-lg bg-ink-50 px-3 py-2 text-ink-500">
+                    Đang điều phối tài xế…
+                  </div>
+                )
+              )}
+
               {isAdmin && selected.status === 'PENDING' && (
                 <div className="mt-4 space-y-2 border-t border-ink-100 pt-3">
                   <p className="text-xs font-semibold uppercase tracking-wide text-ink-400">
@@ -329,6 +419,144 @@ export default function EnterpriseSchedulePage() {
                       </button>
                     </div>
                   )}
+                </div>
+              )}
+
+              {isConfirming && (
+                <div className="mt-4 space-y-3 border-t border-ink-100 pt-3">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-ink-400">
+                    Xác nhận chi phí sau chuyến
+                  </p>
+
+                  <div className="rounded-xl bg-ink-50 px-3 py-2 text-sm">
+                    <div>
+                      Số km thực tế:{' '}
+                      <strong>{selected.actualKm != null ? `${selected.actualKm} km` : '—'}</strong>
+                    </div>
+                    {selected.driverNote && (
+                      <div className="mt-1 text-ink-500">Ghi chú tài xế: {selected.driverNote}</div>
+                    )}
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <div className="text-xs font-semibold text-ink-500">
+                      Chi phí dọc đường ({expenses.length})
+                    </div>
+                    {expenses.length === 0 ? (
+                      <p className="rounded-lg bg-ink-50 px-3 py-2 text-sm text-ink-400">
+                        Không có khoản chi phí nào.
+                      </p>
+                    ) : (
+                      expenses.map((ex) => (
+                        <div
+                          key={ex.id}
+                          className="flex items-center justify-between gap-2 rounded-lg border border-ink-100 px-3 py-2 text-sm"
+                        >
+                          <div className="min-w-0">
+                            <div className="font-medium text-ink-700">
+                              {EXPENSE_TYPE_LABEL[ex.type] || ex.type} ·{' '}
+                              {formatCurrency(ex.amount)}
+                            </div>
+                            {ex.description && (
+                              <div className="truncate text-xs text-ink-400">{ex.description}</div>
+                            )}
+                          </div>
+                          <div className="flex shrink-0 items-center gap-1.5">
+                            {ex.approvedByAdmin === true && (
+                              <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[11px] font-semibold text-emerald-700">
+                                Đã duyệt
+                              </span>
+                            )}
+                            {ex.approvedByAdmin === false && (
+                              <span className="rounded-full bg-red-100 px-2 py-0.5 text-[11px] font-semibold text-red-700">
+                                Từ chối
+                              </span>
+                            )}
+                            {isAdmin && (
+                              <>
+                                <button
+                                  type="button"
+                                  disabled={approveExpenseMut.isPending}
+                                  className="rounded-lg bg-emerald-50 px-2 py-1 text-xs font-semibold text-emerald-700 ring-1 ring-emerald-200 disabled:opacity-60"
+                                  onClick={() =>
+                                    approveExpenseMut.mutate({ expenseId: ex.id, approved: true })
+                                  }
+                                >
+                                  Duyệt
+                                </button>
+                                <button
+                                  type="button"
+                                  disabled={approveExpenseMut.isPending}
+                                  className="rounded-lg bg-red-50 px-2 py-1 text-xs font-semibold text-red-700 ring-1 ring-red-200 disabled:opacity-60"
+                                  onClick={() =>
+                                    approveExpenseMut.mutate({ expenseId: ex.id, approved: false })
+                                  }
+                                >
+                                  Từ chối
+                                </button>
+                              </>
+                            )}
+                          </div>
+                        </div>
+                      ))
+                    )}
+                    {expenseSummary?.total != null && (
+                      <div className="flex justify-between pt-1 text-sm font-semibold text-ink-700">
+                        <span>Tạm tính tổng chuyến</span>
+                        <span>{formatCurrency(expenseSummary.total)}</span>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="flex flex-col gap-2 border-t border-ink-100 pt-3">
+                    {!isAdmin ? (
+                      <p className="text-sm text-ink-500">
+                        Chờ quản trị công ty xác nhận & chốt chi phí chuyến này.
+                      </p>
+                    ) : (
+                      <>
+                        <p className="text-xs font-semibold uppercase tracking-wide text-ink-400">
+                          Xác nhận & chốt chuyến
+                        </p>
+                        {/* Nút mặc định (nổi bật) theo điều khoản thanh toán của công ty:
+                            paymentTermDays > 0 → công nợ tháng; = 0 → trả luôn. */}
+                        <button
+                          type="button"
+                          disabled={confirmAndFinalizeMut.isPending}
+                          className="rounded-xl bg-emerald-600 px-4 py-2 text-sm font-semibold text-white disabled:opacity-60"
+                          onClick={() =>
+                            confirmAndFinalizeMut.mutate(payNowDefault ? 'PAY_NOW' : 'ON_CREDIT')
+                          }
+                        >
+                          {confirmAndFinalizeMut.isPending
+                            ? 'Đang chốt...'
+                            : payNowDefault
+                              ? 'Xác nhận & thanh toán luôn'
+                              : 'Xác nhận & ghi công nợ tháng'}
+                        </button>
+                        {/* Lựa chọn còn lại (viền, phụ) */}
+                        <button
+                          type="button"
+                          disabled={confirmAndFinalizeMut.isPending}
+                          className="rounded-xl border border-ink-200 px-4 py-2 text-sm font-semibold text-ink-600 disabled:opacity-60 hover:bg-ink-50"
+                          onClick={() =>
+                            confirmAndFinalizeMut.mutate(payNowDefault ? 'ON_CREDIT' : 'PAY_NOW')
+                          }
+                        >
+                          {payNowDefault
+                            ? 'Hoặc: ghi công nợ tháng'
+                            : 'Hoặc: thanh toán luôn chuyến này'}
+                        </button>
+                        <p className="text-xs text-ink-400">
+                          Bấm để duyệt toàn bộ chi phí còn treo, chốt chuyến (CONFIRMED) và chọn hình
+                          thức thanh toán. Muốn loại một khoản chi phí, hãy bấm "Từ chối" ở khoản đó
+                          trước. <strong>Thanh toán luôn</strong> lập bảng kê riêng cho chuyến ngay khi
+                          CarGoGo xác nhận; <strong>ghi công nợ</strong> gom vào kỳ quyết toán tháng
+                          {corporate?.paymentTermDays ? ` (kỳ hạn ${corporate.paymentTermDays} ngày)` : ''}.
+                        </p>
+                      </>
+                    )}
+                  </div>
                 </div>
               )}
             </div>

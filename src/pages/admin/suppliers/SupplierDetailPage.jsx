@@ -419,7 +419,7 @@ export default function SupplierDetailPage() {
           <div>
             <h2 className="font-semibold text-ink-700">Payout cho nhà cung cấp</h2>
             <p className="text-xs text-ink-400">
-              Thực nhận = tổng finalAmount − commission OtoRent
+              Thực nhận = tổng finalAmount − commission CarGoGo
             </p>
           </div>
           <Button

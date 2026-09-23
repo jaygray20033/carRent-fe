@@ -52,7 +52,7 @@ export default function EnterpriseQualityPage() {
         severity: form.severity,
       }),
     onSuccess: () => {
-      toast.success('Đã gửi báo cáo vi phạm — chờ OtoRent xác nhận');
+      toast.success('Đã gửi báo cáo vi phạm — chờ CarGoGo xác nhận');
       setForm((f) => ({ ...f, description: '' }));
       qc.invalidateQueries({ queryKey: ['enterprise', 'violations', form.bookingId] });
       qc.invalidateQueries({ queryKey: ['enterprise', 'mySla'] });

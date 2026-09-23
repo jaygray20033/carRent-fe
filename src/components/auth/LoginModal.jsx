@@ -14,6 +14,7 @@
 //     forgot-reset    → tạo mật khẩu mới
 //
 import { useEffect, useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { X, ChevronLeft } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useAuthStore } from '../../store/authStore.js';
@@ -32,6 +33,7 @@ const errMsg = (e, fallback) => e?.message || e?.response?.data?.message || fall
 
 export default function LoginModal({ open, onClose, initialTab = 'login' }) {
   const setAuth = useAuthStore((s) => s.setAuth);
+  const queryClient = useQueryClient();
 
   const [step, setStep] = useState(initialTab === 'register' ? 'reg-info' : 'login-phone');
   const [loading, setLoading] = useState(false);
@@ -39,6 +41,7 @@ export default function LoginModal({ open, onClose, initialTab = 'login' }) {
   // shared form state
   const [identifier, setIdentifier] = useState('');
   const [fullName, setFullName] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [otp, setOtp] = useState('');
@@ -58,6 +61,7 @@ export default function LoginModal({ open, onClose, initialTab = 'login' }) {
       setStep(initialTab === 'register' ? 'reg-info' : 'login-phone');
       setIdentifier('');
       setFullName('');
+      setEmail('');
       setPassword('');
       setNewPassword('');
       setOtp('');
@@ -81,6 +85,9 @@ export default function LoginModal({ open, onClose, initialTab = 'login' }) {
 
   const finishAuth = (data) => {
     const { user, accessToken, refreshToken } = data;
+    // Drop the previous session's cached queries so a prior user's data
+    // (e.g. enterprise/myCompany) can't leak into this login. See useAuth.login.
+    queryClient.clear();
     setAuth(user, accessToken, refreshToken);
     toast.success('Đăng nhập thành công');
     onClose?.({ loggedIn: true });
@@ -89,6 +96,7 @@ export default function LoginModal({ open, onClose, initialTab = 'login' }) {
   const switchTab = (next) => {
     setErrors({});
     setOtp('');
+    setEmail('');
     setPassword('');
     setNewPassword('');
     setStep(next === 'register' ? 'reg-info' : 'login-phone');
@@ -139,6 +147,8 @@ export default function LoginModal({ open, onClose, initialTab = 'login' }) {
     if (!fullName.trim()) next.fullName = REQUIRED_MSG;
     if (!identifier.trim()) next.identifier = REQUIRED_MSG;
     else if (!phoneRe.test(identifier.trim())) next.identifier = 'Số điện thoại không hợp lệ';
+    if (!email.trim()) next.email = REQUIRED_MSG;
+    else if (!emailRe.test(email.trim())) next.email = 'Email không hợp lệ';
     if (!password) next.password = REQUIRED_MSG;
     else if (password.length < 8) next.password = 'Mật khẩu tối thiểu 8 ký tự';
     setErrors(next);
@@ -149,15 +159,17 @@ export default function LoginModal({ open, onClose, initialTab = 'login' }) {
       await authService.register({
         fullName: fullName.trim(),
         phone: identifier.trim(),
+        email: email.trim(),
         password,
       });
-      toast.success('Đã gửi mã OTP tới số điện thoại của bạn');
+      toast.success('Đã gửi mã OTP tới email của bạn');
       setOtp('');
       setResendIn(60);
       setStep('reg-otp'); // Step 2 — nhập OTP
     } catch (err) {
       const msg = errMsg(err, 'Đăng ký thất bại');
       if (err?.code === 'PHONE_EXISTS') setErr('identifier', 'Số điện thoại đã được đăng ký');
+      else if (err?.code === 'EMAIL_EXISTS') setErr('email', 'Email đã được đăng ký');
       else toast.error(msg);
     } finally {
       setLoading(false);
@@ -171,7 +183,7 @@ export default function LoginModal({ open, onClose, initialTab = 'login' }) {
     setLoading(true);
     try {
       await authService.verifyOtp({
-        identifier: identifier.trim(),
+        identifier: email.trim(),
         code: otp,
         purpose: 'REGISTER',
       });
@@ -249,7 +261,9 @@ export default function LoginModal({ open, onClose, initialTab = 'login' }) {
       if (purpose === 'RESET') {
         await authService.forgotPassword({ identifier: identifier.trim() });
       } else {
-        await authService.resendOtp({ identifier: identifier.trim(), purpose });
+        // REGISTER OTP được BE key theo email (auth.service gửi OTP tới email),
+        // nên resend cũng phải dùng email làm identifier.
+        await authService.resendOtp({ identifier: email.trim(), purpose });
       }
       toast.success('Đã gửi lại mã OTP');
       setResendIn(60);
@@ -263,7 +277,7 @@ export default function LoginModal({ open, onClose, initialTab = 'login' }) {
     'login-phone': { title: 'Đăng nhập', desc: 'Nhập số điện thoại hoặc email để tiếp tục' },
     'login-password': { title: 'Nhập mật khẩu', desc: `Đăng nhập với ${identifier}` },
     'reg-info': { title: 'Tạo tài khoản', desc: 'Nhập thông tin để bắt đầu' },
-    'reg-otp': { title: 'Xác thực OTP', desc: `Mã 6 số đã gửi tới ${identifier}` },
+    'reg-otp': { title: 'Xác thực OTP', desc: `Mã 6 số đã gửi tới ${email}` },
     'forgot-id': { title: 'Quên mật khẩu', desc: 'Nhập SĐT/email để nhận mã đặt lại' },
     'forgot-otp': { title: 'Xác thực OTP', desc: `Mã 6 số đã gửi tới ${identifier}` },
     'forgot-reset': { title: 'Đặt mật khẩu mới', desc: 'Tạo mật khẩu mới cho tài khoản' },
@@ -411,6 +425,17 @@ export default function LoginModal({ open, onClose, initialTab = 'login' }) {
                 }}
               />
               <AuthField
+                label="Email"
+                type="email"
+                placeholder="you@email.com"
+                value={email}
+                error={errors.email}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  clearErr('email');
+                }}
+              />
+              <AuthField
                 label="Mật khẩu"
                 type="password"
                 placeholder="Tối thiểu 8 ký tự, gồm chữ và số"
@@ -424,7 +449,7 @@ export default function LoginModal({ open, onClose, initialTab = 'login' }) {
               <AuthButton
                 type="submit"
                 loading={loading}
-                disabled={!fullName.trim() || !identifier.trim() || !password}
+                disabled={!fullName.trim() || !identifier.trim() || !email.trim() || !password}
               >
                 Tiếp tục
               </AuthButton>

@@ -53,7 +53,7 @@ export default function SupplierRoute({ children }) {
           <h1 className="text-xl font-bold text-ink-700">403 — Không có quyền</h1>
           <p className="mt-2 text-sm text-ink-500">
             Tài khoản của bạn chưa thuộc nhà cung cấp nào. Cổng nhà cung cấp chỉ dành cho thành
-            viên đã được OtoRent mời và kích hoạt.
+            viên đã được CarGoGo mời và kích hoạt.
           </p>
           <a href="/" className="mt-4 inline-block text-sm font-semibold text-brand-primary">
             Về trang chủ

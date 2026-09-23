@@ -24,7 +24,7 @@ const HIGHLIGHTS = [
 const STEPS = [
   {
     title: '1. Xác nhận đơn thuê',
-    body: 'Sau khi thanh toán thành công, nhân viên OtoRent sẽ liên hệ trong vòng 30 phút để xác nhận thời gian và địa điểm nhận xe.',
+    body: 'Sau khi thanh toán thành công, nhân viên CarGoGo sẽ liên hệ trong vòng 30 phút để xác nhận thời gian và địa điểm nhận xe.',
   },
   {
     title: '2. Chuẩn bị giấy tờ',
@@ -36,7 +36,7 @@ const STEPS = [
   },
   {
     title: '4. Nhận xe & khởi hành',
-    body: 'Sau khi hoàn tất thủ tục, bạn nhận chìa khóa và bắt đầu hành trình. OtoRent hỗ trợ 24/7 trong suốt thời gian thuê.',
+    body: 'Sau khi hoàn tất thủ tục, bạn nhận chìa khóa và bắt đầu hành trình. CarGoGo hỗ trợ 24/7 trong suốt thời gian thuê.',
   },
 ];
 
@@ -47,18 +47,18 @@ export default function DeliveryPage() {
       <section className="relative overflow-hidden bg-ink-900">
         <div className="absolute inset-0 bg-gradient-to-r from-ink-900 via-ink-900/95 to-ink-800" />
         <div className="container-app relative z-10 py-12 md:py-16">
-          <nav className="mb-4 flex items-center gap-1.5 text-sm text-white/60">
-            <Link to="/" className="transition hover:text-white">
+          <nav className="mb-4 flex items-center gap-1.5 text-sm text-white/90">
+            <Link to="/" className="transition hover:text-brand-accent">
               Trang chủ
             </Link>
             <ChevronRight className="h-4 w-4" />
-            <span className="font-medium text-white">Chính sách giao xe</span>
+            <span className="font-medium text-brand-accent">Chính sách giao xe</span>
           </nav>
           <p className="mb-1 inline-flex items-center gap-2 text-sm font-semibold text-brand-accent">
             <Truck className="h-4 w-4" /> Giao nhận xe
           </p>
           <h1 className="text-3xl font-bold tracking-tight md:text-4xl">Chính sách giao xe</h1>
-          <p className="mt-2 max-w-xl text-sm text-white/70">
+          <p className="mt-2 max-w-xl text-sm text-white/85">
             Quy trình giao nhận xe minh bạch, nhanh chóng và an toàn cho mọi chuyến đi của bạn.
           </p>
         </div>
@@ -83,7 +83,7 @@ export default function DeliveryPage() {
           <div className="lg:col-span-1">
             <h2 className="text-2xl font-bold text-ink-900">Quy trình giao xe</h2>
             <p className="mt-2 text-sm leading-relaxed text-ink-500">
-              4 bước đơn giản từ lúc xác nhận đơn đến khi bạn cầm lái. OtoRent đồng hành cùng bạn ở
+              4 bước đơn giản từ lúc xác nhận đơn đến khi bạn cầm lái. CarGoGo đồng hành cùng bạn ở
               mỗi bước.
             </p>
           </div>

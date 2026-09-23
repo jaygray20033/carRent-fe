@@ -42,7 +42,7 @@ export default function HowItWorks() {
         <div className="text-center mb-12">
           <p className="text-brand-primary font-semibold text-sm mb-1">Hướng dẫn đặt xe</p>
           <h2 className="text-2xl md:text-3xl font-bold text-ink-900">
-            Làm thế nào để đặt xe trên <span className="text-brand-primary">OtoRent</span>
+            Làm thế nào để đặt xe trên <span className="text-brand-primary">CarGoGo</span>
           </h2>
         </div>
 

@@ -48,7 +48,7 @@ export default function EnterpriseDashboardPage() {
               Có {pending} chuyến đang chờ duyệt
             </div>
             <div className="text-sm text-amber-800">
-              Nhân viên đã gửi yêu cầu — cần Corporate Admin duyệt trước khi OtoRent điều xe.
+              Nhân viên đã gửi yêu cầu — cần Corporate Admin duyệt trước khi CarGoGo điều xe.
             </div>
           </div>
           <Link

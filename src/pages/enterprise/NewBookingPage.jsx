@@ -7,8 +7,6 @@ import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { enterpriseService } from '../../services/enterpriseService.js';
 import VASSelector from '../../components/enterprise/VASSelector.jsx';
-import { computeVasTotal } from '../../components/enterprise/vasTotal.js';
-import CostSummaryCard from '../../components/enterprise/CostSummaryCard.jsx';
 import Loading from '../../components/common/Loading.jsx';
 
 const VEHICLE_TYPES = [
@@ -17,20 +15,6 @@ const VEHICLE_TYPES = [
   { value: '16_seat', label: 'Xe 16 chỗ' },
   { value: '29_seat', label: 'Xe 29 chỗ' },
 ];
-
-function pickBasePrice(priceConfig, vehicleType, rentalType, estimatedKm) {
-  const cfg = priceConfig?.[vehicleType];
-  if (!cfg) return 0;
-  const km = Number(estimatedKm) || 0;
-  if (rentalType === 'half_day') {
-    return km <= 100 ? cfg.half_day_0_100km : cfg.half_day_100_150km;
-  }
-  return km <= 150 ? cfg.full_day_100_150km : cfg.full_day_150_200km;
-}
-
-function formatVnd(n) {
-  return `${Math.round(Number(n) || 0).toLocaleString('vi-VN')}đ`;
-}
 
 export default function EnterpriseNewBookingPage() {
   const navigate = useNavigate();
@@ -62,43 +46,6 @@ export default function EnterpriseNewBookingPage() {
     [priceRes]
   );
   const vasItems = useMemo(() => (vasRes?.data ?? vasRes)?.items || [], [vasRes]);
-
-  const basePrice = useMemo(
-    () =>
-      pickBasePrice(priceConfig, form.vehicleType, form.rentalType, form.estimatedKm) || 0,
-    [priceConfig, form.vehicleType, form.rentalType, form.estimatedKm]
-  );
-  const vasTotal = useMemo(() => computeVasTotal(vasItems, vasValue), [vasItems, vasValue]);
-  const preview = useMemo(() => {
-    const subtotal = basePrice + vasTotal;
-    const vat10 = Math.round(subtotal * 0.1);
-    const vasLines = vasItems
-      .filter((v) => {
-        const id = v.vasId ?? v.id;
-        return vasValue[id]?.enabled;
-      })
-      .map((v) => {
-        const id = v.vasId ?? v.id;
-        const hc = Math.max(1, Number(vasValue[id]?.headcount) || 1);
-        const unit = Math.round(Number(v.unitPrice ?? v.basePrice) || 0);
-        return {
-          name: v.name,
-          headcount: hc,
-          unitPrice: unit,
-          total: hc * unit,
-        };
-      });
-    return {
-      basePrice,
-      vas: vasLines,
-      vasTotal,
-      expenses: [],
-      expenseTotal: 0,
-      subtotal,
-      vat10,
-      total: subtotal + vat10,
-    };
-  }, [basePrice, vasTotal, vasItems, vasValue]);
 
   const createMut = useMutation({
     mutationFn: async () => {
@@ -197,8 +144,8 @@ export default function EnterpriseNewBookingPage() {
         ))}
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-3">
-        <div className="space-y-4 lg:col-span-2">
+      <div className="max-w-2xl">
+        <div className="space-y-4">
           {step === 1 && (
             <div className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-ink-100 space-y-3">
               <h2 className="font-semibold text-ink-700">Thông tin chuyến</h2>
@@ -281,9 +228,6 @@ export default function EnterpriseNewBookingPage() {
                   onChange={(e) => setForm({ ...form, purpose: e.target.value })}
                 />
               </label>
-              <div className="text-sm text-ink-500">
-                Giá dự kiến: <strong data-testid="base-price-preview">{formatVnd(basePrice)}</strong>
-              </div>
               <button
                 type="button"
                 className="rounded-xl bg-brand-primary px-4 py-2 text-sm font-semibold text-white"
@@ -355,13 +299,6 @@ export default function EnterpriseNewBookingPage() {
               </div>
             </div>
           )}
-        </div>
-
-        <div>
-          <CostSummaryCard summary={preview} />
-          <p className="mt-2 text-xs text-ink-400">
-            Preview trước VAT đã gồm base + VAS. VAT 10% tính trên tạm tính.
-          </p>
         </div>
       </div>
     </div>

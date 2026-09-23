@@ -1,6 +1,6 @@
 // src/pages/EnterpriseRegisterPage.jsx — Enterprise (doanh nghiệp) self-registration.
 // Landing + instant self-register: any authenticated user creates a company and
-// becomes its admin immediately (no OtoRent approval). On success we jump straight
+// becomes its admin immediately (no CarGoGo approval). On success we jump straight
 // to the Enterprise Portal. Unlike the supplier flow, there is no review queue.
 import { useForm } from 'react-hook-form';
 import { useQuery, useMutation } from '@tanstack/react-query';
@@ -17,10 +17,10 @@ import {
 import toast from 'react-hot-toast';
 import { enterpriseService } from '../services/enterpriseService.js';
 import { useAuth } from '../hooks/useAuth.js';
-import useUiStore from '../store/uiStore.js';
 import Button from '../components/ui/Button.jsx';
 import Input from '../components/ui/Input.jsx';
 import Loading from '../components/common/Loading.jsx';
+import RegisterGateCard from '../components/partner/RegisterGateCard.jsx';
 
 const BENEFITS = [
   {
@@ -43,7 +43,6 @@ const BENEFITS = [
 export default function EnterpriseRegisterPage() {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
-  const openAuthModal = useUiStore((s) => s.openAuthModal);
 
   // Detect an existing membership so we send returning users to the portal
   // instead of showing the form again.
@@ -87,16 +86,9 @@ export default function EnterpriseRegisterPage() {
     mutation.mutate(payload);
   };
 
-  // Guests may fill the form freely; auth is only required at submit time. We
-  // open the login modal in place (keeping the entered values) and resume the
-  // registration automatically once the user is signed in.
-  const onSubmit = (values) => {
-    if (!isAuthenticated) {
-      openAuthModal('login', () => submitRegistration(values));
-      return;
-    }
-    submitRegistration(values);
-  };
+  // Gate-early: the form only renders for signed-in users, so submit no longer
+  // needs an auth branch.
+  const onSubmit = (values) => submitRegistration(values);
 
   return (
     <div>
@@ -104,18 +96,18 @@ export default function EnterpriseRegisterPage() {
       <section className="relative overflow-hidden bg-ink-900">
         <div className="absolute inset-0 bg-gradient-to-r from-ink-900 via-ink-900/95 to-ink-800" />
         <div className="container-app relative z-10 py-12 md:py-16">
-          <nav className="mb-4 flex items-center gap-1.5 text-sm text-white/60">
-            <Link to="/" className="transition hover:text-white">
+          <nav className="mb-4 flex items-center gap-1.5 text-sm text-white/90">
+            <Link to="/" className="transition hover:text-brand-accent">
               Trang chủ
             </Link>
             <ChevronRight className="h-4 w-4" />
-            <span className="font-medium text-white">Đăng ký doanh nghiệp</span>
+            <span className="font-medium text-brand-accent">Đăng ký doanh nghiệp</span>
           </nav>
-          <p className="mb-1 text-sm font-semibold text-brand-accent">OtoRent Business</p>
+          <p className="mb-1 text-sm font-semibold text-brand-accent">CarGoGo Business</p>
           <h1 className="text-3xl font-bold tracking-tight text-white md:text-4xl">
             Giải pháp thuê xe cho doanh nghiệp
           </h1>
-          <p className="mt-2 max-w-xl text-sm text-white/70">
+          <p className="mt-2 max-w-xl text-sm text-white/85">
             Tạo tài khoản doanh nghiệp để đặt xe theo hợp đồng, quản lý nhân viên và đối soát chi phí.
             Kích hoạt ngay — không cần chờ duyệt.
           </p>
@@ -127,7 +119,7 @@ export default function EnterpriseRegisterPage() {
           {/* Left — benefits */}
           <div className="lg:col-span-2">
             <div className="rounded-2xl bg-white p-6 shadow-card ring-1 ring-ink-100">
-              <h2 className="mb-4 text-lg font-bold text-ink-900">Vì sao chọn OtoRent Business?</h2>
+              <h2 className="mb-4 text-lg font-bold text-ink-900">Vì sao chọn CarGoGo Business?</h2>
               <ul className="space-y-5">
                 {BENEFITS.map(({ icon: Icon, title, desc }) => (
                   <li key={title} className="flex items-start gap-3">
@@ -144,13 +136,24 @@ export default function EnterpriseRegisterPage() {
             </div>
           </div>
 
-          {/* Right — form / login CTA / already-member notice */}
+          {/* Right — gate (guest) / form / login CTA / already-member notice */}
           <div className="lg:col-span-3">
-            {isAuthenticated && checkingCompany ? (
+            {!isAuthenticated ? (
+              <RegisterGateCard
+                title="Đăng nhập để đăng ký doanh nghiệp"
+                description="Tài khoản của bạn sẽ trở thành quản trị doanh nghiệp ngay sau khi đăng ký, nên cần đăng nhập trước. Đăng nhập hoặc tạo tài khoản để bắt đầu."
+                checklist={[
+                  'Tên doanh nghiệp',
+                  'Mã số thuế (10–13 chữ số)',
+                  'Địa chỉ doanh nghiệp',
+                  'Thông tin người liên hệ (tuỳ chọn)',
+                ]}
+              />
+            ) : checkingCompany ? (
               <div className="rounded-2xl bg-white p-8 shadow-card ring-1 ring-ink-100">
                 <Loading />
               </div>
-            ) : isAuthenticated && alreadyMember ? (
+            ) : alreadyMember ? (
               <AlreadyMemberCard />
             ) : (
               <div className="rounded-2xl bg-white p-6 shadow-card ring-1 ring-ink-100 md:p-8">

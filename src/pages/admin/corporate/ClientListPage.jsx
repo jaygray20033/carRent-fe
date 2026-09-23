@@ -128,7 +128,7 @@ export default function ClientListPage() {
 
       {totalPages > 1 && (
         <div className="mt-4">
-          <Pagination page={page} totalPages={totalPages} onChange={setPage} />
+          <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
         </div>
       )}
     </div>

@@ -1,6 +1,6 @@
 // src/components/layout/SupplierLayout.jsx
 // Marketplace Phase E — dedicated Supplier Portal shell (white-label: the
-// supplier never sees the corporate client identity or OtoRent's margin).
+// supplier never sees the corporate client identity or CarGoGo's margin).
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import {
@@ -12,6 +12,7 @@ import {
   LogOut,
   Truck,
   AlertTriangle,
+  Home,
 } from 'lucide-react';
 import { useAuthStore } from '../../store/authStore.js';
 import { supplierPortalService } from '../../services/supplierService.js';
@@ -48,7 +49,7 @@ export default function SupplierLayout() {
             <div className="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-ink-100">
               <div className="flex items-center gap-2">
                 <Truck className="h-5 w-5 text-brand-primary" />
-                <span className="text-lg font-extrabold text-brand-primary">OtoRent</span>
+                <span className="text-lg font-extrabold text-brand-primary">CarGoGo</span>
                 <span className="rounded-md bg-brand-primary/10 px-1.5 py-0.5 text-xs font-semibold text-brand-primary">
                   NCC
                 </span>
@@ -77,6 +78,16 @@ export default function SupplierLayout() {
                   {label}
                 </NavLink>
               ))}
+            </nav>
+
+            <nav className="overflow-hidden rounded-2xl bg-white p-2 shadow-sm ring-1 ring-ink-100">
+              <NavLink
+                to="/"
+                className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium text-ink-600 transition hover:bg-ink-50"
+              >
+                <Home className="h-4 w-4" />
+                Về trang chủ
+              </NavLink>
             </nav>
           </div>
         </aside>
@@ -142,7 +153,7 @@ export default function SupplierLayout() {
               <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0" />
               <div>
                 Nhà cung cấp đang có rủi ro chấm dứt hợp đồng do vi phạm CRITICAL. Vui lòng liên hệ
-                OtoRent để xử lý.
+                CarGoGo để xử lý.
               </div>
             </div>
           )}

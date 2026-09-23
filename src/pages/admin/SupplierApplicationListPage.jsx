@@ -257,7 +257,7 @@ export default function SupplierApplicationListPage() {
                     className="input"
                   />
                   <p className="mt-1 text-xs text-ink-400">
-                    Áp dụng khi duyệt — hoa hồng OtoRent thu trên mỗi đơn của nhà xe.
+                    Áp dụng khi duyệt — hoa hồng CarGoGo thu trên mỗi đơn của nhà xe.
                   </p>
                 </div>
                 <div>

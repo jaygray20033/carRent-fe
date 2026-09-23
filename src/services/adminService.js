@@ -138,14 +138,27 @@ export const adminCorporateService = {
   listBookings: (params) => api.get('/admin/corporate-bookings', { params }),
   assignDriver: (id, payload) =>
     api.put(`/admin/corporate-bookings/${id}/assign-driver`, payload),
+  // Marketplace (Phase B) — dispatch to supplier / recall / relay driver info to DN
+  dispatch: (id, payload) =>
+    api.put(`/admin/corporate-bookings/${id}/dispatch`, payload || {}),
+  recall: (id, payload) =>
+    api.put(`/admin/corporate-bookings/${id}/recall`, payload || {}),
+  releaseDriverInfo: (id, payload) =>
+    api.put(`/admin/corporate-bookings/${id}/release-driver-info`, payload || {}),
   startBooking: (id) => api.put(`/admin/corporate-bookings/${id}/start`),
   confirmOtorent: (id) => api.put(`/admin/corporate-bookings/${id}/confirm-otorent`),
+  quickSettlement: (id) => api.post(`/admin/corporate-bookings/${id}/quick-settlement`),
+  // Payment-confirmation queue (OtoRent staff). Defaults to PAYMENT_DECLARED —
+  // companies that reported a bank transfer awaiting staff confirmation.
+  listPaymentQueue: (params) =>
+    api.get('/admin/settlements', { params: { status: 'PAYMENT_DECLARED', ...params } }),
   getSettlement: (id) => api.get(`/admin/settlements/${id}`),
   sendSettlement: (id) => api.put(`/admin/settlements/${id}/send`),
   markSettlementPaid: (id, payload) =>
     api.put(`/admin/settlements/${id}/mark-paid`, payload || {}),
   exportSettlementPdf: (id) =>
     api.get(`/admin/settlements/${id}/export`, { responseType: 'blob' }),
+  getSettlementQr: (id) => api.get(`/admin/settlements/${id}/qr`),
   // ENT — SLA reports from enterprises
   listSlaViolations: (params) => api.get('/admin/sla-violations', { params }),
   confirmSlaViolation: (id, payload) =>

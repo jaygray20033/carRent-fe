@@ -9,6 +9,12 @@ import AuthButton from '../../components/auth/AuthButton.jsx';
 import { enterpriseService } from '../../services/enterpriseService.js';
 
 async function resolveLanding(user, from) {
+  // An invite/join link (carries ?token= or a /join/:token path) must win over
+  // role-based landing, otherwise the token is dropped and the invitee lands on
+  // their portal home without ever joining. Covers accept + shareable-link join,
+  // for both corporate and supplier.
+  if (from && /\/(corporate|supplier)\/(invite\/accept|join)/.test(from)) return from;
+
   const roleCode = user?.role?.code;
   if (roleCode === 'ADMIN' || roleCode === 'OPERATOR') return '/admin';
   if (roleCode === 'SUPPLIER_ADMIN' || roleCode === 'SUPPLIER_DRIVER') return '/supplier';
@@ -88,16 +94,6 @@ export default function LoginPage() {
           </Link>
         </div>
       </form>
-
-      <div className="mt-6 rounded-xl bg-ink-50 p-3 text-xs text-ink-400">
-        <p className="font-medium text-ink-700">Demo account:</p>
-        <p>📱 Admin: 0900000001 / Admin@123</p>
-        <p>📱 User: 0901234567 / User@123</p>
-        <p>🏢 Corp Admin: 0909000222 / CorpAdmin@123</p>
-        <p>🏢 Corp Emp: 0909000333 / CorpEmp@123</p>
-        <p>🚚 Supplier Admin: 0909000444 / SupplierAdmin@123</p>
-        <p>🚚 Supplier Driver: 0909000555 / SupplierDriver@123</p>
-      </div>
     </AuthCard>
   );
 }

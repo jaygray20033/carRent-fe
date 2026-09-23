@@ -9,7 +9,7 @@ export default function HeroBanner() {
       <div className="absolute inset-0">
         <img
           src="https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=1600&h=800&fit=crop"
-          alt="Ford Explorer - OtoRent hero"
+          alt="Ford Explorer - CarGoGo hero"
           fetchPriority="high"
           className="w-full h-full object-cover"
         />
@@ -20,7 +20,7 @@ export default function HeroBanner() {
       <div className="relative container-app py-16 md:py-24">
         <div className="max-w-xl">
           <h1 className="text-3xl md:text-5xl font-bold text-white leading-tight mb-4">
-            OtoRent Nhanh chóng,
+            CarGoGo Nhanh chóng,
             <br />
             <span className="text-brand-accent">Dễ dàng</span> và{' '}
             <span className="text-brand-accent">Tiết Kiệm</span>

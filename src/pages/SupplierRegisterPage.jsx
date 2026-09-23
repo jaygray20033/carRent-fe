@@ -8,11 +8,11 @@ import { ChevronRight, Warehouse, TrendingUp, ShieldCheck, Send, Clock, CheckCir
 import toast from 'react-hot-toast';
 import { partnerService } from '../services/partnerService.js';
 import { useAuth } from '../hooks/useAuth.js';
-import useUiStore from '../store/uiStore.js';
 import { formatDateTime } from '../utils/format.js';
 import Button from '../components/ui/Button.jsx';
 import Input, { InputError } from '../components/ui/Input.jsx';
 import Loading from '../components/common/Loading.jsx';
+import RegisterGateCard from '../components/partner/RegisterGateCard.jsx';
 
 const BENEFITS = [
   {
@@ -56,7 +56,6 @@ const STATUS_META = {
 export default function SupplierRegisterPage() {
   const queryClient = useQueryClient();
   const { isAuthenticated } = useAuth();
-  const openAuthModal = useUiStore((s) => s.openAuthModal);
 
   // Only probe the applicant's status once signed in — a guest hitting this
   // (401) endpoint would trip the global interceptor and get bounced to /login.
@@ -103,16 +102,9 @@ export default function SupplierRegisterPage() {
     mutation.mutate({ payload, file });
   };
 
-  // Guests may fill the form freely; auth is only required at submit time. We
-  // open the login modal in place (keeping the entered values) and resume the
-  // submission automatically once the user is signed in.
-  const onSubmit = (values) => {
-    if (!isAuthenticated) {
-      openAuthModal('login', () => submitApplication(values));
-      return;
-    }
-    submitApplication(values);
-  };
+  // Gate-early: the form only renders for signed-in users, so submit no longer
+  // needs an auth branch.
+  const onSubmit = (values) => submitApplication(values);
 
   // A pending/approved application blocks re-submission; rejected can re-apply.
   const showForm = !application || application.status === 'REJECTED';
@@ -123,18 +115,18 @@ export default function SupplierRegisterPage() {
       <section className="relative overflow-hidden bg-ink-900">
         <div className="absolute inset-0 bg-gradient-to-r from-ink-900 via-ink-900/95 to-ink-800" />
         <div className="container-app relative z-10 py-12 md:py-16">
-          <nav className="mb-4 flex items-center gap-1.5 text-sm text-white/60">
-            <Link to="/" className="transition hover:text-white">
+          <nav className="mb-4 flex items-center gap-1.5 text-sm text-white/90">
+            <Link to="/" className="transition hover:text-brand-accent">
               Trang chủ
             </Link>
             <ChevronRight className="h-4 w-4" />
-            <span className="font-medium text-white">Đăng ký nhà xe</span>
+            <span className="font-medium text-brand-accent">Đăng ký nhà xe</span>
           </nav>
-          <p className="mb-1 text-sm font-semibold text-brand-accent">Đối tác nhà xe OtoRent</p>
+          <p className="mb-1 text-sm font-semibold text-brand-accent">Đối tác nhà xe CarGoGo</p>
           <h1 className="text-3xl font-bold tracking-tight text-white md:text-4xl">
-            Đưa nhà xe của bạn lên OtoRent
+            Đưa nhà xe của bạn lên CarGoGo
           </h1>
-          <p className="mt-2 max-w-xl text-sm text-white/70">
+          <p className="mt-2 max-w-xl text-sm text-white/85">
             Đăng ký trở thành nhà xe đối tác để quản lý đội xe, nhận đơn thuê và đối soát doanh thu
             trên cổng nhà xe chuyên biệt.
           </p>
@@ -146,7 +138,7 @@ export default function SupplierRegisterPage() {
           {/* Left — benefits */}
           <div className="lg:col-span-2">
             <div className="rounded-2xl bg-white p-6 shadow-card ring-1 ring-ink-100">
-              <h2 className="mb-4 text-lg font-bold text-ink-900">Vì sao chọn OtoRent?</h2>
+              <h2 className="mb-4 text-lg font-bold text-ink-900">Vì sao chọn CarGoGo?</h2>
               <ul className="space-y-5">
                 {BENEFITS.map(({ icon: Icon, title, desc }) => (
                   <li key={title} className="flex items-start gap-3">
@@ -163,9 +155,20 @@ export default function SupplierRegisterPage() {
             </div>
           </div>
 
-          {/* Right — form or status */}
+          {/* Right — gate (guest) / form / status */}
           <div className="lg:col-span-3">
-            {isLoading ? (
+            {!isAuthenticated ? (
+              <RegisterGateCard
+                title="Đăng nhập để đăng ký nhà xe"
+                description="Đăng ký nhà xe cần một tài khoản CarGoGo để chúng tôi liên hệ xét duyệt và bàn giao cổng quản lý. Đăng nhập hoặc tạo tài khoản để bắt đầu."
+                checklist={[
+                  'Tên & địa chỉ nhà xe / doanh nghiệp',
+                  'Mã số thuế (nếu là doanh nghiệp)',
+                  'Ảnh giấy phép kinh doanh (PNG/JPG, tối đa 5MB)',
+                  'Thông tin người liên hệ',
+                ]}
+              />
+            ) : isLoading ? (
               <div className="rounded-2xl bg-white p-8 shadow-card ring-1 ring-ink-100">
                 <Loading />
               </div>
@@ -177,7 +180,7 @@ export default function SupplierRegisterPage() {
                   <div className="rounded-2xl bg-white p-6 shadow-card ring-1 ring-ink-100 md:p-8">
                     <h2 className="mb-1 text-lg font-bold text-ink-900">Đơn đăng ký nhà xe</h2>
                     <p className="mb-6 text-sm text-ink-500">
-                      Điền thông tin dưới đây. Đội ngũ OtoRent sẽ xét duyệt và kích hoạt nhà xe.
+                      Điền thông tin dưới đây. Đội ngũ CarGoGo sẽ xét duyệt và kích hoạt nhà xe.
                     </p>
 
                     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>

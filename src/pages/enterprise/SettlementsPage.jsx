@@ -1,11 +1,16 @@
 // src/pages/enterprise/SettlementsPage.jsx
 import { useQuery } from '@tanstack/react-query';
-import { useOutletContext } from 'react-router-dom';
-import { enterpriseService } from '../../services/enterpriseService.js';
+import { useNavigate, useOutletContext } from 'react-router-dom';
+import {
+  enterpriseService,
+  SETTLEMENT_STATUS_LABEL,
+  SETTLEMENT_STATUS_BADGE,
+} from '../../services/enterpriseService.js';
 import Loading from '../../components/common/Loading.jsx';
 import { formatCurrency, formatDateTime } from '../../utils/format.js';
 
 export default function EnterpriseSettlementsPage() {
+  const navigate = useNavigate();
   const { isAdmin } = useOutletContext() || {};
   const { data, isLoading } = useQuery({
     queryKey: ['enterprise', 'settlements'],
@@ -39,7 +44,11 @@ export default function EnterpriseSettlementsPage() {
           </thead>
           <tbody>
             {items.map((s) => (
-              <tr key={s.id} className="border-t border-ink-50">
+              <tr
+                key={s.id}
+                onClick={() => navigate(`/enterprise/settlements/${s.id}`)}
+                className="cursor-pointer border-t border-ink-50 hover:bg-ink-50"
+              >
                 <td className="px-4 py-3">
                   {formatDateTime(s.periodStart)} → {formatDateTime(s.periodEnd)}
                 </td>
@@ -47,7 +56,15 @@ export default function EnterpriseSettlementsPage() {
                   {formatCurrency(s.totalAmount || 0)}
                 </td>
                 <td className="px-4 py-3">{formatCurrency(s.totalVat || 0)}</td>
-                <td className="px-4 py-3">{s.status}</td>
+                <td className="px-4 py-3">
+                  <span
+                    className={`inline-flex rounded-full px-2 py-0.5 text-xs font-semibold ${
+                      SETTLEMENT_STATUS_BADGE[s.status] || 'bg-ink-100 text-ink-500'
+                    }`}
+                  >
+                    {SETTLEMENT_STATUS_LABEL[s.status] || s.status}
+                  </span>
+                </td>
               </tr>
             ))}
             {items.length === 0 && (

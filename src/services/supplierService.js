@@ -4,7 +4,7 @@
 //   supplierPortalService → /supplier/*               (SUPPLIER_ADMIN / SUPPLIER_DRIVER)
 import api from './api.js';
 
-// ── OtoRent admin surface ─────────────────────────────────────────────
+// ── CarGoGo admin surface ─────────────────────────────────────────────
 export const adminSupplierService = {
   // Supplier CRUD
   list: (params) => api.get('/admin/suppliers', { params }),
@@ -53,6 +53,13 @@ export const supplierPortalService = {
   me: () => api.get('/supplier/me'),
   acceptInvite: (token) => api.post('/supplier/invite/accept', { token }),
 
+  // Shareable multi-use join link
+  previewInviteLink: (token) => api.get(`/supplier/invite/link/${encodeURIComponent(token)}`),
+  joinViaLink: (token) => api.post('/supplier/invite/link/join', { token }),
+  listInviteLinks: () => api.get('/supplier/me/invite-links'),
+  createInviteLink: (payload) => api.post('/supplier/me/invite-links', payload),
+  revokeInviteLink: (linkId) => api.delete(`/supplier/me/invite-links/${linkId}`),
+
   // Bookings
   listBookings: (params) => api.get('/supplier/bookings', { params }),
   getBooking: (id) => api.get(`/supplier/bookings/${id}`),
@@ -62,10 +69,19 @@ export const supplierPortalService = {
   start: (id) => api.put(`/supplier/bookings/${id}/start`),
   complete: (id, payload) => api.put(`/supplier/bookings/${id}/complete`, payload),
 
+  // Trip expenses (driver logs tolls, parking, overtime…)
+  listExpenses: (id) => api.get(`/supplier/bookings/${id}/expenses`),
+  addExpense: (id, payload) => api.post(`/supplier/bookings/${id}/expenses`, payload),
+  deleteExpense: (id, expenseId) =>
+    api.delete(`/supplier/bookings/${id}/expenses/${expenseId}`),
+
   // Members (Supplier Admin manages own drivers)
   listMembers: () => api.get('/supplier/me/members'),
   inviteMember: (payload) => api.post('/supplier/me/members', payload),
   updateMember: (memberId, payload) => api.put(`/supplier/me/members/${memberId}`, payload),
+  resendMemberInvite: (memberId) =>
+    api.post(`/supplier/me/members/${memberId}/resend-invite`),
+  removeMember: (memberId) => api.delete(`/supplier/me/members/${memberId}`),
 
   // Payout settlements
   listSettlements: (params) => api.get('/supplier/settlements', { params }),
@@ -90,6 +106,18 @@ export const SETTLEMENT_STATUS_BADGE = {
   VERIFIED: 'bg-amber-100 text-amber-700',
   PAID: 'bg-emerald-100 text-emerald-700',
 };
+
+export const TRIP_EXPENSE_TYPE_LABEL = {
+  TOLL_ROAD: 'Phí cầu đường / trạm thu phí',
+  PARKING: 'Phí gửi xe / bến bãi',
+  OVERTIME: 'Phụ phí tăng ca',
+  EXTRA_KM: 'Phụ phí vượt km',
+  ONE_WAY_KM: 'Phí một chiều',
+  OVERNIGHT: 'Phụ phí lưu đêm',
+  OTHER: 'Chi phí khác',
+};
+
+export const TRIP_EXPENSE_TYPES = Object.keys(TRIP_EXPENSE_TYPE_LABEL);
 
 export const BOOKING_STATUS_LABEL = {
   DISPATCHED: 'Mới điều phối',

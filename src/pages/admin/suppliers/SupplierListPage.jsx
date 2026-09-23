@@ -1,4 +1,4 @@
-// src/pages/admin/suppliers/SupplierListPage.jsx — OtoRent supplier registry.
+// src/pages/admin/suppliers/SupplierListPage.jsx — CarGoGo supplier registry.
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';

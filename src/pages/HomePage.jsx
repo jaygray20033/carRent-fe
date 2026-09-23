@@ -43,12 +43,12 @@ const SectionFallback = () => (
 export default function HomePage() {
   // SEO: dynamic title
   useEffect(() => {
-    document.title = 'OtoRent — Thuê xe ô tô tự lái & có tài xế';
+    document.title = 'CarGoGo — Thuê xe ô tô tự lái & có tài xế';
     const metaDesc = document.querySelector('meta[name="description"]');
     if (metaDesc) {
       metaDesc.setAttribute(
         'content',
-        'OtoRent - Nền tảng thuê xe ô tô tự lái và có tài xế hàng đầu Việt Nam. Hàng trăm xe đời mới, giá tốt, bảo hiểm 24/7.'
+        'CarGoGo - Nền tảng thuê xe ô tô tự lái và có tài xế hàng đầu Việt Nam. Hàng trăm xe đời mới, giá tốt, bảo hiểm 24/7.'
       );
     }
   }, []);
@@ -66,7 +66,7 @@ export default function HomePage() {
       {/* S3: Brand carousel */}
       <BrandStrip />
 
-      {/* S4: Tại sao chọn OtoRent (lazy) */}
+      {/* S4: Tại sao chọn CarGoGo (lazy) */}
       <Suspense fallback={<SectionFallback />}>
         <WhyChooseUs />
       </Suspense>

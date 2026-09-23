@@ -6,7 +6,7 @@ import { carService } from '../services/carService.js';
 import useDebounce from '../hooks/useDebounce.js';
 import { formatCurrency } from '../utils/format.js';
 
-const RECENT_KEY = 'otorent:recent-searches';
+const RECENT_KEY = 'CarGoGo:recent-searches';
 const POPULAR = ['Mercedes', 'BMW', 'Toyota Camry', 'Xe 7 chỗ', 'Hyundai Santa Fe', 'Ford'];
 
 function loadRecent() {

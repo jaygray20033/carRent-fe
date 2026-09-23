@@ -47,19 +47,19 @@ export default function AboutUsPage() {
       <section className="relative overflow-hidden bg-ink-900">
         <div className="absolute inset-0 bg-gradient-to-r from-ink-900 via-ink-900/95 to-ink-800" />
         <div className="container-app relative z-10 py-12 md:py-16">
-          <nav className="mb-4 flex items-center gap-1.5 text-sm text-white/60">
-            <Link to="/" className="transition hover:text-white">
+          <nav className="mb-4 flex items-center gap-1.5 text-sm text-white/90">
+            <Link to="/" className="transition hover:text-brand-accent">
               Trang chủ
             </Link>
             <ChevronRight className="h-4 w-4" />
-            <span className="font-medium text-white">Về chúng tôi</span>
+            <span className="font-medium text-brand-accent">Về chúng tôi</span>
           </nav>
-          <p className="mb-1 text-sm font-semibold text-brand-accent">Về OtoRent</p>
+          <p className="mb-1 text-sm font-semibold text-brand-accent">Về CarGoGo</p>
           <h1 className="text-3xl font-bold tracking-tight md:text-4xl">
             Đồng hành trên mọi hành trình
           </h1>
-          <p className="mt-2 max-w-2xl text-sm text-white/70">
-            OtoRent là nền tảng cho thuê xe tự lái và có tài xế hàng đầu Việt Nam, mang đến trải
+          <p className="mt-2 max-w-2xl text-sm text-white/85">
+            CarGoGo là nền tảng cho thuê xe tự lái và có tài xế hàng đầu Việt Nam, mang đến trải
             nghiệm thuê xe minh bạch, an toàn và tiện lợi.
           </p>
         </div>
@@ -75,7 +75,7 @@ export default function AboutUsPage() {
             </h2>
             <p className="mb-4 text-sm leading-relaxed text-ink-500">
               Chúng tôi tin rằng ai cũng xứng đáng có được sự tự do di chuyển mà không phải lo lắng
-              về thủ tục rườm rà hay chi phí ẩn. OtoRent đặt niềm tin của khách hàng lên hàng đầu,
+              về thủ tục rườm rà hay chi phí ẩn. CarGoGo đặt niềm tin của khách hàng lên hàng đầu,
               tự hào sở hữu đội ngũ xe lớn với đa dạng dòng xe từ xe đời mới, xe tiết kiệm đến xe
               thương mại.
             </p>
@@ -86,7 +86,7 @@ export default function AboutUsPage() {
           <div className="overflow-hidden rounded-2xl shadow-card">
             <img
               src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800&h=560&fit=crop"
-              alt="OtoRent"
+              alt="CarGoGo"
               className="h-full w-full object-cover"
               loading="lazy"
             />
@@ -110,7 +110,7 @@ export default function AboutUsPage() {
       <section className="container-app py-12 lg:py-16">
         <div className="mb-8 text-center">
           <p className="mb-2 text-sm font-semibold text-brand-primary">Giá trị cốt lõi</p>
-          <h2 className="text-2xl font-bold text-ink-900 md:text-3xl">Điều làm nên OtoRent</h2>
+          <h2 className="text-2xl font-bold text-ink-900 md:text-3xl">Điều làm nên CarGoGo</h2>
         </div>
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {VALUES.map(({ icon: Icon, title, desc }) => (

@@ -14,6 +14,7 @@ import {
   Bell,
   LogOut,
   Building2,
+  Home,
 } from 'lucide-react';
 import { useAuthStore } from '../../store/authStore.js';
 import { enterpriseService } from '../../services/enterpriseService.js';
@@ -54,7 +55,7 @@ export default function CorporateEnterpriseLayout() {
             <div className="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-ink-100">
               <div className="flex items-center gap-2">
                 <Building2 className="h-5 w-5 text-brand-primary" />
-                <span className="text-lg font-extrabold text-brand-primary">OtoRent</span>
+                <span className="text-lg font-extrabold text-brand-primary">CarGoGo</span>
               </div>
               <div className="mt-2 text-sm font-semibold text-ink-700">
                 {corporate.name || 'Enterprise Portal'}
@@ -80,6 +81,16 @@ export default function CorporateEnterpriseLayout() {
                   {label}
                 </NavLink>
               ))}
+            </nav>
+
+            <nav className="overflow-hidden rounded-2xl bg-white p-2 shadow-sm ring-1 ring-ink-100">
+              <NavLink
+                to="/"
+                className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium text-ink-600 transition hover:bg-ink-50"
+              >
+                <Home className="h-4 w-4" />
+                Về trang chủ
+              </NavLink>
             </nav>
           </div>
         </aside>
@@ -125,7 +136,7 @@ export default function CorporateEnterpriseLayout() {
           {risk && (
             <SLABanner
               contractTerminationRisk
-              warningMessage="Công ty đang có rủi ro chấm dứt HĐ do vi phạm CRITICAL. Liên hệ OtoRent ngay."
+              warningMessage="Công ty đang có rủi ro chấm dứt HĐ do vi phạm CRITICAL. Liên hệ CarGoGo ngay."
             />
           )}
 

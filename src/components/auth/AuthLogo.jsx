@@ -1,4 +1,4 @@
-// src/components/auth/AuthLogo.jsx — OtoRent logo centered on top of modal
+// src/components/auth/AuthLogo.jsx — CarGoGo logo centered on top of modal
 import { Car } from 'lucide-react';
 
 export default function AuthLogo() {
@@ -9,7 +9,7 @@ export default function AuthLogo() {
           <Car className="h-6 w-6" />
         </span>
         <span className="text-2xl font-extrabold tracking-tight text-ink-900">
-          Oto<span className="text-primary-600">Rent</span>
+          Car<span className="text-primary-600">GoGo</span>
         </span>
       </div>
     </div>

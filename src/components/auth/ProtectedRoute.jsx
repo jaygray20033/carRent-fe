@@ -6,7 +6,11 @@ export default function ProtectedRoute({ children }) {
   const location = useLocation();
 
   if (!accessToken) {
-    return <Navigate to="/login" replace state={{ from: location.pathname }} />;
+    // Preserve the full target (path + query) so invite-accept links that carry
+    // a ?token=… survive the login round-trip.
+    return (
+      <Navigate to="/login" replace state={{ from: location.pathname + location.search }} />
+    );
   }
   return children;
 }

@@ -1,17 +1,23 @@
 // src/hooks/useAuth.js
 import { useNavigate } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { useAuthStore } from '../store/authStore.js';
 import { authService } from '../services/authService.js';
 
 export function useAuth() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { user, accessToken, setAuth, clearAuth } = useAuthStore();
 
   // UC-02 — login with { identifier, password }
   const login = async (payload) => {
     const res = await authService.login(payload);
     const { user: u, accessToken: at, refreshToken: rt } = res.data;
+    // Drop any cached data from a previous session, otherwise a still-"fresh"
+    // query (e.g. enterprise/myCompany with a 5-min staleTime) serves the prior
+    // user's payload — a corp employee's membership would mask a corp admin's.
+    queryClient.clear();
     setAuth(u, at, rt);
     toast.success('Đăng nhập thành công');
     return u;
@@ -56,6 +62,7 @@ export function useAuth() {
       // ignore network errors on logout
     }
     clearAuth();
+    queryClient.clear();
     toast.success('Đã đăng xuất');
     navigate('/');
   };

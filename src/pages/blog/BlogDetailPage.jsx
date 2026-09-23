@@ -15,7 +15,7 @@ function RelatedCard({ post }) {
     >
       <div className="aspect-square h-20 w-20 shrink-0 overflow-hidden rounded-lg bg-ink-100">
         <img
-          src={post.thumbnailUrl || 'https://placehold.co/160x160?text=OtoRent'}
+          src={post.thumbnailUrl || 'https://placehold.co/160x160?text=CarGoGo'}
           alt={post.title}
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
           loading="lazy"
@@ -103,12 +103,12 @@ export default function BlogDetailPage() {
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-ink-900 via-ink-900/80 to-ink-900/40" />
         <div className="container-app relative z-10 py-12 md:py-16">
-          <nav className="mb-4 flex items-center gap-1.5 text-sm text-white/60">
-            <Link to="/" className="transition hover:text-white">
+          <nav className="mb-4 flex items-center gap-1.5 text-sm text-white/90">
+            <Link to="/" className="transition hover:text-brand-accent">
               Trang chủ
             </Link>
             <ChevronRight className="h-4 w-4" />
-            <Link to="/magazine" className="transition hover:text-white">
+            <Link to="/magazine" className="transition hover:text-brand-accent">
               Tạp chí
             </Link>
           </nav>
@@ -123,7 +123,7 @@ export default function BlogDetailPage() {
           <h1 className="max-w-3xl text-3xl font-bold leading-tight tracking-tight md:text-4xl">
             {post.title}
           </h1>
-          <div className="mt-4 flex flex-wrap items-center gap-4 text-sm text-white/70">
+          <div className="mt-4 flex flex-wrap items-center gap-4 text-sm text-white/85">
             {post.author?.fullName && (
               <span className="inline-flex items-center gap-1.5">
                 <User className="h-4 w-4" />

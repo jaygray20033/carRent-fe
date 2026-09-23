@@ -31,17 +31,17 @@ const FOOTER_LINKS = {
     items: [
       { label: 'Giới thiệu', to: '/about' },
       { label: 'Chính sách bảo mật', to: '/privacy' },
-      { label: 'Điều khoản dịch vụ', to: '/terms' },
+      { label: 'Điều khoản dịch vụ', to: '/rules' },
       { label: 'Quy chế hoạt động', to: '/regulations' },
     ],
   },
   support: {
     title: 'Hỗ trợ',
     items: [
-      { label: 'Hướng dẫn thuê xe', to: '/guide' },
+      { label: 'Hướng dẫn thuê xe', to: '/delivery' },
       { label: 'Câu hỏi thường gặp', to: '/faq' },
       { label: 'Phương thức thanh toán', to: '/payment-methods' },
-      { label: 'Hỗ trợ khách hàng', to: '/support' },
+      { label: 'Hỗ trợ khách hàng', to: '/contact' },
     ],
   },
   partner: {
@@ -56,17 +56,17 @@ const FOOTER_LINKS = {
 
 // Fallback contact info — replaced by live GET /site-settings/contact when available.
 const CONTACT_FALLBACK = {
-  phone: '0986310849',
-  email: 'contact@vflash.com.vn',
-  address: '55 Đặng Nhữ Mai, Phường Cát Lái,\nThành Phố Hồ Chí Minh, Việt Nam',
+  phone: '0912623203',
+  email: 'Smtgroupvn@gmail.com',
+  address: 'Nhà 3.B1, ngõ 40 đường Xuân La,\nphường Xuân Đỉnh, Hà Nội',
   hours: 'Thứ 2 - Thứ 7 | 8:00 AM - 5:20 PM',
 };
 
 const SOCIALS = [
-  { icon: LinkedinIcon, href: 'https://linkedin.com/company/otorent', label: 'LinkedIn' },
-  { icon: InstagramIcon, href: 'https://instagram.com/otorent.vn', label: 'Instagram' },
-  { icon: FacebookIcon, href: 'https://facebook.com/otorent.vn', label: 'Facebook' },
-  { icon: TwitterIcon, href: 'https://twitter.com/otorent', label: 'Twitter' },
+  { icon: LinkedinIcon, href: 'https://linkedin.com/company/CarGoGo', label: 'LinkedIn' },
+  { icon: InstagramIcon, href: 'https://instagram.com/CarGoGo.vn', label: 'Instagram' },
+  { icon: FacebookIcon, href: 'https://facebook.com/CarGoGo.vn', label: 'Facebook' },
+  { icon: TwitterIcon, href: 'https://twitter.com/CarGoGo', label: 'Twitter' },
 ];
 
 export default function Footer() {
@@ -98,12 +98,12 @@ export default function Footer() {
                 </svg>
               </div>
               <span className="text-xl font-bold">
-                <span className="text-white">Oto</span>
-                <span className="text-brand-accent">Rent</span>
+                <span className="text-white">Car</span>
+                <span className="text-brand-accent">GoGo</span>
               </span>
             </Link>
             <p className="text-sm text-white/60 leading-relaxed mb-5 max-w-xs">
-              OtoRent với phương châm đặt niềm tin của khách hàng lên hàng đầu, tự hào sở hữu đội ngũ xe lớn nhất bao gồm đa dạng các dòng xe từ xe đời mới chạy ít km, xe tiết kiệm cho đến xe thương mại. Chúng tôi luôn sẵn sàng phục vụ và cung cấp dịch vụ trên toàn lãnh thổ Việt Nam.
+              CarGoGo với phương châm đặt niềm tin của khách hàng lên hàng đầu, tự hào sở hữu đội ngũ xe lớn nhất bao gồm đa dạng các dòng xe từ xe đời mới chạy ít km, xe tiết kiệm cho đến xe thương mại. Chúng tôi luôn sẵn sàng phục vụ và cung cấp dịch vụ trên toàn lãnh thổ Việt Nam.
             </p>
             <div className="flex items-center gap-2.5">
               {SOCIALS.map(({ icon: Icon, href, label }) => (
@@ -189,7 +189,7 @@ export default function Footer() {
             </form>
           </div>
           <p className="text-xs text-white/30">
-            &copy; {new Date().getFullYear()} OtoRent. All rights reserved.
+            &copy; {new Date().getFullYear()} CarGoGo. All rights reserved.
           </p>
         </div>
       </div>

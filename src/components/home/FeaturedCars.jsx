@@ -4,7 +4,7 @@ import { carService } from '../../services/carService.js';
 import CarCard from '../car/CarCard.jsx';
 
 /**
- * Section 6 — "Đặt xe tại OtoRent" (3 tabs × 6 cards)
+ * Section 6 — "Đặt xe tại CarGoGo" (3 tabs × 6 cards)
  * Tabs: Xe đời mới / Xe sang / Đắt hàng
  * Grid 3 cols × 2 rows
  */
@@ -47,7 +47,7 @@ export default function FeaturedCars() {
         <div className="text-center mb-8">
           <p className="text-brand-primary font-semibold text-sm mb-1">Khám phá những lựa chọn tốt nhất</p>
           <h2 className="text-2xl md:text-3xl font-bold text-ink-900">
-            Đặt xe tại <span className="text-brand-primary">OtoRent</span>
+            Đặt xe tại <span className="text-brand-primary">CarGoGo</span>
           </h2>
         </div>
 

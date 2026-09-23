@@ -1,7 +1,7 @@
 import { Shield, Clock, DollarSign, Headphones } from 'lucide-react';
 
 /**
- * Section 4 — "Tại sao chọn OtoRent"
+ * Section 4 — "Tại sao chọn CarGoGo"
  * 4 cột icon + title + desc, nền đen tương phản
  */
 const REASONS = [
@@ -32,7 +32,7 @@ export default function WhyChooseUs() {
     <section id="why-choose" className="bg-ink-900 py-16 md:py-20">
       <div className="container-app">
         <div className="text-center mb-10">
-          <p className="text-brand-accent font-semibold text-sm mb-2">Tại sao chọn OtoRent?</p>
+          <p className="text-brand-accent font-semibold text-sm mb-2">Tại sao chọn CarGoGo?</p>
           <h2 className="text-2xl md:text-3xl font-bold text-white">
             Trải nghiệm dịch vụ thuê xe <span className="text-brand-accent">đẳng cấp</span>
           </h2>

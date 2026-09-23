@@ -4,6 +4,7 @@ import toast from 'react-hot-toast';
 import { useOutletContext } from 'react-router-dom';
 import { enterpriseService } from '../../services/enterpriseService.js';
 import Loading from '../../components/common/Loading.jsx';
+import PriceTable from '../../components/corporate/PriceTable.jsx';
 import { formatDateTime } from '../../utils/format.js';
 
 const SIGN_BADGE = {
@@ -66,9 +67,7 @@ export default function EnterpriseContractPage() {
       <div className="grid gap-4 lg:grid-cols-2">
         <div className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-ink-100">
           <h2 className="mb-2 font-semibold text-ink-700">Bảng giá xe</h2>
-          <pre className="max-h-64 overflow-auto rounded-xl bg-ink-50 p-3 text-xs text-ink-600">
-            {JSON.stringify(priceConfig, null, 2)}
-          </pre>
+          <PriceTable priceConfig={priceConfig} />
         </div>
         <div className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-ink-100">
           <h2 className="mb-2 font-semibold text-ink-700">Bảng giá VAS</h2>

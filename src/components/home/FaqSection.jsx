@@ -11,20 +11,20 @@ const FAQS = [
     a: 'Bạn cần mang theo CCCD/CMND, giấy phép lái xe (còn hiệu lực) và hộ khẩu hoặc KT3. Đối với thuê xe tự lái, cần có bằng lái B2 trở lên.',
   },
   {
-    q: 'Chính sách đặt cọc của OtoRent như thế nào?',
-    a: 'OtoRent yêu cầu đặt cọc từ 15-100 triệu VNĐ tùy dòng xe. Tiền cọc sẽ được hoàn trả đầy đủ khi bạn trả xe đúng hạn và xe không có hư hỏng.',
+    q: 'Chính sách đặt cọc của CarGoGo như thế nào?',
+    a: 'CarGoGo yêu cầu đặt cọc từ 15-100 triệu VNĐ tùy dòng xe. Tiền cọc sẽ được hoàn trả đầy đủ khi bạn trả xe đúng hạn và xe không có hư hỏng.',
   },
   {
     q: 'Có thể hủy đặt xe không? Phí hủy bao nhiêu?',
     a: 'Bạn có thể hủy miễn phí trước 24h. Hủy trong vòng 24h sẽ mất 30% tiền cọc. Hủy sau khi nhận xe không được hoàn cọc.',
   },
   {
-    q: 'OtoRent có giao xe tận nơi không?',
-    a: 'Có! OtoRent hỗ trợ giao xe tận nơi trong nội thành TP.HCM, Hà Nội và Đà Nẵng. Phí giao xe từ 200.000 VNĐ tùy khoảng cách.',
+    q: 'CarGoGo có giao xe tận nơi không?',
+    a: 'Có! CarGoGo hỗ trợ giao xe tận nơi trong nội thành TP.HCM, Hà Nội và Đà Nẵng. Phí giao xe từ 200.000 VNĐ tùy khoảng cách.',
   },
   {
     q: 'Xe có được bảo hiểm không?',
-    a: 'Tất cả xe tại OtoRent đều có bảo hiểm vật chất và trách nhiệm dân sự. Bạn có thể mua thêm gói bảo hiểm toàn diện với mức phí ưu đãi.',
+    a: 'Tất cả xe tại CarGoGo đều có bảo hiểm vật chất và trách nhiệm dân sự. Bạn có thể mua thêm gói bảo hiểm toàn diện với mức phí ưu đãi.',
   },
 ];
 
@@ -44,7 +44,7 @@ export default function FaqSection() {
               Câu hỏi thường gặp <span className="text-brand-accent-dark">(FAQ)</span>
             </h2>
             <p className="text-sm text-ink-500 mb-6 leading-relaxed">
-              Nếu bạn mới sử dụng OtoRent và có nhiều thắc mắc, hãy xem những câu hỏi dưới đây. Nếu vẫn chưa tìm được câu trả lời, đừng ngần ngại liên hệ chúng tôi.
+              Nếu bạn mới sử dụng CarGoGo và có nhiều thắc mắc, hãy xem những câu hỏi dưới đây. Nếu vẫn chưa tìm được câu trả lời, đừng ngần ngại liên hệ chúng tôi.
             </p>
             {/* Portrait illustration */}
             <div className="hidden lg:block">

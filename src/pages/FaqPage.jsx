@@ -26,12 +26,12 @@ const CATEGORIES = [
     title: 'Đặt cọc & thanh toán',
     items: [
       {
-        q: 'Chính sách đặt cọc của OtoRent như thế nào?',
-        a: 'OtoRent yêu cầu đặt cọc từ 15-100 triệu VNĐ tùy dòng xe. Tiền cọc sẽ được hoàn trả đầy đủ khi bạn trả xe đúng hạn và xe không có hư hỏng.',
+        q: 'Chính sách đặt cọc của CarGoGo như thế nào?',
+        a: 'CarGoGo yêu cầu đặt cọc từ 15-100 triệu VNĐ tùy dòng xe. Tiền cọc sẽ được hoàn trả đầy đủ khi bạn trả xe đúng hạn và xe không có hư hỏng.',
       },
       {
-        q: 'OtoRent hỗ trợ những phương thức thanh toán nào?',
-        a: 'Chúng tôi hỗ trợ thanh toán qua VNPay, chuyển khoản ngân hàng, ví OtoRent và tiền mặt khi nhận xe.',
+        q: 'CarGoGo hỗ trợ những phương thức thanh toán nào?',
+        a: 'Chúng tôi hỗ trợ thanh toán qua VNPay, chuyển khoản ngân hàng, ví CarGoGo và tiền mặt khi nhận xe.',
       },
     ],
   },
@@ -39,8 +39,8 @@ const CATEGORIES = [
     title: 'Nhận & trả xe',
     items: [
       {
-        q: 'OtoRent có giao xe tận nơi không?',
-        a: 'Có! OtoRent hỗ trợ giao xe tận nơi trong nội thành TP.HCM, Hà Nội và Đà Nẵng. Phí giao xe từ 200.000 VNĐ tùy khoảng cách.',
+        q: 'CarGoGo có giao xe tận nơi không?',
+        a: 'Có! CarGoGo hỗ trợ giao xe tận nơi trong nội thành TP.HCM, Hà Nội và Đà Nẵng. Phí giao xe từ 200.000 VNĐ tùy khoảng cách.',
       },
       {
         q: 'Có thể hủy đặt xe không? Phí hủy bao nhiêu?',
@@ -53,7 +53,7 @@ const CATEGORIES = [
     items: [
       {
         q: 'Xe có được bảo hiểm không?',
-        a: 'Tất cả xe tại OtoRent đều có bảo hiểm vật chất và trách nhiệm dân sự. Bạn có thể mua thêm gói bảo hiểm toàn diện với mức phí ưu đãi.',
+        a: 'Tất cả xe tại CarGoGo đều có bảo hiểm vật chất và trách nhiệm dân sự. Bạn có thể mua thêm gói bảo hiểm toàn diện với mức phí ưu đãi.',
       },
       {
         q: 'Xe gặp sự cố trên đường thì làm thế nào?',
@@ -98,17 +98,17 @@ export default function FaqPage() {
       <section className="relative overflow-hidden bg-ink-900">
         <div className="absolute inset-0 bg-gradient-to-r from-ink-900 via-ink-900/95 to-ink-800" />
         <div className="container-app relative z-10 py-12 md:py-16">
-          <nav className="mb-4 flex items-center gap-1.5 text-sm text-white/60">
-            <Link to="/" className="transition hover:text-white">
+          <nav className="mb-4 flex items-center gap-1.5 text-sm text-white/90">
+            <Link to="/" className="transition hover:text-brand-accent">
               Trang chủ
             </Link>
             <ChevronRight className="h-4 w-4" />
-            <span className="font-medium text-white">Câu hỏi thường gặp</span>
+            <span className="font-medium text-brand-accent">Câu hỏi thường gặp</span>
           </nav>
           <p className="mb-1 text-sm font-semibold text-brand-accent">Hỗ trợ khách hàng</p>
           <h1 className="text-3xl font-bold tracking-tight md:text-4xl">Câu hỏi thường gặp</h1>
-          <p className="mt-2 max-w-xl text-sm text-white/70">
-            Những thắc mắc phổ biến nhất về dịch vụ thuê xe tại OtoRent.
+          <p className="mt-2 max-w-xl text-sm text-white/85">
+            Những thắc mắc phổ biến nhất về dịch vụ thuê xe tại CarGoGo.
           </p>
         </div>
       </section>

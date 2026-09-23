@@ -24,6 +24,7 @@ import {
   Building2,
   ShieldAlert,
   Truck,
+  Wallet,
 } from 'lucide-react';
 import { useAuthStore } from '../../store/authStore.js';
 
@@ -35,6 +36,7 @@ const navItems = [
   { to: '/admin/corporate/clients', label: 'Doanh nghiệp', icon: Building2 },
   { to: '/admin/corporate/bookings', label: 'Queue B2B', icon: Handshake },
   { to: '/admin/corporate/sla-violations', label: 'Báo cáo SLA DN', icon: ShieldAlert },
+  { to: '/admin/corporate/payments', label: 'Xác nhận thanh toán', icon: Wallet },
   { to: '/admin/suppliers', label: 'Nhà cung cấp', icon: Truck },
   { to: '/admin/users', label: 'Người dùng', icon: Users },
   { to: '/admin/posts', label: 'Bài viết', icon: FileText },
@@ -72,7 +74,7 @@ export default function AdminLayout() {
           <div className="sticky top-6">
             {/* Brand */}
             <div className="flex items-center gap-2 px-3 pb-4">
-              <span className="text-lg font-extrabold text-brand-primary">OtoRent</span>
+              <span className="text-lg font-extrabold text-brand-primary">CarGoGo</span>
               <span className="rounded-md bg-brand-primary/10 px-1.5 py-0.5 text-xs font-semibold text-brand-primary">
                 Admin
               </span>
@@ -122,7 +124,7 @@ export default function AdminLayout() {
         <main className="min-w-0 flex-1">
           {/* Mobile top bar */}
           <div className="mb-4 flex items-center justify-between rounded-2xl bg-white px-4 py-3 shadow-sm ring-1 ring-ink-100 lg:hidden">
-            <span className="font-extrabold text-brand-primary">OtoRent Admin</span>
+            <span className="font-extrabold text-brand-primary">CarGoGo Admin</span>
             <button
               type="button"
               onClick={handleLogout}

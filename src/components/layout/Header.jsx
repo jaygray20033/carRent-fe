@@ -15,6 +15,7 @@ import {
   CheckCheck,
 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth.js';
+import usePortalAccess from '../../hooks/usePortalAccess.js';
 import useUiStore from '../../store/uiStore.js';
 import useDebounce from '../../hooks/useDebounce.js';
 import { carService } from '../../services/carService.js';
@@ -50,6 +51,7 @@ const PARTNER_ITEMS = [
 
 export default function Header() {
   const { user, isAuthenticated, logout } = useAuth();
+  const { portals } = usePortalAccess();
   const openAuthModal = useUiStore((s) => s.openAuthModal);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
@@ -211,7 +213,22 @@ export default function Header() {
                   />
                 </button>
                 {userMenuOpen && (
-                  <div className="absolute left-0 top-full mt-2 w-52 bg-white rounded-xl shadow-lg border border-ink-100 py-2 z-50 animate-fade-in">
+                  <div className="absolute left-0 top-full mt-2 w-56 bg-white rounded-xl shadow-lg border border-ink-100 py-2 z-50 animate-fade-in">
+                    {portals.length > 0 && (
+                      <>
+                        {portals.map(({ to, label, icon: Icon }) => (
+                          <Link
+                            key={to}
+                            to={to}
+                            onClick={() => setUserMenuOpen(false)}
+                            className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-brand-primary hover:bg-brand-primary/5 transition"
+                          >
+                            <Icon className="w-4 h-4" /> {label}
+                          </Link>
+                        ))}
+                        <hr className="my-1.5 border-ink-100" />
+                      </>
+                    )}
                     <Link
                       to="/me"
                       onClick={() => setUserMenuOpen(false)}
@@ -374,8 +391,8 @@ export default function Header() {
           {/* ── Right side: Logo ── */}
           <Link to="/" className="flex items-center gap-2 flex-shrink-0">
             <span className="text-xl font-bold tracking-tight">
-              <span className="text-ink-900">Oto</span>
-              <span className="text-brand-primary">Rent</span>
+              <span className="text-ink-900">Car</span>
+              <span className="text-brand-primary">GoGo</span>
             </span>
             <div className="w-9 h-9 rounded-full bg-brand-accent flex items-center justify-center shadow-sm">
               <svg
@@ -412,8 +429,8 @@ export default function Header() {
             <div className="flex items-center justify-between p-4 border-b border-ink-100">
               <Link to="/" onClick={() => setMobileOpen(false)} className="flex items-center gap-2">
                 <span className="text-lg font-bold">
-                  <span className="text-ink-900">Oto</span>
-                  <span className="text-brand-primary">Rent</span>
+                  <span className="text-ink-900">Car</span>
+                  <span className="text-brand-primary">GoGo</span>
                 </span>
                 <div className="w-7 h-7 rounded-full bg-brand-accent flex items-center justify-center">
                   <svg
@@ -494,6 +511,16 @@ export default function Header() {
                     </div>
                     <span className="text-sm font-medium text-ink-700">{user?.fullName}</span>
                   </div>
+                  {portals.map(({ to, label, icon: Icon }) => (
+                    <NavLink
+                      key={to}
+                      to={to}
+                      onClick={() => setMobileOpen(false)}
+                      className="flex items-center gap-2.5 rounded-lg bg-brand-primary/5 px-3 py-2.5 text-sm font-medium text-brand-primary transition hover:bg-brand-primary/10"
+                    >
+                      <Icon className="h-4 w-4" /> {label}
+                    </NavLink>
+                  ))}
                   <button
                     onClick={() => {
                       setMobileOpen(false);

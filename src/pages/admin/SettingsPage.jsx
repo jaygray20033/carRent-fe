@@ -6,12 +6,15 @@
 import { useMemo, useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
-import { Phone, DollarSign, Bell, HardDrive, Settings2 } from 'lucide-react';
+import { Phone, DollarSign, Bell, HardDrive, Settings2, IdCard } from 'lucide-react';
 import { adminSettingsService } from '../../services/adminService.js';
 import Button from '../../components/ui/Button.jsx';
 import Loading from '../../components/common/Loading.jsx';
 
 const unwrap = (res) => res?.data ?? res ?? {};
+
+// Boolean toggles get a dedicated switch card, not a free-text input.
+const AUTO_RELEASE_KEY = 'auto_release_driver_info';
 
 // Section order + presentation. Keys land in a section by their `grp`; anything
 // unmapped falls into `general`.
@@ -58,10 +61,29 @@ export default function SettingsPage() {
     onError: (e) => toast.error(e?.message || 'Lưu cài đặt thất bại'),
   });
 
-  // Bucket keys into sections by grp.
+  // Auto-release toggle saves on click (its own PUT), independent of the
+  // free-text "Lưu thay đổi" batch below.
+  const autoReleaseOn = String(settings[AUTO_RELEASE_KEY]?.value) === 'true';
+  const toggleAutoRelease = () => {
+    const next = !autoReleaseOn;
+    mutation.mutate(
+      { [AUTO_RELEASE_KEY]: next },
+      {
+        onSuccess: () =>
+          toast.success(
+            next
+              ? 'Đã bật tự động chuyển thông tin tài xế'
+              : 'Đã tắt tự động chuyển thông tin tài xế'
+          ),
+      }
+    );
+  };
+
+  // Bucket keys into sections by grp. Boolean toggles are rendered separately.
   const sections = useMemo(() => {
     const buckets = Object.fromEntries(GROUPS.map((g) => [g.id, []]));
     for (const [key, meta] of Object.entries(settings)) {
+      if (key === AUTO_RELEASE_KEY) continue;
       const grp = GROUPS.some((g) => g.id === meta?.grp) ? meta.grp : 'general';
       buckets[grp].push({ key, label: meta?.label || KEY_LABEL[key] || key });
     }
@@ -101,6 +123,46 @@ export default function SettingsPage() {
           Lưu thay đổi
         </Button>
       </div>
+
+      <section className="mb-6 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-ink-100">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-start gap-2">
+            <span
+              className={`flex h-8 w-8 items-center justify-center rounded-lg ${
+                autoReleaseOn ? 'bg-emerald-100 text-emerald-600' : 'bg-ink-100 text-ink-400'
+              }`}
+            >
+              <IdCard className="h-4 w-4" />
+            </span>
+            <div>
+              <h2 className="text-sm font-semibold text-ink-700">
+                Tự động chuyển thông tin tài xế cho doanh nghiệp
+              </h2>
+              <p className="mt-0.5 max-w-xl text-xs text-ink-400">
+                {autoReleaseOn
+                  ? 'Đang bật: khi nhà cung cấp gán tài xế, thông tin tài xế tự động chuyển tới doanh nghiệp và chuyến có thể bắt đầu ngay.'
+                  : 'Đang tắt: sau khi nhà cung cấp gán tài xế, admin CarGoGo phải bấm chuyển thông tin thủ công thì chuyến mới bắt đầu được.'}
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            role="switch"
+            aria-checked={autoReleaseOn}
+            disabled={mutation.isPending}
+            onClick={toggleAutoRelease}
+            className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors disabled:opacity-50 ${
+              autoReleaseOn ? 'bg-emerald-500' : 'bg-ink-200'
+            }`}
+          >
+            <span
+              className={`inline-block h-5 w-5 transform rounded-full bg-white shadow transition-transform ${
+                autoReleaseOn ? 'translate-x-5' : 'translate-x-0.5'
+              }`}
+            />
+          </button>
+        </div>
+      </section>
 
       {!hasAny ? (
         <div className="rounded-2xl bg-white p-8 text-center text-ink-400 shadow-sm ring-1 ring-ink-100">

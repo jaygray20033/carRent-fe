@@ -1,6 +1,6 @@
 // src/pages/auth/RegisterPage.jsx — Register + OTP step
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { useAuthStore } from '../../store/authStore.js';
@@ -14,6 +14,7 @@ const errMsg = (e, fb) => e?.message || e?.response?.data?.message || fb;
 
 export default function RegisterPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const setAuth = useAuthStore((s) => s.setAuth);
 
   const [step, setStep] = useState('info'); // 'info' | 'otp'
@@ -21,7 +22,7 @@ export default function RegisterPage() {
   const [otpError, setOtpError] = useState('');
   const [verifying, setVerifying] = useState(false);
   const [resendIn, setResendIn] = useState(0);
-  const [creds, setCreds] = useState({ phone: '', password: '' });
+  const [creds, setCreds] = useState({ phone: '', email: '', password: '' });
 
   const {
     register,
@@ -48,11 +49,11 @@ export default function RegisterPage() {
       await authService.register({
         fullName: values.fullName.trim(),
         phone: values.phone.trim(),
-        email: values.email?.trim() || undefined,
+        email: values.email.trim(),
         password: values.password,
       });
-      setCreds({ phone: values.phone.trim(), password: values.password });
-      toast.success('Đã gửi mã OTP tới số điện thoại của bạn');
+      setCreds({ phone: values.phone.trim(), email: values.email.trim(), password: values.password });
+      toast.success('Đã gửi mã OTP tới email của bạn');
       setStep('otp');
       startCooldown();
     } catch (e) {
@@ -72,13 +73,16 @@ export default function RegisterPage() {
     setOtpError('');
     setVerifying(true);
     try {
-      await authService.verifyOtp({ identifier: creds.phone, code: otp, purpose: 'REGISTER' });
+      await authService.verifyOtp({ identifier: creds.email, code: otp, purpose: 'REGISTER' });
       // Auto login after activation
       const res = await authService.login({ identifier: creds.phone, password: creds.password });
       const { user, accessToken, refreshToken } = res.data;
       setAuth(user, accessToken, refreshToken);
       toast.success('Đăng ký thành công');
-      navigate('/', { replace: true });
+      // Honor a return target (e.g. a shareable join link) so a brand-new user
+      // lands straight in the portal after signup instead of the C2C home.
+      const from = location.state?.from;
+      navigate(from || '/', { replace: true });
     } catch (err) {
       setOtpError(errMsg(err, 'Mã OTP không đúng'));
     } finally {
@@ -89,7 +93,7 @@ export default function RegisterPage() {
   const resend = async () => {
     if (resendIn > 0) return;
     try {
-      await authService.resendOtp({ identifier: creds.phone, purpose: 'REGISTER' });
+      await authService.resendOtp({ identifier: creds.email, purpose: 'REGISTER' });
       toast.success('Đã gửi lại mã OTP');
       startCooldown();
     } catch (err) {
@@ -99,7 +103,7 @@ export default function RegisterPage() {
 
   if (step === 'otp') {
     return (
-      <AuthCard title="Xác thực OTP" desc={`Mã 6 số đã gửi tới ${creds.phone}`}>
+      <AuthCard title="Xác thực OTP" desc={`Mã 6 số đã gửi tới ${creds.email}`}>
         <form onSubmit={onSubmitOtp} className="space-y-5">
           <OtpInput
             value={otp}
@@ -161,11 +165,17 @@ export default function RegisterPage() {
           })}
         />
         <AuthField
-          label="Email (tuỳ chọn)"
+          label="Email"
           type="email"
           placeholder="you@email.com"
           error={errors.email?.message}
-          {...register('email')}
+          {...register('email', {
+            required: 'Thông tin này là bắt buộc',
+            pattern: {
+              value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+              message: 'Email không hợp lệ',
+            },
+          })}
         />
         <AuthField
           label="Mật khẩu"

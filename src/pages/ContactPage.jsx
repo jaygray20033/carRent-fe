@@ -70,16 +70,16 @@ export default function ContactPage() {
       <section className="relative overflow-hidden bg-ink-900">
         <div className="absolute inset-0 bg-gradient-to-r from-ink-900 via-ink-900/95 to-ink-800" />
         <div className="container-app relative z-10 py-12 md:py-16">
-          <nav className="mb-4 flex items-center gap-1.5 text-sm text-white/60">
-            <Link to="/" className="transition hover:text-white">
+          <nav className="mb-4 flex items-center gap-1.5 text-sm text-white/90">
+            <Link to="/" className="transition hover:text-brand-accent">
               Trang chủ
             </Link>
             <ChevronRight className="h-4 w-4" />
-            <span className="font-medium text-white">Liên hệ</span>
+            <span className="font-medium text-brand-accent">Liên hệ</span>
           </nav>
-          <p className="mb-1 text-sm font-semibold text-brand-accent">Kết nối với OtoRent</p>
+          <p className="mb-1 text-sm font-semibold text-brand-accent">Kết nối với CarGoGo</p>
           <h1 className="text-3xl font-bold tracking-tight md:text-4xl">Liên hệ với chúng tôi</h1>
-          <p className="mt-2 max-w-xl text-sm text-white/70">
+          <p className="mt-2 max-w-xl text-sm text-white/85">
             Có câu hỏi hoặc cần hỗ trợ? Gửi tin nhắn cho chúng tôi hoặc liên hệ trực tiếp qua các
             kênh bên dưới.
           </p>
@@ -118,7 +118,7 @@ export default function ContactPage() {
 
             <div className="mt-6 overflow-hidden rounded-2xl shadow-card ring-1 ring-ink-100">
               <iframe
-                title="Bản đồ OtoRent"
+                title="Bản đồ CarGoGo"
                 src={MAP_SRC}
                 className="h-64 w-full border-0"
                 loading="lazy"

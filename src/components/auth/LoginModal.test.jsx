@@ -27,6 +27,11 @@ vi.mock('react-hot-toast', () => ({
   default: Object.assign(vi.fn(), { success: vi.fn(), error: vi.fn() }),
 }));
 
+// The modal clears the query cache on login; no provider is mounted in this test.
+vi.mock('@tanstack/react-query', () => ({
+  useQueryClient: () => ({ clear: vi.fn() }),
+}));
+
 import LoginModal from './LoginModal.jsx';
 
 describe('LoginModal', () => {

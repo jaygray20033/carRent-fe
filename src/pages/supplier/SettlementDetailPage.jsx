@@ -79,23 +79,19 @@ export default function SupplierSettlementDetailPage() {
           </span>
         </div>
 
-        <div className="mt-4 grid gap-4 sm:grid-cols-3">
-          <div className="rounded-xl bg-ink-50 p-4">
-            <div className="text-xs text-ink-400">Tổng doanh thu chuyến</div>
-            <div className="text-lg font-bold text-ink-800">
-              {formatCurrency(settlement.totalFinalAmount)}
-            </div>
-          </div>
-          <div className="rounded-xl bg-ink-50 p-4">
-            <div className="text-xs text-ink-400">Hoa hồng OtoRent</div>
-            <div className="text-lg font-bold text-ink-800">
-              − {formatCurrency(settlement.totalCommissionAmount)}
-            </div>
-          </div>
+        {/* Supplier only sees what CarGoGo owes them — never CarGoGo's gross
+            revenue or commission on the trips (margin is CarGoGo-internal). */}
+        <div className="mt-4 grid gap-4 sm:grid-cols-2">
           <div className="rounded-xl bg-emerald-50 p-4">
             <div className="text-xs text-emerald-600">Thực nhận (payout)</div>
             <div className="text-lg font-bold text-emerald-700">
               {formatCurrency(settlement.supplierPayout)}
+            </div>
+          </div>
+          <div className="rounded-xl bg-ink-50 p-4">
+            <div className="text-xs text-ink-400">Số chuyến trong kỳ</div>
+            <div className="text-lg font-bold text-ink-800">
+              {settlement.bookings?.length ?? 0}
             </div>
           </div>
         </div>
@@ -112,7 +108,7 @@ export default function SupplierSettlementDetailPage() {
         <div className="flex items-start gap-3 rounded-2xl bg-red-50 p-4 text-sm text-red-700 ring-1 ring-red-100">
           <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0" />
           <div>
-            <div className="font-semibold">OtoRent yêu cầu bổ sung hồ sơ</div>
+            <div className="font-semibold">CarGoGo yêu cầu bổ sung hồ sơ</div>
             <div>{settlement.rejectionReason}</div>
           </div>
         </div>
@@ -133,7 +129,6 @@ export default function SupplierSettlementDetailPage() {
                   #{b.id} · {b.pickupAddress} → {b.dropoffAddress}
                 </span>
                 <span className="text-ink-400">{formatDate(b.completedAt)}</span>
-                <span className="font-medium">{formatCurrency(b.finalAmount)}</span>
               </li>
             ))}
           </ul>

@@ -65,18 +65,18 @@ export default function LegalPage() {
       <section className="relative overflow-hidden bg-ink-900">
         <div className="absolute inset-0 bg-gradient-to-r from-ink-900 via-ink-900/95 to-ink-800" />
         <div className="container-app relative z-10 py-12 md:py-16">
-          <nav className="mb-4 flex items-center gap-1.5 text-sm text-white/60">
-            <Link to="/" className="transition hover:text-white">
+          <nav className="mb-4 flex items-center gap-1.5 text-sm text-white/90">
+            <Link to="/" className="transition hover:text-brand-accent">
               Trang chủ
             </Link>
             <ChevronRight className="h-4 w-4" />
-            <span className="font-medium text-white">Điều khoản và quy định</span>
+            <span className="font-medium text-brand-accent">Điều khoản và quy định</span>
           </nav>
           <p className="mb-1 inline-flex items-center gap-2 text-sm font-semibold text-brand-accent">
             <ShieldCheck className="h-4 w-4" /> Quy định thuê xe
           </p>
           <h1 className="text-3xl font-bold tracking-tight md:text-4xl">Điều khoản và quy định</h1>
-          <p className="mt-2 max-w-xl text-sm text-white/70">
+          <p className="mt-2 max-w-xl text-sm text-white/85">
             Giấy tờ cần chuẩn bị và các loại hình bảo hiểm áp dụng cho từng dòng xe.
           </p>
         </div>
@@ -128,7 +128,7 @@ export default function LegalPage() {
                 )}
                 <h3 className="text-lg font-bold">{plan.name}</h3>
                 <p
-                  className={`mt-1 text-sm ${plan.highlight ? 'text-white/70' : 'text-ink-500'}`}
+                  className={`mt-1 text-sm ${plan.highlight ? 'text-white/85' : 'text-ink-500'}`}
                 >
                   {plan.tagline}
                 </p>

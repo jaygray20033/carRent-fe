@@ -35,7 +35,7 @@ const METHODS = [
   },
   {
     id: 'WALLET',
-    name: 'Ví OtoRent',
+    name: 'Ví CarGoGo',
     desc: 'Trừ trực tiếp từ số dư ví của bạn',
     icon: Wallet,
     enabled: false,

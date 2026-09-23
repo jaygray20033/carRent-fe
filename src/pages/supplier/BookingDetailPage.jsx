@@ -1,14 +1,30 @@
 // src/pages/supplier/BookingDetailPage.jsx
 // Supplier ops on a single dispatched booking. White-label: no corporate identity,
 // no margin. Supplier Admin assigns/reassigns a driver or rejects; the assigned
-// driver (or admin) starts once OtoRent releases driver info, then completes.
+// driver (or admin) starts once CarGoGo releases driver info, then completes.
 import { useState } from 'react';
 import { useParams, useNavigate, useOutletContext } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
-import { ArrowLeft, MapPin, Clock, User, Play, CheckCircle2, XCircle } from 'lucide-react';
-import { supplierPortalService, BOOKING_STATUS_LABEL } from '../../services/supplierService.js';
-import { formatDateTime } from '../../utils/format.js';
+import {
+  ArrowLeft,
+  MapPin,
+  Clock,
+  User,
+  Play,
+  CheckCircle2,
+  XCircle,
+  Receipt,
+  Plus,
+  Trash2,
+} from 'lucide-react';
+import {
+  supplierPortalService,
+  BOOKING_STATUS_LABEL,
+  TRIP_EXPENSE_TYPE_LABEL,
+  TRIP_EXPENSE_TYPES,
+} from '../../services/supplierService.js';
+import { formatDateTime, formatCurrency } from '../../utils/format.js';
 import Loading from '../../components/common/Loading.jsx';
 import EmptyState from '../../components/common/EmptyState.jsx';
 import Modal from '../../components/ui/Modal.jsx';
@@ -32,11 +48,20 @@ export default function SupplierBookingDetailPage() {
   const [vehicleNote, setVehicleNote] = useState('');
   const [rejectReason, setRejectReason] = useState('');
   const [actualKm, setActualKm] = useState('');
+  const [expenseType, setExpenseType] = useState('TOLL_ROAD');
+  const [expenseAmount, setExpenseAmount] = useState('');
+  const [expenseDesc, setExpenseDesc] = useState('');
 
   const { data: bookingRes, isLoading } = useQuery({
     queryKey: ['supplier', 'booking', id],
     queryFn: () => supplierPortalService.getBooking(id),
     enabled: !!id,
+    // Poll while waiting on CarGoGo to release driver info, so the "Bắt đầu
+    // chuyến" button un-locks without a manual refresh.
+    refetchInterval: (query) => {
+      const b = unwrap(query.state.data)?.booking || unwrap(query.state.data);
+      return b?.status === 'DRIVER_ASSIGNED' && !b?.driverInfoReleasedAt ? 8000 : false;
+    },
   });
   const { data: membersRes } = useQuery({
     queryKey: ['supplier', 'members'],
@@ -100,6 +125,44 @@ export default function SupplierBookingDetailPage() {
     onError: (e) => toast.error(e?.message || 'Không thể hoàn thành'),
   });
 
+  // Trip expenses (tolls, parking, overtime…) recorded by the driver on the road.
+  const { data: expenseRes } = useQuery({
+    queryKey: ['supplier', 'booking', id, 'expenses'],
+    queryFn: () => supplierPortalService.listExpenses(id),
+    enabled: !!id,
+  });
+  const expenseData = unwrap(expenseRes);
+  const expenses = expenseData.expenses || [];
+  const expenseTotal = expenseData.expenseTotal || 0;
+
+  const invalidateExpenses = () =>
+    queryClient.invalidateQueries({ queryKey: ['supplier', 'booking', id, 'expenses'] });
+
+  const addExpenseMut = useMutation({
+    mutationFn: () =>
+      supplierPortalService.addExpense(id, {
+        type: expenseType,
+        amount: Number(expenseAmount),
+        description: expenseDesc || undefined,
+      }),
+    onSuccess: () => {
+      toast.success('Đã ghi chi phí');
+      setExpenseAmount('');
+      setExpenseDesc('');
+      invalidateExpenses();
+    },
+    onError: (e) => toast.error(e?.message || 'Không thể ghi chi phí'),
+  });
+
+  const deleteExpenseMut = useMutation({
+    mutationFn: (expenseId) => supplierPortalService.deleteExpense(id, expenseId),
+    onSuccess: () => {
+      toast.success('Đã xoá chi phí');
+      invalidateExpenses();
+    },
+    onError: (e) => toast.error(e?.message || 'Không thể xoá chi phí'),
+  });
+
   if (isLoading) return <Loading />;
   if (!booking?.id) return <EmptyState title="Không tìm thấy chuyến" />;
 
@@ -109,6 +172,8 @@ export default function SupplierBookingDetailPage() {
   const canComplete = booking.status === 'IN_PROGRESS';
   const awaitingRelease =
     booking.status === 'DRIVER_ASSIGNED' && !booking.driverInfoReleasedAt;
+  // Driver can log tolls/parking/etc. while running or awaiting cost confirmation.
+  const canLogExpenses = ['IN_PROGRESS', 'PENDING_CONFIRM'].includes(booking.status);
 
   return (
     <div className="space-y-6">
@@ -194,7 +259,7 @@ export default function SupplierBookingDetailPage() {
 
         {awaitingRelease && (
           <div className="mt-3 rounded-xl bg-amber-50 p-3 text-sm text-amber-800">
-            Đã phân tài xế — đang chờ OtoRent chuyển thông tin cho khách trước khi có thể bắt đầu
+            Đã phân tài xế — đang chờ CarGoGo chuyển thông tin cho khách trước khi có thể bắt đầu
             chuyến.
           </div>
         )}
@@ -233,6 +298,124 @@ export default function SupplierBookingDetailPage() {
           </Button>
         )}
       </div>
+
+      {/* Trip expense log — driver records tolls, parking, overtime… on the road */}
+      {(canLogExpenses || expenses.length > 0) && (
+        <div className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-ink-100">
+          <div className="mb-4 flex items-center gap-2">
+            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-primary/10 text-brand-primary">
+              <Receipt className="h-4 w-4" />
+            </span>
+            <div>
+              <h2 className="text-sm font-semibold text-ink-700">
+                Chi phí dọc đường
+              </h2>
+              <p className="text-xs text-ink-400">
+                Ghi lại phí cầu đường, gửi xe, tăng ca… phát sinh trong chuyến.
+              </p>
+            </div>
+          </div>
+
+          {expenses.length === 0 ? (
+            <p className="rounded-xl bg-ink-50 p-3 text-sm text-ink-400">
+              Chưa ghi khoản chi phí nào.
+            </p>
+          ) : (
+            <ul className="divide-y divide-ink-100">
+              {expenses.map((ex) => (
+                <li key={ex.id} className="flex items-center justify-between gap-3 py-2.5">
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-medium text-ink-700">
+                        {TRIP_EXPENSE_TYPE_LABEL[ex.type] || ex.type}
+                      </span>
+                      {ex.approvedByAdmin === true && (
+                        <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[11px] font-semibold text-emerald-700">
+                          Đã duyệt
+                        </span>
+                      )}
+                      {ex.approvedByAdmin === false && (
+                        <span className="rounded-full bg-red-100 px-2 py-0.5 text-[11px] font-semibold text-red-700">
+                          Bị từ chối
+                        </span>
+                      )}
+                      {ex.approvedByAdmin == null && (
+                        <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-semibold text-amber-700">
+                          Chờ duyệt
+                        </span>
+                      )}
+                    </div>
+                    {ex.description && (
+                      <p className="truncate text-xs text-ink-400">{ex.description}</p>
+                    )}
+                  </div>
+                  <div className="flex shrink-0 items-center gap-3">
+                    <span className="text-sm font-semibold text-ink-700">
+                      {formatCurrency(ex.amount)}
+                    </span>
+                    {canLogExpenses && ex.approvedByAdmin !== true && (
+                      <button
+                        type="button"
+                        title="Xoá khoản chi phí"
+                        onClick={() => deleteExpenseMut.mutate(ex.id)}
+                        disabled={deleteExpenseMut.isPending}
+                        className="text-ink-300 hover:text-red-500 disabled:opacity-50"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    )}
+                  </div>
+                </li>
+              ))}
+              <li className="flex items-center justify-between pt-3 text-sm font-semibold text-ink-700">
+                <span>Tổng chi phí</span>
+                <span>{formatCurrency(expenseTotal)}</span>
+              </li>
+            </ul>
+          )}
+
+          {canLogExpenses && (
+            <div className="mt-4 grid gap-3 border-t border-ink-100 pt-4 sm:grid-cols-2">
+              <Select
+                label="Loại chi phí"
+                value={expenseType}
+                onChange={(e) => setExpenseType(e.target.value)}
+                options={TRIP_EXPENSE_TYPES.map((t) => ({
+                  value: t,
+                  label: TRIP_EXPENSE_TYPE_LABEL[t],
+                }))}
+              />
+              <Input
+                label="Số tiền (VND)"
+                type="number"
+                min="1"
+                value={expenseAmount}
+                onChange={(e) => setExpenseAmount(e.target.value)}
+                placeholder="VD: 35000"
+              />
+              <div className="sm:col-span-2">
+                <Input
+                  label="Ghi chú (tuỳ chọn)"
+                  value={expenseDesc}
+                  onChange={(e) => setExpenseDesc(e.target.value)}
+                  placeholder="VD: Trạm thu phí Long Thành"
+                />
+              </div>
+              <div className="sm:col-span-2">
+                <Button
+                  variant="primary"
+                  leftIcon={<Plus className="h-4 w-4" />}
+                  loading={addExpenseMut.isPending}
+                  disabled={!expenseAmount || Number(expenseAmount) <= 0}
+                  onClick={() => addExpenseMut.mutate()}
+                >
+                  Thêm chi phí
+                </Button>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Assign-driver modal */}
       <Modal open={assignOpen} onClose={() => setAssignOpen(false)} title="Phân công tài xế">

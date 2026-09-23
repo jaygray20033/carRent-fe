@@ -78,13 +78,13 @@ export default function UIKit() {
             <div className="w-10 h-10 bg-brand-accent rounded-xl flex items-center justify-center">
               <span className="text-ink-900 font-bold text-lg">O</span>
             </div>
-            <span className="text-2xl font-bold">OtoRent</span>
+            <span className="text-2xl font-bold">CarGoGo</span>
           </div>
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-white mb-4">
             Design System
           </h1>
           <p className="text-lg text-white/80 max-w-2xl">
-            Bộ component UI chuẩn cho OtoRent — nền thuê xe trực tuyến. Xây dựng dựa trên Figma 28
+            Bộ component UI chuẩn cho CarGoGo — nền thuê xe trực tuyến. Xây dựng dựa trên Figma 28
             màn hình, sử dụng React + Tailwind CSS v4.
           </p>
           <div className="flex flex-wrap gap-3 mt-6">
@@ -178,7 +178,7 @@ export default function UIKit() {
               <span className="text-xs font-mono text-ink-300 bg-ink-50 px-2 py-0.5 rounded">
                 h2 · text-3xl · font-bold
               </span>
-              <h2 className="text-3xl font-bold mt-2">Đặt xe tại OtoRent</h2>
+              <h2 className="text-3xl font-bold mt-2">Đặt xe tại CarGoGo</h2>
             </div>
             <div>
               <span className="text-xs font-mono text-ink-300 bg-ink-50 px-2 py-0.5 rounded">
@@ -191,7 +191,7 @@ export default function UIKit() {
                 body · text-base (16px)
               </span>
               <p className="text-base text-ink-700 mt-2">
-                OtoRent với phương châm đặt niềm tin của khách hàng lên hàng đầu, tự hào sở hữu đội
+                CarGoGo với phương châm đặt niềm tin của khách hàng lên hàng đầu, tự hào sở hữu đội
                 ngũ xe lớn nhất bao gồm đa dạng các dòng xe từ xe đời mới.
               </p>
             </div>
@@ -410,7 +410,7 @@ export default function UIKit() {
                   <div className="w-8 h-8 bg-brand-accent rounded-lg flex items-center justify-center">
                     <span className="text-ink-900 font-bold text-sm">O</span>
                   </div>
-                  <span className="font-bold text-ink-900">OtoRent</span>
+                  <span className="font-bold text-ink-900">CarGoGo</span>
                 </div>
                 <h3 className="text-lg font-bold text-ink-900">Xác nhận số điện thoại</h3>
                 <p className="text-sm text-ink-500 mt-1">
@@ -638,7 +638,7 @@ export default function UIKit() {
                 <div className="w-10 h-10 bg-brand-accent rounded-xl flex items-center justify-center">
                   <span className="text-ink-900 font-bold text-lg">O</span>
                 </div>
-                <span className="text-xl font-bold text-ink-900">OtoRent</span>
+                <span className="text-xl font-bold text-ink-900">CarGoGo</span>
               </div>
               <p className="text-sm text-ink-500">
                 Mã xác thực (OTP) sẽ được gửi tới số điện thoại di động
@@ -660,7 +660,7 @@ export default function UIKit() {
                     <a href="#" className="text-brand-primary underline">
                       các điều khoản
                     </a>{' '}
-                    của OtoRent
+                    của CarGoGo
                   </>
                 }
               />
@@ -679,7 +679,7 @@ export default function UIKit() {
               <Avatar name="Nguyễn Văn" size="sm" />
               <Avatar name="Khánh Vân" size="md" />
               <Avatar name="Trần Minh" size="lg" />
-              <Avatar name="OtoRent" size="xl" />
+              <Avatar name="CarGoGo" size="xl" />
               <Avatar name="Admin" size="2xl" />
             </DemoRow>
           </SubSection>
@@ -718,12 +718,12 @@ export default function UIKit() {
           <div className="space-y-3">
             <Breadcrumb
               items={[
-                { label: 'OtoRent' },
+                { label: 'CarGoGo' },
                 { label: 'Thuê xe', href: '#' },
                 { label: 'Mercedes-Benz S500' },
               ]}
             />
-            <Breadcrumb items={[{ label: 'OtoRent' }, { label: 'FAQ' }]} />
+            <Breadcrumb items={[{ label: 'CarGoGo' }, { label: 'FAQ' }]} />
             <Breadcrumb
               items={[{ label: 'Tài khoản', href: '#' }, { label: 'Thông tin người dùng' }]}
             />
@@ -863,10 +863,10 @@ export default function UIKit() {
                 <div className="w-8 h-8 bg-brand-accent rounded-lg flex items-center justify-center">
                   <span className="text-ink-900 font-bold text-sm">O</span>
                 </div>
-                <span className="text-lg font-bold">OtoRent</span>
+                <span className="text-lg font-bold">CarGoGo</span>
               </div>
               <p className="text-sm text-white/60 leading-relaxed">
-                OtoRent với phương châm đặt niềm tin của khách hàng lên hàng đầu, tự hào sở hữu đội
+                CarGoGo với phương châm đặt niềm tin của khách hàng lên hàng đầu, tự hào sở hữu đội
                 ngũ xe lớn nhất.
               </p>
             </div>
@@ -899,7 +899,7 @@ export default function UIKit() {
             </div>
           </div>
           <div className="border-t border-ink-800 mt-8 pt-6 text-center text-xs text-white/40">
-            © 2024 OtoRent. All rights reserved. — Design System v1.0.0
+            © 2024 CarGoGo. All rights reserved. — Design System v1.0.0
           </div>
         </div>
       </footer>

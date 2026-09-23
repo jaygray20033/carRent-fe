@@ -108,18 +108,18 @@ export default function CarListPage() {
         <div className="absolute inset-0 bg-gradient-to-r from-ink-900 via-ink-900/95 to-ink-800" />
         <div className="container-app relative z-10 py-12 md:py-16">
           {/* Breadcrumb */}
-          <nav className="mb-4 flex items-center gap-1.5 text-sm text-white/60">
-            <Link to="/" className="transition hover:text-white">
+          <nav className="mb-4 flex items-center gap-1.5 text-sm text-white/90">
+            <Link to="/" className="transition hover:text-brand-accent">
               Trang chủ
             </Link>
             <ChevronRight className="h-4 w-4" />
-            <span className="font-medium text-white">Thuê xe</span>
+            <span className="font-medium text-brand-accent">Thuê xe</span>
           </nav>
           <h1 className="text-3xl font-bold tracking-tight md:text-4xl">
             <span className="text-brand-accent">Thuê xe Ôtô</span>
           </h1>
-          <p className="mt-2 max-w-xl text-sm text-white/70">
-            OtoRent — Danh sách cho thuê. Lựa chọn xe phù hợp với nhu cầu của bạn.
+          <p className="mt-2 max-w-xl text-sm text-white/85">
+            CarGoGo — Danh sách cho thuê. Lựa chọn xe phù hợp với nhu cầu của bạn.
           </p>
         </div>
       </section>

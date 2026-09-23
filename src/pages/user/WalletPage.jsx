@@ -216,7 +216,7 @@ export default function WalletPage() {
       </div>
 
       <div className="mb-6">
-        <BalanceCard balance={wallet?.balance} name={wallet ? 'OtoRent Wallet' : ''} />
+        <BalanceCard balance={wallet?.balance} name={wallet ? 'CarGoGo Wallet' : ''} />
       </div>
 
       {tab === 'topup' ? (

@@ -80,7 +80,7 @@ const RENTAL_RULES = [
   {
     title: 'Các loại hình bảo hiểm cho từng dòng xe',
     content:
-      'Công ty OtoRent cung cấp hai loại hình bảo hiểm chính bao gồm Bảo hiểm cơ bản và Bảo hiểm toàn diện nhằm đáp ứng linh hoạt các nhu cầu khác nhau của khách hàng.',
+      'Công ty CarGoGo cung cấp hai loại hình bảo hiểm chính bao gồm Bảo hiểm cơ bản và Bảo hiểm toàn diện nhằm đáp ứng linh hoạt các nhu cầu khác nhau của khách hàng.',
   },
 ];
 
@@ -127,8 +127,8 @@ export default function CarDetailPage() {
           <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
             <span className="text-brand-accent">Thuê xe Ôtô</span>
           </h1>
-          <p className="mt-1 text-sm text-white/60">
-            OtoRent — Đăng ký yêu cầu đặt xe
+          <p className="mt-1 text-sm text-white/90">
+            CarGoGo — Đăng ký yêu cầu đặt xe
           </p>
         </div>
       </section>
